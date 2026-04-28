@@ -17,27 +17,27 @@
 
 ### [DONE] AI機能の導入
 - **内容**: DeepSeek API を使用して、論理的な分解案の提案やロジックチェックを行う。
-- **詳細仕様**: [ai_feature_spec.md](./ai_feature_spec.md)
+- **詳細仕様**: [ai_feature_spec.md](./specs/ai_feature_spec.md)
 - **日付**: 2026-04-28
 
 ### [DONE] 依存関係（Dependency）の導入と可視化
 - **内容**: タスク間の「先行・後続」リンクを許容。先行タスク未完了時の後続ロック機能と、ツリー上での依存矢印表示。
-- **詳細仕様**: [dependency_spec.md](./dependency_spec.md)
+- **詳細仕様**: [dependency_spec.md](./specs/dependency_spec.md)
 - **日付**: 2026-04-28
 
 ### [DONE] 実行フェーズ（Timeline）と期限の導入
 - **内容**: 各タスクに「フェーズ属性（準備・実行・完了）」と「期限日」を追加。時間軸によるフィルタリング（今月やるべき枝のハイライト等）を実装。
-- **詳細仕様**: [timeline_spec.md](./timeline_spec.md)
+- **詳細仕様**: [timeline_spec.md](./specs/timeline_spec.md)
 - **日付**: 2026-04-28
 
 ### [DONE] 5. 一直線フロー表示 (Linear Flow View)
 - **内容**: ツリー構造を一直線のプロセスとして表示するモードを実装。実行順序に基づいたボトムアップの道筋を可視化。目標を最後に配置。
-- **詳細仕様**: [flow_view_spec.md](./flow_view_spec.md)
+- **詳細仕様**: [flow_view_spec.md](./specs/flow_view_spec.md)
 - **日付**: 2026-04-28
 
 ### [DONE] アプリを他言語対応したい
 - **内容**: システムのラベルやメッセージを日本語・英語で切り替えられるようにする。
-- **詳細仕様**: [i18n_spec.md](./i18n_spec.md)
+- **詳細仕様**: [i18n_spec.md](./specs/i18n_spec.md)
 - **日付**: 2026-04-28
 
 ### [DONE] AI機能の導入
@@ -62,5 +62,5 @@
 
 ### [DONE] スイッチボタンの偏り修正
 - **内容**: control-group-glass の中身の2つ目のmode-btnの右側に空間ができてしまっている部分の修正。全コントロール要素の横幅を260pxに統一し、配置を最適化。
-- **詳細仕様**: [ui_alignment_fix_spec.md](./ui_alignment_fix_spec.md)
+- **詳細仕様**: [ui_alignment_fix_spec.md](./specs/ui_alignment_fix_spec.md)
 - **日付**: 2026-04-28
