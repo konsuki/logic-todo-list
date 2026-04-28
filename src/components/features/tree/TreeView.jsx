@@ -12,10 +12,11 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
     const root = rootNodes[0];
     const buildHierarchy = (nodeId) => {
       const node = nodes[nodeId];
+      if (!node) return null;
       return {
         ...node,
         name: node.title,
-        children: node.children.map(id => buildHierarchy(id))
+        children: node.children ? node.children.map(id => buildHierarchy(id)).filter(Boolean) : []
       };
     };
     return buildHierarchy(root.id);
@@ -30,44 +31,55 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    // Define Arrow Marker
-    svg.append('defs').append('marker')
+    // Define Defs for Markers and Glows
+    const defs = svg.append('defs');
+    
+    // Arrow Marker
+    defs.append('marker')
       .attr('id', 'arrowhead')
       .attr('viewBox', '-0 -5 10 10')
-      .attr('refX', 20)
+      .attr('refX', 10)
       .attr('refY', 0)
       .attr('orient', 'auto')
       .attr('markerWidth', 6)
       .attr('markerHeight', 6)
-      .attr('xoverflow', 'visible')
-      .append('svg:path')
-      .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
-      .attr('fill', 'var(--warning-color)')
-      .style('stroke', 'none');
+      .append('path')
+      .attr('d', 'M 0,-4 L 8 ,0 L 0,4')
+      .attr('fill', 'var(--warning-color)');
+
+    // Link Glow Filter
+    const filter = defs.append('filter').attr('id', 'link-glow');
+    filter.append('feGaussianBlur').attr('stdDeviation', '3').attr('result', 'blur');
+    const feMerge = filter.append('feMerge');
+    feMerge.append('feMergeNode').attr('in', 'blur');
+    feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
 
     const g = svg.append('g');
 
     const zoom = d3.zoom()
-      .scaleExtent([0.2, 3])
+      .scaleExtent([0.1, 4])
       .on('zoom', (event) => {
         g.attr('transform', event.transform);
       });
 
     svg.call(zoom);
 
-    const treeLayout = d3.tree().nodeSize([120, 280]); // Adjusted spacing
+    // Tree Layout Configuration
+    const nodeWidth = 200;
+    const nodeHeight = 60;
+    const treeLayout = d3.tree().nodeSize([100, 320]); // Vertical spacing, Horizontal spacing
     const root = d3.hierarchy(hierarchyData);
     treeLayout(root);
 
-    // 1. Regular Hierarchy Links
-    g.selectAll('.tree-link')
+    // 1. Regular Hierarchy Links (Refined Connection Points)
+    const links = g.selectAll('.tree-link')
       .data(root.links())
       .enter()
       .append('path')
       .attr('class', 'tree-link')
       .attr('d', d3.linkHorizontal()
-        .x(d => d.y)
-        .y(d => d.x)
+        .source(d => [d.source.y + 190, d.source.x]) // Right edge center
+        .target(d => [d.target.y - 10, d.target.x])  // Left edge center
       );
 
     // 2. Dependency Links (The "Vines")
@@ -79,24 +91,26 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
         targetNode.data.dependsOn.forEach(sourceId => {
           const sourceNode = nodesById.get(sourceId);
           if (sourceNode) {
-            dependencyLinks.push({ source: sourceNode, target: targetNode });
+            dependencyLinks.push({ 
+              source: sourceNode, 
+              target: targetNode,
+              id: `dep-${sourceNode.data.id}-${targetNode.data.id}` 
+            });
           }
         });
       }
     });
 
-    g.selectAll('.dependency-link')
+    const depPaths = g.selectAll('.dependency-link')
       .data(dependencyLinks)
       .enter()
       .append('path')
       .attr('class', 'dependency-link')
       .attr('d', d => {
-        const startX = d.source.y + 190; // End of rect
+        const startX = d.source.y + 190;
         const startY = d.source.x;
-        const endX = d.target.y - 10; // Start of rect
+        const endX = d.target.y - 10;
         const endY = d.target.x;
-        
-        // Custom curved path for dependency
         const midX = (startX + endX) / 2;
         return `M${startX},${startY} C${midX},${startY} ${midX},${endY} ${endX},${endY}`;
       })
@@ -111,20 +125,39 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
       .attr('transform', d => `translate(${d.y},${d.x})`)
       .on('click', (event, d) => {
         onSelectNode(d.data.id);
+      })
+      .on('mouseenter', (event, d) => {
+        // Highlight outgoing and incoming links
+        links.filter(l => l.source.data.id === d.data.id || l.target.data.id === d.data.id)
+          .classed('is-highlighted', true);
+        depPaths.filter(l => l.source.data.id === d.data.id || l.target.data.id === d.data.id)
+          .classed('is-highlighted', true);
+      })
+      .on('mouseleave', () => {
+        links.classed('is-highlighted', false);
+        depPaths.classed('is-highlighted', false);
       });
 
     nodeGroups.append('rect')
       .attr('x', -10)
       .attr('y', -30)
-      .attr('width', 200)
-      .attr('height', 60)
-      .attr('rx', 8)
+      .attr('width', nodeWidth)
+      .attr('height', nodeHeight)
+      .attr('rx', 10)
       .attr('class', d => `node-rect ${d.data.type.toLowerCase()}`);
+
+    // Execution Order Step Badge (if available)
+    nodeGroups.filter(d => d.data.order !== undefined)
+      .append('text')
+      .attr('x', -5)
+      .attr('y', -35)
+      .attr('class', 'node-step-label')
+      .text(d => `Step ${ (d.parent?.children.findIndex(c => c.data.id === d.data.id) ?? 0) + 1 }`);
 
     nodeGroups.append('rect')
       .attr('x', -10)
       .attr('y', 26)
-      .attr('width', d => (d.data.progress / 100) * 200)
+      .attr('width', d => (d.data.progress / 100) * nodeWidth)
       .attr('height', 4)
       .attr('rx', 2)
       .attr('class', 'node-progress-indicator')
@@ -145,8 +178,9 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
         return title.length > 20 ? title.substring(0, 18) + '...' : title;
       });
 
+    // Center the tree initially
     const initialTransform = d3.zoomIdentity
-      .translate(100, height / 2)
+      .translate(width / 4, height / 2)
       .scale(0.8);
     svg.call(zoom.transform, initialTransform);
 

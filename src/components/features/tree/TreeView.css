@@ -19,7 +19,15 @@
   fill: none;
   stroke: var(--border-color);
   stroke-width: 1.5px;
-  transition: stroke var(--transition-speed);
+  stroke-opacity: 0.4;
+  transition: all 0.3s ease;
+}
+
+.tree-link.is-highlighted {
+  stroke: var(--primary-color);
+  stroke-width: 3px;
+  stroke-opacity: 1;
+  filter: url(#link-glow);
 }
 
 .dependency-link {
@@ -27,7 +35,15 @@
   stroke: var(--warning-color);
   stroke-width: 1.5px;
   stroke-dasharray: 4, 4;
-  opacity: 0.6;
+  opacity: 0.4;
+  transition: all 0.3s ease;
+}
+
+.dependency-link.is-highlighted {
+  stroke-width: 3px;
+  opacity: 1;
+  stroke-dasharray: 0;
+  filter: url(#link-glow);
 }
 
 .tree-node {
@@ -45,12 +61,13 @@
 .tree-node:hover .node-rect {
   stroke: var(--text-muted);
   filter: brightness(1.2);
+  transform: translateY(-2px);
 }
 
 .tree-node.is-selected .node-rect {
   stroke: var(--primary-color);
   stroke-width: 2px;
-  box-shadow: 0 0 15px var(--primary-glow);
+  filter: drop-shadow(0 0 10px var(--primary-glow));
 }
 
 .node-type-label {
@@ -58,7 +75,7 @@
   font-weight: 700;
   fill: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   pointer-events: none;
 }
 
@@ -66,6 +83,15 @@
   font-size: 14px;
   font-weight: 500;
   fill: var(--text-main);
+  pointer-events: none;
+}
+
+.node-step-label {
+  font-size: 10px;
+  font-weight: 800;
+  fill: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   pointer-events: none;
 }
 
@@ -92,13 +118,13 @@
 
 /* Specific node type styles */
 .node-rect.goal {
-  fill: hsla(190, 100%, 60%, 0.05);
+  fill: hsla(190, 100%, 60%, 0.08);
 }
 
 .node-rect.strategy {
-  fill: hsla(150, 80%, 50%, 0.05);
+  fill: hsla(150, 80%, 50%, 0.08);
 }
 
 .node-rect.action {
-  fill: hsla(220, 10%, 70%, 0.05);
+  fill: hsla(220, 10%, 70%, 0.08);
 }
