@@ -82,6 +82,10 @@ export const useTodoTree = () => {
     });
   }, []);
 
+  const handleReorderNode = useCallback((nodeId, direction) => {
+    setNodes(prev => treeLogic.reorderNode(prev, nodeId, direction));
+  }, []);
+
   /**
    * Helper to get the root nodes (those without parentId)
    */
@@ -96,6 +100,7 @@ export const useTodoTree = () => {
     updateNode: handleUpdateNode,
     addDependency: handleAddDependency,
     removeDependency: handleRemoveDependency,
+    reorderNode: handleReorderNode,
     isNodeLocked: (nodeId) => treeLogic.isNodeLocked(nodes, nodeId)
   };
 };

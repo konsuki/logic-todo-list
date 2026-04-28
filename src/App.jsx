@@ -17,7 +17,8 @@ function App() {
     toggleStatus, 
     updateNode, 
     addDependency, 
-    removeDependency 
+    removeDependency,
+    reorderNode
   } = useTodoTree();
   const { t, lang, setLang } = useI18n();
   const [view, setView] = useState('list');
@@ -129,6 +130,7 @@ function App() {
           onDeleteNode={deleteNode}
           addDependency={addDependency}
           removeDependency={removeDependency}
+          reorderNode={reorderNode}
           t={t}
           lang={lang}
         />

@@ -51,6 +51,17 @@ const ListView = ({
     return visibleSet;
   }, [nodes, rootNodes, phaseFilter]);
 
+  // Filter and sort the root nodes
+  // MOVED UP to comply with Rules of Hooks
+  const displayedRootNodes = useMemo(() => {
+    let filtered = phaseFilter === 'ALL' 
+      ? rootNodes 
+      : rootNodes.filter(root => visibleNodeIds?.has(root.id));
+    
+    // Sort by order
+    return [...filtered].sort((a, b) => (a.order || 0) - (b.order || 0));
+  }, [rootNodes, visibleNodeIds, phaseFilter]);
+
   if (rootNodes.length === 0) {
     return (
       <div className="empty-state">
@@ -69,11 +80,6 @@ const ListView = ({
       </div>
     );
   }
-
-  // Filter the root nodes if they don't have any matching descendants
-  const displayedRootNodes = phaseFilter === 'ALL' 
-    ? rootNodes 
-    : rootNodes.filter(root => visibleNodeIds.has(root.id));
 
   return (
     <div className="list-view-container">

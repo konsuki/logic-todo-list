@@ -50,6 +50,9 @@ export const translations = {
       schedule: 'スケジュール・フェーズ',
       phase: '実行フェーズ',
       due_date: '期限日',
+      order_section: '実行順序 (ステップ)',
+      move_up: '一つ上へ',
+      move_down: '一つ下へ',
     },
     tree: {
       hint: 'ドラッグで移動 / スクロールでズーム',
@@ -115,6 +118,9 @@ export const translations = {
       schedule: 'Schedule & Phase',
       phase: 'Execution Phase',
       due_date: 'Due Date',
+      order_section: 'Execution Order (Steps)',
+      move_up: 'Move Up',
+      move_down: 'Move Down',
     },
     tree: {
       hint: 'Drag to Pan / Scroll to Zoom',

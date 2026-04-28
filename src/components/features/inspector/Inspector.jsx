@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar } from 'lucide-react';
+import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
 import AIInsights from './AIInsights';
 import './Inspector.css';
 
@@ -12,6 +12,7 @@ const Inspector = ({
   onDeleteNode,
   addDependency,
   removeDependency,
+  reorderNode,
   t, 
   lang 
 }) => {
@@ -132,6 +133,26 @@ const Inspector = ({
               onChange={handleDueDateChange}
               className="date-input"
             />
+          </div>
+        </div>
+
+        <div className="order-controls">
+          <label className="section-subtitle">{t('inspector.order_section')}</label>
+          <div className="order-buttons">
+            <button 
+              className="order-btn" 
+              onClick={() => reorderNode(node.id, 'up')}
+              title={t('inspector.move_up')}
+            >
+              <ArrowUp size={14} /> {t('inspector.move_up')}
+            </button>
+            <button 
+              className="order-btn" 
+              onClick={() => reorderNode(node.id, 'down')}
+              title={t('inspector.move_down')}
+            >
+              <ArrowDown size={14} /> {t('inspector.move_down')}
+            </button>
           </div>
         </div>
       </section>

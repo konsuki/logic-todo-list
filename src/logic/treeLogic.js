@@ -107,6 +107,24 @@ export const checkCircularDependency = (nodes, nodeId, dependencyId) => {
  */
 export const addNode = (nodes, parentId, type, title = 'New Task') => {
   const id = crypto.randomUUID();
+  
+  // Calculate order based on siblings
+  let order = 0;
+  if (parentId && nodes[parentId]) {
+    const siblingIds = nodes[parentId].children || [];
+    const maxOrder = siblingIds.reduce((max, sid) => {
+      return Math.max(max, nodes[sid]?.order || 0);
+    }, -1);
+    order = maxOrder + 1;
+  } else {
+    // Root level order
+    const rootIds = Object.values(nodes).filter(n => !n.parentId).map(n => n.id);
+    const maxOrder = rootIds.reduce((max, rid) => {
+      return Math.max(max, nodes[rid]?.order || 0);
+    }, -1);
+    order = maxOrder + 1;
+  }
+
   const newNode = {
     id,
     parentId,
@@ -119,6 +137,7 @@ export const addNode = (nodes, parentId, type, title = 'New Task') => {
     dependsOn: [],
     phase: 'PREP', // Default phase
     dueDate: null, // Default due date
+    order,         // Execution order
     metadata: {
       createdAt: Date.now(),
       updatedAt: Date.now()
@@ -136,6 +155,47 @@ export const addNode = (nodes, parentId, type, title = 'New Task') => {
   }
 
   return updateProgressRecursively(newNodes, parentId);
+};
+
+/**
+ * Reorders a node relative to its siblings.
+ * direction: 'up' | 'down'
+ */
+export const reorderNode = (nodes, nodeId, direction) => {
+  const node = nodes[nodeId];
+  if (!node) return nodes;
+
+  const parentId = node.parentId;
+  
+  // Get all siblings and ensure they have valid unique orders
+  let siblings = Object.values(nodes)
+    .filter(n => n.parentId === parentId)
+    .sort((a, b) => (a.order || 0) - (b.order || 0) || (a.metadata?.createdAt || 0) - (b.metadata?.createdAt || 0));
+
+  const newNodes = { ...nodes };
+  
+  // Repair step: Re-assign orders if there's any ambiguity or missing values
+  siblings.forEach((s, idx) => {
+    newNodes[s.id] = { ...newNodes[s.id], order: idx };
+  });
+
+  // Re-fetch sorted siblings with repaired orders
+  const repairedSiblings = siblings.map(s => newNodes[s.id]);
+
+  const currentIndex = repairedSiblings.findIndex(n => n.id === nodeId);
+  const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+  if (targetIndex < 0 || targetIndex >= repairedSiblings.length) return nodes;
+
+  const targetNode = repairedSiblings[targetIndex];
+  const currentNode = newNodes[nodeId];
+
+  // Swap orders
+  const tempOrder = currentNode.order;
+  newNodes[nodeId] = { ...currentNode, order: targetNode.order };
+  newNodes[targetNode.id] = { ...targetNode, order: tempOrder };
+
+  return newNodes;
 };
 
 /**

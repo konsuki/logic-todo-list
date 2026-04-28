@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock, Clock } from 'lucide-react';
 import * as treeLogic from '../../../logic/treeLogic';
 import './TodoItem.css';
@@ -21,7 +21,6 @@ const TodoItem = ({
   const [editTitle, setEditTitle] = useState(node.title);
 
   const childrenCount = node.children ? node.children.length : 0;
-  const hasChildren = childrenCount > 0;
   const isDone = node.status === 'DONE';
   const isSelected = selectedNodeId === node.id;
   
@@ -55,10 +54,26 @@ const TodoItem = ({
     onSelectNode(node.id);
   };
 
-  // Filter children based on visibility set
-  const displayedChildren = node.children.filter(childId => 
-    !visibleNodeIds || visibleNodeIds.has(childId)
-  );
+  // Sort and filter children
+  const displayedChildren = useMemo(() => {
+    const children = node.children.map(id => allNodes[id]).filter(Boolean);
+    const filtered = children.filter(child => !visibleNodeIds || visibleNodeIds.has(child.id));
+    return filtered.sort((a, b) => (a.order || 0) - (b.order || 0));
+  }, [node.children, allNodes, visibleNodeIds]);
+
+  // Calculate step number relative to siblings
+  const stepNumber = useMemo(() => {
+    const parent = node.parentId ? allNodes[node.parentId] : null;
+    let siblings = [];
+    if (parent) {
+      siblings = parent.children.map(id => allNodes[id]).filter(Boolean);
+    } else {
+      siblings = Object.values(allNodes).filter(n => !n.parentId);
+    }
+    siblings.sort((a, b) => (a.order || 0) - (b.order || 0));
+    const index = siblings.findIndex(s => s.id === node.id);
+    return index !== -1 ? index + 1 : null;
+  }, [node, allNodes]);
 
   return (
     <div className={`todo-item-container depth-${depth} ${isSelected ? 'is-selected' : ''} ${isLocked ? 'is-locked' : ''}`}>
@@ -98,6 +113,11 @@ const TodoItem = ({
 
           <div className="node-info">
             <span className={`node-type-tag ${node.type.toLowerCase()}`}>{node.type}</span>
+            
+            {stepNumber !== null && (
+              <span className="step-badge">Step {stepNumber}</span>
+            )}
+
             {isEditing ? (
               <input
                 autoFocus
@@ -185,10 +205,10 @@ const TodoItem = ({
 
       {isExpanded && displayedChildren.length > 0 && (
         <div className="todo-item-children">
-          {displayedChildren.map(childId => (
+          {displayedChildren.map(child => (
             <TodoItem
-              key={childId}
-              node={allNodes[childId]}
+              key={child.id}
+              node={child}
               allNodes={allNodes}
               onAddChild={onAddChild}
               onDelete={onDelete}
