@@ -69,3 +69,4 @@
 - **内容**: 親ノードを独立した箱として並べず、子を包む「器（フレーム）」としてのみ描画する Pure Container モデルを実装。階層のネストと進捗の同期を視覚化した。
 - **詳細仕様**: [flow_hierarchy_spec.md](./specs/flow_hierarchy_spec.md)
 - **日付**: 2026-04-28
+

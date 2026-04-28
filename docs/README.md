@@ -4,14 +4,17 @@
 
 ## 📁 構造概要
 
-### 1. [REVISIONS.md](./REVISIONS.md)
-- **役割**: プロジェクトの進行管理。
-- **内容**: 過去のリクエスト履歴、現在の TODO、完了ステータス。AIは新しいタスクに着手する前に必ずここを確認すること。
+### 1. [DEVELOPMENT_GUIDELINES.md](./DEVELOPMENT_GUIDELINES.md)
+- **役割**: **プロジェクト憲法・運用ルール**。
+- **内容**: AI（Antigravity）が守るべき Git ワークフロー、ドキュメント更新ルール、設計思想の核心。**セッション開始時に必ず最初に読むこと。**
 
-### 2. [core/](./core/) - 基本原則
+### 2. [REVISIONS.md](./REVISIONS.md)
+- **役割**: 進行管理・タスクリスト。
+- **内容**: 過去のリクエスト履歴、現在の TODO、完了ステータス。
+
+### 3. [core/](./core/) - 基本原則
 - プロジェクト全体の共通ルール。
 - [architecture.md](./core/architecture.md): 全体設計、データ構造。
-- [git_workflow.md](./core/git_workflow.md): Git 運用、ブランチ戦略。
 - [ui_ux_design_spec.md](./core/ui_ux_design_spec.md): UI デザインと言語の基準。
 - [tree_management_spec.md](./core/tree_management_spec.md): ツリー管理の基本仕様。
 
@@ -34,4 +37,4 @@
 ---
 
 ## 🤖 AI への指示
-タスクを開始する際は、まず `REVISIONS.md` でコンテキストを確認し、関連する仕様を `specs/` から取得してください。
+タスクを開始する際は、まず `DEVELOPMENT_GUIDELINES.md` を読み、次に `REVISIONS.md` でコンテキストを確認してください。
