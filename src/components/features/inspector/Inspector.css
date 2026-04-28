@@ -1,0 +1,253 @@
+.inspector-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  animation: fadeInRight 0.3s ease-out;
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.inspector-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  gap: 16px;
+  text-align: center;
+  padding: 40px;
+}
+
+.inspector-header h2 {
+  font-size: 24px;
+  margin: 12px 0 16px;
+  line-height: 1.2;
+}
+
+.inspector-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.progress-bar-bg {
+  height: 6px;
+  background-color: var(--border-color);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-value {
+  font-size: 14px;
+  font-weight: 700;
+  align-self: flex-end;
+}
+
+.delete-btn-subtle {
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.delete-btn-subtle:hover {
+  color: var(--warning-color);
+  background-color: hsla(35, 100%, 60%, 0.1);
+}
+
+.inspector-warning-card {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background-color: hsla(35, 100%, 60%, 0.08);
+  border: 1px solid hsla(35, 100%, 60%, 0.2);
+  border-radius: 12px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.inspector-warning-card h4 {
+  font-size: 14px;
+  color: var(--warning-color);
+  margin-bottom: 4px;
+}
+
+.inspector-warning-card p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.inspector-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Why Path Styles */
+.why-path {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: 10px;
+  border-left: 1px solid var(--border-color);
+}
+
+.path-item {
+  position: relative;
+  padding: 10px 0 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.path-item.linkable {
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.path-item.linkable:hover {
+  color: var(--text-main);
+}
+
+.path-dot {
+  position: absolute;
+  left: -5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+  border: 2px solid var(--surface-color);
+}
+
+.path-dot.active {
+  background-color: var(--primary-color);
+  box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.path-title {
+  font-size: 14px;
+}
+
+.path-title.current {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.link-icon {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.path-item.linkable:hover .link-icon {
+  opacity: 1;
+}
+
+.logic-guide {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 12px;
+  background-color: hsla(220, 100%, 100%, 0.03);
+  border-radius: 8px;
+}
+
+/* How List Styles */
+.how-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.how-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background-color: hsla(220, 100%, 100%, 0.03);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.how-item:hover {
+  background-color: hsla(220, 100%, 100%, 0.08);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.todo { background-color: var(--text-muted); }
+.status-dot.in_progress { background-color: var(--warning-color); }
+.status-dot.done { background-color: var(--success-color); }
+
+.how-title {
+  flex: 1;
+  font-size: 14px;
+}
+
+.how-percent {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.empty-how {
+  padding: 20px;
+  text-align: center;
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.hint {
+  margin-top: 4px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Description */
+.description-area {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  background-color: hsla(220, 100%, 100%, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.description-area:focus {
+  border-color: var(--primary-color);
+}

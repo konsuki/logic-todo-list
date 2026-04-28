@@ -1,0 +1,204 @@
+.todo-item-container {
+  position: relative;
+  transition: all var(--transition-speed);
+}
+
+.todo-item-row {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  border-radius: 8px;
+  margin-bottom: 2px;
+  transition: background-color var(--transition-speed);
+}
+
+.todo-item-row:hover {
+  background-color: hsla(220, 100%, 100%, 0.03);
+}
+
+.is-selected .todo-item-row {
+  background-color: hsla(190, 100%, 60%, 0.08);
+  border-left: 2px solid var(--primary-color);
+  box-shadow: inset 4px 0 10px -4px var(--primary-glow);
+}
+
+.mece-warning-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.todo-item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  min-height: 48px;
+}
+
+.expand-btn {
+  color: var(--text-muted);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.expand-btn:hover {
+  background-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.expand-btn.invisible {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.status-toggle {
+  color: var(--text-muted);
+  transition: color var(--transition-speed);
+}
+
+.status-toggle:hover {
+  color: var(--primary-color);
+}
+
+.icon-success {
+  color: var(--success-color);
+}
+
+.node-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.node-type-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.node-type-tag.goal {
+  background-color: hsla(190, 100%, 60%, 0.1);
+  color: var(--primary-color);
+  border: 1px solid hsla(190, 100%, 60%, 0.2);
+}
+
+.node-type-tag.strategy {
+  background-color: hsla(150, 80%, 50%, 0.1);
+  color: var(--success-color);
+  border: 1px solid hsla(150, 80%, 50%, 0.2);
+}
+
+.node-type-tag.action {
+  background-color: hsla(220, 10%, 70%, 0.1);
+  color: var(--text-muted);
+  border: 1px solid hsla(220, 10%, 70%, 0.2);
+}
+
+.node-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.title-input {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-main);
+  width: 100%;
+  padding: 2px 4px;
+  background-color: var(--bg-color);
+  border-bottom: 1px solid var(--primary-color);
+}
+
+.progress-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: var(--border-color);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.node-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity var(--transition-speed);
+}
+
+.todo-item-row:hover .node-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: var(--text-muted);
+  transition: all var(--transition-speed);
+}
+
+.action-btn:hover {
+  background-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.action-btn.delete:hover {
+  color: var(--warning-color);
+}
+
+.node-progress-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: transparent;
+  overflow: hidden;
+  border-radius: 0 0 8px 8px;
+}
+
+.node-progress-bar {
+  height: 100%;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.indent-guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--border-color);
+  pointer-events: none;
+}
+
+.is-done .node-title {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
