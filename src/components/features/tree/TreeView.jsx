@@ -9,6 +9,8 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
   const containerRef = useRef(null);
   const [layoutMode, setLayoutMode] = useState('tree'); // 'tree' or 'flow'
   const [flowOrientation, setFlowOrientation] = useState('horizontal'); // 'horizontal' or 'vertical'
+  const prevLayoutRef = useRef(layoutMode);
+  const prevOrientationRef = useRef(flowOrientation);
   
   // Confirmed Default Values from User
   const [spacingH, setSpacingH] = useState(400);
@@ -263,10 +265,24 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
       .style('height', '100%')
       .html(d => d.data.title);
 
-    const initialTransform = d3.zoomIdentity
-      .translate(flowOrientation === 'vertical' && layoutMode === 'flow' ? width / 2 - 130 : width / 4, height / 4)
-      .scale(0.8);
-    svg.call(zoom.transform, initialTransform);
+    // Persist or initialize transform
+    const currentTransform = d3.zoomTransform(svgRef.current);
+    const layoutChanged = prevLayoutRef.current !== layoutMode || prevOrientationRef.current !== flowOrientation;
+    
+    // Update refs for next render
+    prevLayoutRef.current = layoutMode;
+    prevOrientationRef.current = flowOrientation;
+    
+    // Reset to initial if first render, or if the layout mode/orientation just changed
+    if ((currentTransform.k === 1 && currentTransform.x === 0 && currentTransform.y === 0) || layoutChanged) {
+      const initialTransform = d3.zoomIdentity
+        .translate(flowOrientation === 'vertical' && layoutMode === 'flow' ? width / 2 - 130 : width / 4, height / 4)
+        .scale(0.8);
+      svg.call(zoom.transform, initialTransform);
+    } else {
+      // Re-apply the existing transform (maintains drag/zoom state on node click)
+      svg.call(zoom.transform, currentTransform);
+    }
 
   }, [hierarchyData, flattenedFlow, layoutMode, flowOrientation, selectedNodeId, onSelectNode, nodes, spacingH, spacingV, containerHPadding, containerVPaddingTop, hierarchyGap]);
 
