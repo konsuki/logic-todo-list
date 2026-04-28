@@ -4,11 +4,13 @@ import { Target, Zap, Share2, GitCommit, MoveRight, MoveDown, Settings2, X } fro
 import * as treeLogic from '../../../logic/treeLogic';
 import './TreeView.css';
 
-const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
+const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, expandedNodeIds, toggleExpand, t }) => {
   const svgRef = useRef(null);
   const containerRef = useRef(null);
   const [layoutMode, setLayoutMode] = useState('tree'); // 'tree' or 'flow'
   const [flowOrientation, setFlowOrientation] = useState('horizontal'); // 'horizontal' or 'vertical'
+  const [editingNodeId, setEditingNodeId] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
   const prevLayoutRef = useRef(layoutMode);
   const prevOrientationRef = useRef(flowOrientation);
   
@@ -258,12 +260,46 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
       .attr('height', 35)
       .attr('class', 'node-title-foreign-object');
 
-    titleContainer.append('xhtml:div')
-      .attr('class', 'node-title-scroll-container')
-      .attr('title', d => d.data.title)
-      .style('width', '100%')
-      .style('height', '100%')
-      .html(d => d.data.title);
+    titleContainer.each(function(d) {
+      const container = d3.select(this);
+      const isEditing = d.data.id === editingNodeId;
+
+      if (isEditing) {
+        const input = container.append('xhtml:input')
+          .attr('class', 'node-edit-input')
+          .attr('value', editTitle)
+          .style('width', '100%')
+          .style('height', '100%')
+          .on('keydown', (event) => {
+            if (event.key === 'Enter') {
+              updateNode(d.data.id, { title: event.target.value });
+              setEditingNodeId(null);
+            } else if (event.key === 'Escape') {
+              setEditingNodeId(null);
+            }
+          })
+          .on('blur', (event) => {
+            updateNode(d.data.id, { title: event.target.value });
+            setEditingNodeId(null);
+          })
+          .on('click', (event) => event.stopPropagation());
+        
+        // Auto-focus the input
+        setTimeout(() => input.node()?.focus(), 10);
+      } else {
+        container.append('xhtml:div')
+          .attr('class', 'node-title-scroll-container')
+          .attr('title', d.data.title)
+          .style('width', '100%')
+          .style('height', '100%')
+          .on('dblclick', (event) => {
+            event.stopPropagation();
+            setEditingNodeId(d.data.id);
+            setEditTitle(d.data.title);
+          })
+          .html(d.data.title);
+      }
+    });
 
     // Persist or initialize transform
     const currentTransform = d3.zoomTransform(svgRef.current);
@@ -284,7 +320,7 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
       svg.call(zoom.transform, currentTransform);
     }
 
-  }, [hierarchyData, flattenedFlow, layoutMode, flowOrientation, selectedNodeId, onSelectNode, nodes, spacingH, spacingV, containerHPadding, containerVPaddingTop, hierarchyGap]);
+  }, [hierarchyData, flattenedFlow, layoutMode, flowOrientation, selectedNodeId, onSelectNode, nodes, spacingH, spacingV, containerHPadding, containerVPaddingTop, hierarchyGap, editingNodeId, editTitle, updateNode]);
 
   if (rootNodes.length === 0) return null;
 

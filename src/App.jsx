@@ -167,6 +167,7 @@ function App() {
           <TreeView 
             nodes={nodes}
             rootNodes={rootNodes}
+            updateNode={updateNode}
             selectedNodeId={selectedNodeId}
             onSelectNode={handleSelectNode}
             expandedNodeIds={expandedNodeIds}
