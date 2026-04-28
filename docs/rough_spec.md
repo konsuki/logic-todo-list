@@ -27,6 +27,10 @@
 - **詳細仕様**: [i18n_spec.md](./i18n_spec.md)
 - **概要**: 日本語・英語の切り替え機能。LocalStorageによる設定保持。
 
+### 2.6 AIロジック支援 (AI Logic Assistant)
+- **詳細仕様**: [ai_feature_spec.md](./ai_feature_spec.md)
+- **概要**: DeepSeek API を用いた分解案の自動生成、ロジックチェック機能。
+
 ## 3. UI/UX デザイン方針
 - **詳細仕様**: [ui_ux_design_spec.md](./ui_ux_design_spec.md)
 - **Aesthetics**: モダンなダークモード。HSLを用いた洗練されたカラーパレット。
@@ -45,9 +49,11 @@
 - [view_switching_spec.md](./view_switching_spec.md) - ③ 2つのビュー切り替え
 - [inspector_spec.md](./inspector_spec.md) - ④ Why/How インスペクター
 - [i18n_spec.md](./i18n_spec.md) - 多言語対応 (i18n)
+- [ai_feature_spec.md](./ai_feature_spec.md) - AIロジック支援機能
 - [ui_ux_design_spec.md](./ui_ux_design_spec.md) - デザイン・ユーザー体験
 - [architecture.md](./architecture.md) - 開発・ディレクトリ構造ルール
 - [git_workflow.md](./git_workflow.md) - Git 運用ガイドライン
+- [test_checklist.md](./test_checklist.md) - 品質確認チェックリスト
 
 ## 6. ロードマップ
 1. **MVP**: 基本的なツリー構造の入力とリスト表示、LocalStorage保存。

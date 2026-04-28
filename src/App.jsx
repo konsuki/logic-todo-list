@@ -114,10 +114,12 @@ function App() {
         <Inspector 
           selectedNodeId={selectedNodeId}
           nodes={nodes}
+          addNode={addNode}
           onSelectNode={handleSelectNode}
           updateNode={updateNode}
           onDeleteNode={deleteNode}
           t={t}
+          lang={lang}
         />
       </aside>
     </div>

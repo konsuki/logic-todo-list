@@ -1,8 +1,18 @@
 import React from 'react';
 import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle } from 'lucide-react';
+import AIInsights from './AIInsights';
 import './Inspector.css';
 
-const Inspector = ({ selectedNodeId, nodes, onSelectNode, updateNode, onDeleteNode, t }) => {
+const Inspector = ({ 
+  selectedNodeId, 
+  nodes, 
+  addNode, 
+  onSelectNode, 
+  updateNode, 
+  onDeleteNode, 
+  t, 
+  lang 
+}) => {
   const node = nodes[selectedNodeId];
 
   if (!node) {
@@ -65,6 +75,15 @@ const Inspector = ({ selectedNodeId, nodes, onSelectNode, updateNode, onDeleteNo
           <span className="progress-value">{node.progress}%</span>
         </div>
       </header>
+
+      {/* AI Assistance Section */}
+      <AIInsights 
+        node={node} 
+        nodes={nodes} 
+        addNode={addNode} 
+        lang={lang} 
+        t={t} 
+      />
 
       {showMeceWarning && (
         <div className="inspector-warning-card">

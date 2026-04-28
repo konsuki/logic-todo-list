@@ -39,6 +39,13 @@ export const translations = {
       hint: 'ドラッグで移動 / スクロールでズーム',
       empty: 'プロジェクトが見つかりません',
       switch_to_list: 'リスト表示に切り替えて最初の目標を作成してください。',
+    },
+    ai: {
+      request_breakdown: 'AIに分解案を聞く',
+      request_audit: 'ロジックチェック',
+      thinking: 'AI思考中...',
+      suggestions_title: 'AIからの提案',
+      add_to_tree: 'ツリーに追加',
     }
   },
   en: {
@@ -81,6 +88,13 @@ export const translations = {
       hint: 'Drag to Pan / Scroll to Zoom',
       empty: 'No Projects Found',
       switch_to_list: 'Switch to List View to create your first goal.',
+    },
+    ai: {
+      request_breakdown: 'AI Breakdown',
+      request_audit: 'Logic Audit',
+      thinking: 'AI Thinking...',
+      suggestions_title: 'AI Suggestions',
+      add_to_tree: 'Add to Tree',
     }
   }
 };
