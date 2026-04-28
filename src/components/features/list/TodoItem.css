@@ -13,6 +13,36 @@
   transition: background-color var(--transition-speed);
 }
 
+.todo-item-container.is-locked .todo-item-row {
+  opacity: 0.6;
+  filter: grayscale(0.5);
+}
+
+.status-toggle.disabled {
+  cursor: not-allowed;
+}
+
+.icon-locked {
+  color: var(--text-muted);
+}
+
+.lock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+}
+
+.todo-item-row.is-done {
+  background-color: hsla(220, 100%, 100%, 0.03);
+}
+
 .todo-item-row:hover {
   background-color: hsla(220, 100%, 100%, 0.03);
 }

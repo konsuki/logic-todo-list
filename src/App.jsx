@@ -9,7 +9,16 @@ import Inspector from './components/features/inspector/Inspector';
 import './App.css';
 
 function App() {
-  const { nodes, rootNodes, addNode, deleteNode, toggleStatus, updateNode } = useTodoTree();
+  const { 
+    nodes, 
+    rootNodes, 
+    addNode, 
+    deleteNode, 
+    toggleStatus, 
+    updateNode, 
+    addDependency, 
+    removeDependency 
+  } = useTodoTree();
   const { t, lang, setLang } = useI18n();
   const [view, setView] = useState('list');
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
@@ -118,6 +127,8 @@ function App() {
           onSelectNode={handleSelectNode}
           updateNode={updateNode}
           onDeleteNode={deleteNode}
+          addDependency={addDependency}
+          removeDependency={removeDependency}
           t={t}
           lang={lang}
         />

@@ -34,15 +34,51 @@ export const useTodoTree = () => {
       const node = prev[nodeId];
       if (!node) return prev;
       
-      const newNodes = {
+      return {
         ...prev,
         [nodeId]: { ...node, ...updates, updatedAt: Date.now() }
       };
+    });
+  }, []);
+
+  const handleAddDependency = useCallback((nodeId, predecessorId) => {
+    setNodes(prev => {
+      const node = prev[nodeId];
+      if (!node || !prev[predecessorId]) return prev;
       
-      // If title or description changed, no need to recalculate progress
-      // but if status or other logic-heavy fields changed, we might.
-      // For now, simple update.
-      return newNodes;
+      // Check for circular dependency
+      if (treeLogic.checkCircularDependency(prev, nodeId, predecessorId)) {
+        alert('Circular dependency detected!');
+        return prev;
+      }
+      
+      const currentDeps = node.dependsOn || [];
+      if (currentDeps.includes(predecessorId)) return prev;
+      
+      return {
+        ...prev,
+        [nodeId]: {
+          ...node,
+          dependsOn: [...currentDeps, predecessorId],
+          updatedAt: Date.now()
+        }
+      };
+    });
+  }, []);
+
+  const handleRemoveDependency = useCallback((nodeId, predecessorId) => {
+    setNodes(prev => {
+      const node = prev[nodeId];
+      if (!node || !node.dependsOn) return prev;
+      
+      return {
+        ...prev,
+        [nodeId]: {
+          ...node,
+          dependsOn: node.dependsOn.filter(id => id !== predecessorId),
+          updatedAt: Date.now()
+        }
+      };
     });
   }, []);
 
@@ -57,6 +93,9 @@ export const useTodoTree = () => {
     addNode: handleAddNode,
     deleteNode: handleDeleteNode,
     toggleStatus: handleToggleStatus,
-    updateNode: handleUpdateNode
+    updateNode: handleUpdateNode,
+    addDependency: handleAddDependency,
+    removeDependency: handleRemoveDependency,
+    isNodeLocked: (nodeId) => treeLogic.isNodeLocked(nodes, nodeId)
   };
 };

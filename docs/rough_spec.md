@@ -50,6 +50,7 @@
 - [inspector_spec.md](./inspector_spec.md) - ④ Why/How インスペクター
 - [i18n_spec.md](./i18n_spec.md) - 多言語対応 (i18n)
 - [ai_feature_spec.md](./ai_feature_spec.md) - AIロジック支援機能
+- [dependency_spec.md](./dependency_spec.md) - 依存関係管理機能
 - [ui_ux_design_spec.md](./ui_ux_design_spec.md) - デザイン・ユーザー体験
 - [architecture.md](./architecture.md) - 開発・ディレクトリ構造ルール
 - [git_workflow.md](./git_workflow.md) - Git 運用ガイドライン

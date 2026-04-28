@@ -6,6 +6,7 @@ export const translations = {
       cancel: 'キャンセル',
       confirm_delete: 'このタスクとすべてのサブタスクを削除してもよろしいですか？',
       loading: '読み込み中...',
+      wait_for_predecessor: '先行タスクの完了を待っています',
     },
     header: {
       tree_view: 'ツリー表示',
@@ -34,6 +35,9 @@ export const translations = {
       achieve_context: '「[parent]」を達成するために、このタスクを完了する必要があります。',
       no_subtasks: 'サブタスクが未定義です。',
       breakdown_hint: 'より小さく、実行可能なステップに分解しましょう。',
+      predecessors: '先行タスク (依存関係)',
+      no_predecessors: '依存しているタスクはありません。',
+      search_to_link: 'タスクを検索してリンク...',
     },
     tree: {
       hint: 'ドラッグで移動 / スクロールでズーム',
@@ -55,6 +59,7 @@ export const translations = {
       cancel: 'Cancel',
       confirm_delete: 'Are you sure you want to delete this task and all its sub-tasks?',
       loading: 'Loading...',
+      wait_for_predecessor: 'Waiting for predecessor to complete',
     },
     header: {
       tree_view: 'Tree View',
@@ -83,6 +88,9 @@ export const translations = {
       achieve_context: 'To achieve "[parent]", you need to complete this task.',
       no_subtasks: 'No sub-tasks defined yet.',
       breakdown_hint: 'Break this down into smaller, actionable steps.',
+      predecessors: 'Predecessors (Dependencies)',
+      no_predecessors: 'No dependencies defined.',
+      search_to_link: 'Search tasks to link...',
     },
     tree: {
       hint: 'Drag to Pan / Scroll to Zoom',

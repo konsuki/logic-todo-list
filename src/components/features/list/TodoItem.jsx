@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle } from 'lucide-react';
+import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock } from 'lucide-react';
+import * as treeLogic from '../../../logic/treeLogic';
 import './TodoItem.css';
 
 const TodoItem = ({ 
@@ -23,6 +24,12 @@ const TodoItem = ({
   const isDone = node.status === 'DONE';
   const isSelected = selectedNodeId === node.id;
   
+  // Dependency logic
+  const isLocked = treeLogic.isNodeLocked(allNodes, node.id);
+  const unsatisfiedDeps = (node.dependsOn || [])
+    .map(id => allNodes[id])
+    .filter(n => n && n.status !== 'DONE');
+
   const showMeceWarning = node.type === 'STRATEGY' && childrenCount === 1;
 
   const handleTitleSubmit = (e) => {
@@ -40,7 +47,7 @@ const TodoItem = ({
   };
 
   return (
-    <div className={`todo-item-container depth-${depth} ${isSelected ? 'is-selected' : ''}`}>
+    <div className={`todo-item-container depth-${depth} ${isSelected ? 'is-selected' : ''} ${isLocked ? 'is-locked' : ''}`}>
       <div 
         className={`todo-item-row ${isDone ? 'is-done' : ''}`}
         onClick={handleRowClick}
@@ -59,13 +66,20 @@ const TodoItem = ({
           </button>
 
           <button 
-            className="status-toggle" 
+            className={`status-toggle ${isLocked ? 'disabled' : ''}`} 
             onClick={(e) => {
               e.stopPropagation();
-              onToggle(node.id);
+              if (!isLocked) onToggle(node.id);
             }}
+            title={isLocked ? t('common.wait_for_predecessor') : ''}
           >
-            {isDone ? <CheckCircle size={18} className="icon-success" /> : <Circle size={18} />}
+            {isLocked ? (
+              <Lock size={18} className="icon-locked" />
+            ) : isDone ? (
+              <CheckCircle size={18} className="icon-success" />
+            ) : (
+              <Circle size={18} />
+            )}
           </button>
 
           <div className="node-info">
@@ -89,6 +103,12 @@ const TodoItem = ({
             {showMeceWarning && (
               <div className="mece-warning-icon" title={t('inspector.logic_gap_desc')}>
                 <AlertTriangle size={14} color="var(--warning-color)" />
+              </div>
+            )}
+
+            {isLocked && (
+              <div className="lock-badge" title={unsatisfiedDeps.map(d => d.title).join(', ')}>
+                <Lock size={10} /> {unsatisfiedDeps.length}
               </div>
             )}
 

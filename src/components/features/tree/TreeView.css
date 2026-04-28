@@ -19,7 +19,15 @@
   fill: none;
   stroke: var(--border-color);
   stroke-width: 1.5px;
-  transition: stroke 0.3s;
+  transition: stroke var(--transition-speed);
+}
+
+.dependency-link {
+  fill: none;
+  stroke: var(--warning-color);
+  stroke-width: 1.5px;
+  stroke-dasharray: 4, 4;
+  opacity: 0.6;
 }
 
 .tree-node {

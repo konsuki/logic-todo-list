@@ -50,8 +50,6 @@ export const updateProgressRecursively = (nodes, nodeId) => {
 
     const newProgress = calculateNodeProgress(newNodes, currentId);
     
-    // If progress hasn't changed, we might still need to update status
-    // but if it's the same, we can potentially break early if no status change needed.
     newNodes[currentId] = { 
       ...node, 
       progress: newProgress,
@@ -63,6 +61,45 @@ export const updateProgressRecursively = (nodes, nodeId) => {
   }
 
   return newNodes;
+};
+
+/**
+ * Checks if a node is locked due to unsatisfied dependencies.
+ */
+export const isNodeLocked = (nodes, nodeId) => {
+  const node = nodes[nodeId];
+  if (!node || !node.dependsOn || node.dependsOn.length === 0) return false;
+
+  // If any dependency is NOT DONE, the node is locked
+  return node.dependsOn.some(depId => {
+    const depNode = nodes[depId];
+    return !depNode || depNode.status !== NODE_STATUS.DONE;
+  });
+};
+
+/**
+ * Checks for circular dependencies.
+ */
+export const checkCircularDependency = (nodes, nodeId, dependencyId) => {
+  if (nodeId === dependencyId) return true;
+  
+  const visited = new Set();
+  const queue = [dependencyId];
+  
+  while (queue.length > 0) {
+    const currentId = queue.shift();
+    if (currentId === nodeId) return true;
+    
+    if (!visited.has(currentId)) {
+      visited.add(currentId);
+      const currentNode = nodes[currentId];
+      if (currentNode && currentNode.dependsOn) {
+        queue.push(...currentNode.dependsOn);
+      }
+    }
+  }
+  
+  return false;
 };
 
 /**
@@ -79,6 +116,7 @@ export const addNode = (nodes, parentId, type, title = 'New Task') => {
     status: NODE_STATUS.TODO,
     progress: 0,
     children: [],
+    dependsOn: [], // New dependency field
     metadata: {
       createdAt: Date.now(),
       updatedAt: Date.now()
@@ -91,7 +129,6 @@ export const addNode = (nodes, parentId, type, title = 'New Task') => {
     newNodes[parentId] = {
       ...newNodes[parentId],
       children: [...newNodes[parentId].children, id],
-      // If adding a child to an ACTION, promote parent to STRATEGY
       type: newNodes[parentId].type === NODE_TYPES.ACTION ? NODE_TYPES.STRATEGY : newNodes[parentId].type
     };
   }
@@ -101,15 +138,15 @@ export const addNode = (nodes, parentId, type, title = 'New Task') => {
 
 /**
  * Deletes a node and all its descendants.
+ * Also cleans up dependencies pointing to deleted nodes.
  */
 export const deleteNode = (nodes, nodeId) => {
-  const newNodes = { ...nodes };
+  let newNodes = { ...nodes };
   const nodeToDelete = newNodes[nodeId];
   if (!nodeToDelete) return nodes;
 
   const parentId = nodeToDelete.parentId;
 
-  // Recursive helper to get all descendant IDs
   const getDescendants = (id) => {
     let ids = [id];
     const node = newNodes[id];
@@ -121,8 +158,19 @@ export const deleteNode = (nodes, nodeId) => {
     return ids;
   };
 
-  const allIdsToDelete = getDescendants(nodeId);
-  allIdsToDelete.forEach(id => delete newNodes[id]);
+  const allIdsToDelete = new Set(getDescendants(nodeId));
+  
+  // 1. Delete nodes
+  Object.keys(newNodes).forEach(id => {
+    if (allIdsToDelete.has(id)) {
+      delete newNodes[id];
+    } else {
+      // 2. Clean up dependencies
+      if (newNodes[id].dependsOn) {
+        newNodes[id].dependsOn = newNodes[id].dependsOn.filter(depId => !allIdsToDelete.has(depId));
+      }
+    }
+  });
 
   if (parentId && newNodes[parentId]) {
     newNodes[parentId] = {
@@ -137,17 +185,22 @@ export const deleteNode = (nodes, nodeId) => {
 
 /**
  * Toggles a node's status (TODO <-> DONE).
+ * Prevents setting to DONE if locked.
  */
 export const toggleNodeStatus = (nodes, nodeId) => {
   const node = nodes[nodeId];
   if (!node) return nodes;
 
-  const newStatus = node.status === NODE_STATUS.DONE ? NODE_STATUS.TODO : NODE_STATUS.DONE;
+  const isCurrentDone = node.status === NODE_STATUS.DONE;
   
+  // If trying to mark as DONE but locked, do nothing
+  if (!isCurrentDone && isNodeLocked(nodes, nodeId)) {
+    return nodes;
+  }
+
+  const newStatus = isCurrentDone ? NODE_STATUS.TODO : NODE_STATUS.DONE;
   let newNodes = { ...nodes };
 
-  // If setting to DONE, set all descendants to DONE
-  // If setting to TODO, set all descendants to TODO
   const setStatusRecursively = (id, status) => {
     const n = newNodes[id];
     if (!n) return;
@@ -164,7 +217,5 @@ export const toggleNodeStatus = (nodes, nodeId) => {
   };
 
   setStatusRecursively(nodeId, newStatus);
-
-  // Then update ancestors up to the root
   return updateProgressRecursively(newNodes, node.parentId);
 };

@@ -30,6 +30,21 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
+    // Define Arrow Marker
+    svg.append('defs').append('marker')
+      .attr('id', 'arrowhead')
+      .attr('viewBox', '-0 -5 10 10')
+      .attr('refX', 20)
+      .attr('refY', 0)
+      .attr('orient', 'auto')
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('xoverflow', 'visible')
+      .append('svg:path')
+      .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+      .attr('fill', 'var(--warning-color)')
+      .style('stroke', 'none');
+
     const g = svg.append('g');
 
     const zoom = d3.zoom()
@@ -40,11 +55,12 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
 
     svg.call(zoom);
 
-    const treeLayout = d3.tree().nodeSize([100, 240]);
+    const treeLayout = d3.tree().nodeSize([120, 280]); // Adjusted spacing
     const root = d3.hierarchy(hierarchyData);
     treeLayout(root);
 
-    g.selectAll('.link')
+    // 1. Regular Hierarchy Links
+    g.selectAll('.tree-link')
       .data(root.links())
       .enter()
       .append('path')
@@ -54,7 +70,40 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
         .y(d => d.x)
       );
 
-    const nodeGroups = g.selectAll('.node')
+    // 2. Dependency Links (The "Vines")
+    const nodesById = new Map(root.descendants().map(d => [d.data.id, d]));
+    const dependencyLinks = [];
+    
+    root.descendants().forEach(targetNode => {
+      if (targetNode.data.dependsOn) {
+        targetNode.data.dependsOn.forEach(sourceId => {
+          const sourceNode = nodesById.get(sourceId);
+          if (sourceNode) {
+            dependencyLinks.push({ source: sourceNode, target: targetNode });
+          }
+        });
+      }
+    });
+
+    g.selectAll('.dependency-link')
+      .data(dependencyLinks)
+      .enter()
+      .append('path')
+      .attr('class', 'dependency-link')
+      .attr('d', d => {
+        const startX = d.source.y + 190; // End of rect
+        const startY = d.source.x;
+        const endX = d.target.y - 10; // Start of rect
+        const endY = d.target.x;
+        
+        // Custom curved path for dependency
+        const midX = (startX + endX) / 2;
+        return `M${startX},${startY} C${midX},${startY} ${midX},${endY} ${endX},${endY}`;
+      })
+      .attr('marker-end', 'url(#arrowhead)');
+
+    // 3. Nodes
+    const nodeGroups = g.selectAll('.tree-node')
       .data(root.descendants())
       .enter()
       .append('g')
