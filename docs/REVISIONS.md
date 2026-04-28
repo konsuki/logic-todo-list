@@ -1,8 +1,8 @@
 # LogiDo 修正・機能追加リクエスト (REVISIONS)
 
 ## 📋 タスク・履歴 (Reverse Chronological)
-- [ ] 04-28: 表示切替ショートカットの実装 (V: View切替, I: Inspector開閉) (@shortcuts_spec.md)
-- [ ] 04-28: 基本ショートカットの実装 (Arrows: 移動, Enter: 追加, Del: 削除, Space: 完了切替) (@shortcuts_spec.md)
+- [x] 04-28: 表示切替ショートカットの実装 (V: View切替, I: Inspector開閉) (@shortcuts_spec.md)
+- [x] 04-28: 基本ショートカットの実装 (Arrows: 移動, Enter: 追加, Del: 削除, Space: 完了切替) (@shortcuts_spec.md)
 - [x] 04-28: Flowモード時のノードクリックによる表示リセットバグを修正
 - [x] 04-28: AIタイトル簡潔化・詳細分離 (@ai_feature_spec.md)
 - [x] 04-28: フロー表示の視覚的階層化（包含型モデル） (@flow_hierarchy_spec.md)

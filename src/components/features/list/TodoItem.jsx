@@ -12,11 +12,13 @@ const TodoItem = ({
   onUpdate, 
   selectedNodeId,
   onSelectNode,
+  expandedNodeIds,
+  toggleExpand,
   depth = 0,
   t,
   visibleNodeIds = null
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const isExpanded = expandedNodeIds.has(node.id);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(node.title);
 
@@ -88,7 +90,7 @@ const TodoItem = ({
             className={`expand-btn ${displayedChildren.length === 0 ? 'invisible' : ''}`}
             onClick={(e) => {
               e.stopPropagation();
-              setIsExpanded(!isExpanded);
+              toggleExpand(node.id);
             }}
           >
             {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
@@ -216,6 +218,8 @@ const TodoItem = ({
               onUpdate={onUpdate}
               selectedNodeId={selectedNodeId}
               onSelectNode={onSelectNode}
+              expandedNodeIds={expandedNodeIds}
+              toggleExpand={toggleExpand}
               depth={depth + 1}
               t={t}
               visibleNodeIds={visibleNodeIds}

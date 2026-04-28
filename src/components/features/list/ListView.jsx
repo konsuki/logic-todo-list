@@ -13,6 +13,8 @@ const ListView = ({
   updateNode,
   selectedNodeId,
   onSelectNode,
+  expandedNodeIds,
+  toggleExpand,
   t
 }) => {
   const [phaseFilter, setPhaseFilter] = useState('ALL');
@@ -130,6 +132,8 @@ const ListView = ({
               onUpdate={updateNode}
               selectedNodeId={selectedNodeId}
               onSelectNode={onSelectNode}
+              expandedNodeIds={expandedNodeIds}
+              toggleExpand={toggleExpand}
               depth={0}
               t={t}
               visibleNodeIds={visibleNodeIds} // Pass down visibility info

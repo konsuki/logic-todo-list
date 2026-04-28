@@ -3,6 +3,7 @@ import { LayoutGrid, List, Info, Zap, Globe } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useTodoTree } from './hooks/useTodoTree';
 import { useI18n } from './hooks/useI18n';
+import { useShortcuts } from './hooks/useShortcuts';
 import ListView from './components/features/list/ListView';
 import TreeView from './components/features/tree/TreeView';
 import Inspector from './components/features/inspector/Inspector';
@@ -26,6 +27,39 @@ function App() {
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [completedGoals, setCompletedGoals] = useState(new Set());
+  const [expandedNodeIds, setExpandedNodeIds] = useState(new Set());
+
+  // Auto-expand new nodes or roots
+  useEffect(() => {
+    if (Object.keys(nodes).length > 0 && expandedNodeIds.size === 0) {
+      setExpandedNodeIds(new Set(Object.keys(nodes)));
+    }
+  }, [nodes]);
+
+  const toggleExpand = (nodeId) => {
+    setExpandedNodeIds(prev => {
+      const next = new Set(prev);
+      if (next.has(nodeId)) next.delete(nodeId);
+      else next.add(nodeId);
+      return next;
+    });
+  };
+
+  useShortcuts({
+    nodes,
+    rootNodes,
+    selectedNodeId,
+    setSelectedNodeId,
+    expandedNodeIds,
+    addNode,
+    deleteNode,
+    toggleStatus,
+    view,
+    setView,
+    isInspectorOpen,
+    setIsInspectorOpen,
+    t
+  });
 
   // Celebration Logic
   useEffect(() => {
@@ -108,6 +142,8 @@ function App() {
             updateNode={updateNode}
             selectedNodeId={selectedNodeId}
             onSelectNode={handleSelectNode}
+            expandedNodeIds={expandedNodeIds}
+            toggleExpand={toggleExpand}
             t={t}
           />
         ) : (
@@ -116,6 +152,8 @@ function App() {
             rootNodes={rootNodes}
             selectedNodeId={selectedNodeId}
             onSelectNode={handleSelectNode}
+            expandedNodeIds={expandedNodeIds}
+            toggleExpand={toggleExpand}
             t={t}
           />
         )}

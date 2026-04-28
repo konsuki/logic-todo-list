@@ -341,3 +341,31 @@ export const getFlattenedFlow = (nodes, rootNodes) => {
 
   return result;
 };
+
+/**
+ * Returns a flattened list of nodes that are currently visible (not hidden by collapsed parents).
+ * Used for keyboard navigation.
+ */
+export const getVisibleNodesList = (nodes, rootNodes, expandedNodeIds) => {
+  const result = [];
+  
+  const traverse = (nodeId) => {
+    const node = nodes[nodeId];
+    if (!node) return;
+    
+    result.push(node);
+    
+    // Only traverse children if this node is expanded
+    if (expandedNodeIds.has(nodeId) && node.children && node.children.length > 0) {
+      const sortedChildren = [...node.children].sort((a, b) => {
+        return (nodes[a]?.order || 0) - (nodes[b]?.order || 0);
+      });
+      sortedChildren.forEach(childId => traverse(childId));
+    }
+  };
+
+  const sortedRoots = [...rootNodes].sort((a, b) => (a.order || 0) - (b.order || 0));
+  sortedRoots.forEach(root => traverse(root.id));
+
+  return result;
+};
