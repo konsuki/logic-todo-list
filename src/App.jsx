@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LayoutGrid, List, Info, Zap, Globe } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTodoTree } from './hooks/useTodoTree';
 import { useI18n } from './hooks/useI18n';
 import { useShortcuts } from './hooks/useShortcuts';
@@ -101,15 +102,31 @@ function App() {
             className={`view-btn ${view === 'tree' ? 'active' : ''}`}
             onClick={() => setView('tree')}
           >
-            <LayoutGrid size={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
-            {t('header.tree_view')}
+            {view === 'tree' && (
+              <motion.div 
+                layoutId="activeView"
+                className="active-bg"
+                transition={{ type: "spring", stiffness: 400, damping: 30, mass: 1.2 }}
+                style={{ position: 'absolute', inset: 0 }}
+              />
+            )}
+            <LayoutGrid size={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom', position: 'relative', zIndex: 2 }} />
+            <span style={{ position: 'relative', zIndex: 2 }}>{t('header.tree_view')}</span>
           </button>
           <button 
             className={`view-btn ${view === 'list' ? 'active' : ''}`}
             onClick={() => setView('list')}
           >
-            <List size={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
-            {t('header.list_view')}
+            {view === 'list' && (
+              <motion.div 
+                layoutId="activeView"
+                className="active-bg"
+                transition={{ type: "spring", stiffness: 400, damping: 30, mass: 1.2 }}
+                style={{ position: 'absolute', inset: 0 }}
+              />
+            )}
+            <List size={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom', position: 'relative', zIndex: 2 }} />
+            <span style={{ position: 'relative', zIndex: 2 }}>{t('header.list_view')}</span>
           </button>
         </div>
 
