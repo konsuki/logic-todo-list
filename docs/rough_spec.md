@@ -19,28 +19,35 @@
 - **Tree View**: SVGまたはCanvasを用いたグラフィカルなツリー表示。全体像の把握用。
 - **List View**: 階層構造を維持したインデント形式のリスト表示。日々の実行用。
 
-### 2.4 インテリジェント機能
-- **Why/How インスペクター**: 選択したタスクに対して、「なぜ必要なのか（親）」と「どう実現するか（子）」を強調表示。
-- **MECEチェック（補助）**: 重複や漏れがないかを意識させるUI。
+### 2.4 インテリジェント機能 (Why/How Inspector)
+- **詳細仕様**: [inspector_spec.md](./inspector_spec.md)
+- **概要**: 選択したタスクに対して、「なぜ必要なのか（親）」と「どう実現するか（子）」を強調表示。
+
+### 2.5 多言語対応 (Multi-language Support)
+- **詳細仕様**: [i18n_spec.md](./i18n_spec.md)
+- **概要**: 日本語・英語の切り替え機能。LocalStorageによる設定保持。
 
 ## 3. UI/UX デザイン方針
+- **詳細仕様**: [ui_ux_design_spec.md](./ui_ux_design_spec.md)
 - **Aesthetics**: モダンなダークモード。HSLを用いた洗練されたカラーパレット。
 - **Transitions**: ノードの展開・折りたたみ時のスムーズなアニメーション。
-- **Interactive**: ドラッグ＆ドロップによる構造の組み換え、キーボードショートカットによる高速なノード追加。
+- **Interactive**: ドラッグ＆ドロップによる構造の組み換え、ショートカットによる高速な操作。
 
 ## 4. 技術スタック（推奨）
 - **Core**: HTML5, CSS3 (Vanilla), JavaScript (ES6+)
 - **Storage**: Browser LocalStorage (初期段階)
 - **Icons**: Lucide Icons または Google Fonts
-- **Framework**: (必要に応じて) Vite + React / Vue.js
+- **Framework**: Vite + React / Vue.js (推奨)
 
 ## 5. 詳細仕様ファイル一覧
 - [tree_management_spec.md](./tree_management_spec.md) - ① ツリー型階層管理
 - [progress_sync_spec.md](./progress_sync_spec.md) - ② 進捗の自動同期
 - [view_switching_spec.md](./view_switching_spec.md) - ③ 2つのビュー切り替え
 - [inspector_spec.md](./inspector_spec.md) - ④ Why/How インスペクター
+- [i18n_spec.md](./i18n_spec.md) - 多言語対応 (i18n)
 - [ui_ux_design_spec.md](./ui_ux_design_spec.md) - デザイン・ユーザー体験
 - [architecture.md](./architecture.md) - 開発・ディレクトリ構造ルール
+- [git_workflow.md](./git_workflow.md) - Git 運用ガイドライン
 
 ## 6. ロードマップ
 1. **MVP**: 基本的なツリー構造の入力とリスト表示、LocalStorage保存。

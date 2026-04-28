@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutGrid, List, Info, Zap } from 'lucide-react';
+import { LayoutGrid, List, Info, Zap, Globe } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useTodoTree } from './hooks/useTodoTree';
+import { useI18n } from './hooks/useI18n';
 import ListView from './components/features/list/ListView';
 import TreeView from './components/features/tree/TreeView';
 import Inspector from './components/features/inspector/Inspector';
@@ -9,16 +10,16 @@ import './App.css';
 
 function App() {
   const { nodes, rootNodes, addNode, deleteNode, toggleStatus, updateNode } = useTodoTree();
+  const { t, lang, setLang } = useI18n();
   const [view, setView] = useState('list');
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [completedGoals, setCompletedGoals] = useState(new Set());
 
-  // Celebration Logic: Trigger confetti when a Goal reaches 100%
+  // Celebration Logic
   useEffect(() => {
     rootNodes.forEach(root => {
       if (root.progress === 100 && !completedGoals.has(root.id)) {
-        // Trigger Confetti
         confetti({
           particleCount: 150,
           spread: 70,
@@ -26,10 +27,8 @@ function App() {
           colors: ['#00E5FF', '#00FFAD', '#FFFFFF'],
           zIndex: 1000
         });
-        
         setCompletedGoals(prev => new Set([...prev, root.id]));
       } else if (root.progress < 100 && completedGoals.has(root.id)) {
-        // Remove from completed set if it goes back (e.g. child unchecked)
         setCompletedGoals(prev => {
           const next = new Set(prev);
           next.delete(root.id);
@@ -58,18 +57,26 @@ function App() {
             onClick={() => setView('tree')}
           >
             <LayoutGrid size={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
-            Tree View
+            {t('header.tree_view')}
           </button>
           <button 
             className={`view-btn ${view === 'list' ? 'active' : ''}`}
             onClick={() => setView('list')}
           >
             <List size={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
-            List View
+            {t('header.list_view')}
           </button>
         </div>
 
         <div className="header-actions">
+          <button 
+            className="lang-switcher"
+            onClick={() => setLang(lang === 'ja' ? 'en' : 'ja')}
+            title="Switch Language"
+          >
+            <Globe size={18} style={{ marginRight: '6px' }} />
+            <span className="lang-label">{lang.toUpperCase()}</span>
+          </button>
           <button 
             className="icon-btn"
             onClick={() => setIsInspectorOpen(!isInspectorOpen)}
@@ -90,6 +97,7 @@ function App() {
             updateNode={updateNode}
             selectedNodeId={selectedNodeId}
             onSelectNode={handleSelectNode}
+            t={t}
           />
         ) : (
           <TreeView 
@@ -97,6 +105,7 @@ function App() {
             rootNodes={rootNodes}
             selectedNodeId={selectedNodeId}
             onSelectNode={handleSelectNode}
+            t={t}
           />
         )}
       </main>
@@ -108,6 +117,7 @@ function App() {
           onSelectNode={handleSelectNode}
           updateNode={updateNode}
           onDeleteNode={deleteNode}
+          t={t}
         />
       </aside>
     </div>

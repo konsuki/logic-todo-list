@@ -1,0 +1,86 @@
+export const translations = {
+  ja: {
+    common: {
+      save: '保存',
+      delete: '削除',
+      cancel: 'キャンセル',
+      confirm_delete: 'このタスクとすべてのサブタスクを削除してもよろしいですか？',
+      loading: '読み込み中...',
+    },
+    header: {
+      tree_view: 'ツリー表示',
+      list_view: 'リスト表示',
+    },
+    list: {
+      title: 'プロジェクトと論理ツリー',
+      new_goal: '新規目標',
+      create_first_goal: '最初の目標を定義しましょう',
+      welcome: 'LogiDoへようこそ',
+      enter_goal: 'メイン目標を入力してください:',
+      enter_task: 'タスク名を入力してください:',
+      add_child: '子タスクを追加',
+    },
+    inspector: {
+      empty: 'タスクを選択して論理コンテキストを表示',
+      why: 'Why? (目的)',
+      how: 'How? (実行)',
+      description: '説明とメモ',
+      progress: '全体の進捗',
+      placeholder_desc: 'メモや詳細な要件を追加...',
+      root_goal: 'これは最上位の目標です。',
+      logic_gap_title: '論理のギャップ警告',
+      logic_gap_desc: 'このノードには子が1つしかありません。適切なロジックツリーの分解には、通常少なくとも2つの要素（MECE）が必要です。',
+      focus_objective: 'この究極の目的に集中しましょう。',
+      achieve_context: '「[parent]」を達成するために、このタスクを完了する必要があります。',
+      no_subtasks: 'サブタスクが未定義です。',
+      breakdown_hint: 'より小さく、実行可能なステップに分解しましょう。',
+    },
+    tree: {
+      hint: 'ドラッグで移動 / スクロールでズーム',
+      empty: 'プロジェクトが見つかりません',
+      switch_to_list: 'リスト表示に切り替えて最初の目標を作成してください。',
+    }
+  },
+  en: {
+    common: {
+      save: 'Save',
+      delete: 'Delete',
+      cancel: 'Cancel',
+      confirm_delete: 'Are you sure you want to delete this task and all its sub-tasks?',
+      loading: 'Loading...',
+    },
+    header: {
+      tree_view: 'Tree View',
+      list_view: 'List View',
+    },
+    list: {
+      title: 'Projects & Logic Trees',
+      new_goal: 'New Goal',
+      create_first_goal: 'Start by defining your main goal.',
+      welcome: 'Welcome to LogiDo',
+      enter_goal: 'Enter your main goal:',
+      enter_task: 'Enter task name:',
+      add_child: 'Add Child',
+    },
+    inspector: {
+      empty: 'Select a task to view its logic context',
+      why: 'Why? (Purpose)',
+      how: 'How? (Execution)',
+      description: 'Description & Notes',
+      progress: 'Overall Progress',
+      placeholder_desc: 'Add notes or detailed requirements...',
+      root_goal: 'This is a top-level goal.',
+      logic_gap_title: 'Logic Gap Warning',
+      logic_gap_desc: 'This node only has one child. A proper logic tree breakdown usually requires at least two mutually exclusive elements (MECE).',
+      focus_objective: 'Focus on this ultimate objective.',
+      achieve_context: 'To achieve "[parent]", you need to complete this task.',
+      no_subtasks: 'No sub-tasks defined yet.',
+      breakdown_hint: 'Break this down into smaller, actionable steps.',
+    },
+    tree: {
+      hint: 'Drag to Pan / Scroll to Zoom',
+      empty: 'No Projects Found',
+      switch_to_list: 'Switch to List View to create your first goal.',
+    }
+  }
+};

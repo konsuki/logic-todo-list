@@ -10,6 +10,35 @@
   background-color: var(--bg-color);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.lang-switcher:hover {
+  border-color: var(--primary-color);
+  color: var(--text-main);
+  background-color: hsla(220, 100%, 100%, 0.05);
+}
+
+.lang-label {
+  letter-spacing: 1px;
+}
+
 .app-header {
   grid-area: header;
   display: flex;

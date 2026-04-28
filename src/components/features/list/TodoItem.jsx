@@ -11,7 +11,8 @@ const TodoItem = ({
   onUpdate, 
   selectedNodeId,
   onSelectNode,
-  depth = 0 
+  depth = 0,
+  t
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -22,7 +23,6 @@ const TodoItem = ({
   const isDone = node.status === 'DONE';
   const isSelected = selectedNodeId === node.id;
   
-  // MECE Warning: If it's a Strategy and has only 1 child, it might be an incomplete breakdown
   const showMeceWarning = node.type === 'STRATEGY' && childrenCount === 1;
 
   const handleTitleSubmit = (e) => {
@@ -87,7 +87,7 @@ const TodoItem = ({
             )}
             
             {showMeceWarning && (
-              <div className="mece-warning-icon" title="Incomplete decomposition? (Only 1 child)">
+              <div className="mece-warning-icon" title={t('inspector.logic_gap_desc')}>
                 <AlertTriangle size={14} color="var(--warning-color)" />
               </div>
             )}
@@ -104,7 +104,7 @@ const TodoItem = ({
                 e.stopPropagation();
                 onAddChild(node.id);
               }} 
-              title="Add Child"
+              title={t('list.add_child')}
             >
               <Plus size={16} />
             </button>
@@ -112,9 +112,11 @@ const TodoItem = ({
               className="action-btn delete" 
               onClick={(e) => {
                 e.stopPropagation();
-                onDelete(node.id);
+                if (window.confirm(t('common.confirm_delete'))) {
+                  onDelete(node.id);
+                }
               }} 
-              title="Delete"
+              title={t('common.delete')}
             >
               <Trash2 size={16} />
             </button>
@@ -146,6 +148,7 @@ const TodoItem = ({
               selectedNodeId={selectedNodeId}
               onSelectNode={onSelectNode}
               depth={depth + 1}
+              t={t}
             />
           ))}
         </div>

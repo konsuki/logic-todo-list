@@ -12,22 +12,23 @@ const ListView = ({
   toggleStatus, 
   updateNode,
   selectedNodeId,
-  onSelectNode
+  onSelectNode,
+  t
 }) => {
   if (rootNodes.length === 0) {
     return (
       <div className="empty-state">
         <Target size={64} color="var(--border-color)" style={{ marginBottom: '16px' }} />
-        <h2>Welcome to LogiDo</h2>
-        <p>Start by defining your main goal.</p>
+        <h2>{t('list.welcome')}</h2>
+        <p>{t('list.create_first_goal')}</p>
         <button 
           className="primary-btn"
           onClick={() => {
-            const title = prompt('Enter your main goal:');
+            const title = prompt(t('list.enter_goal'));
             if (title) addNode(null, NODE_TYPES.GOAL, title);
           }}
         >
-          <Plus size={18} /> Create New Goal
+          <Plus size={18} /> {t('list.new_goal')}
         </button>
       </div>
     );
@@ -36,15 +37,15 @@ const ListView = ({
   return (
     <div className="list-view-container">
       <div className="list-view-header">
-        <h1>Projects & Logic Trees</h1>
+        <h1>{t('list.title')}</h1>
         <button 
           className="add-goal-btn"
           onClick={() => {
-            const title = prompt('Enter your main goal:');
+            const title = prompt(t('list.enter_goal'));
             if (title) addNode(null, NODE_TYPES.GOAL, title);
           }}
         >
-          <Plus size={16} /> New Goal
+          <Plus size={16} /> {t('list.new_goal')}
         </button>
       </div>
 
@@ -55,7 +56,7 @@ const ListView = ({
             node={root}
             allNodes={nodes}
             onAddChild={(parentId) => {
-              const title = prompt('Enter task name:');
+              const title = prompt(t('list.enter_task'));
               if (title) addNode(parentId, NODE_TYPES.ACTION, title);
             }}
             onDelete={deleteNode}
@@ -64,6 +65,7 @@ const ListView = ({
             selectedNodeId={selectedNodeId}
             onSelectNode={onSelectNode}
             depth={0}
+            t={t}
           />
         ))}
       </div>

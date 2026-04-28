@@ -2,19 +2,18 @@ import React from 'react';
 import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle } from 'lucide-react';
 import './Inspector.css';
 
-const Inspector = ({ selectedNodeId, nodes, onSelectNode, updateNode, onDeleteNode }) => {
+const Inspector = ({ selectedNodeId, nodes, onSelectNode, updateNode, onDeleteNode, t }) => {
   const node = nodes[selectedNodeId];
 
   if (!node) {
     return (
       <div className="inspector-empty">
         <Info size={48} color="var(--border-color)" />
-        <p>Select a task to view its logic context</p>
+        <p>{t('inspector.empty')}</p>
       </div>
     );
   }
 
-  // Get path to root (Why)
   const getPathToRoot = (id) => {
     const path = [];
     let currentId = nodes[id]?.parentId;
@@ -28,7 +27,6 @@ const Inspector = ({ selectedNodeId, nodes, onSelectNode, updateNode, onDeleteNo
   const pathToRoot = getPathToRoot(selectedNodeId);
   const children = node.children.map(id => nodes[id]).filter(Boolean);
   
-  // MECE Warning: If it's a Strategy/Goal and has only 1 child
   const showMeceWarning = (node.type === 'STRATEGY' || node.type === 'GOAL') && children.length === 1;
 
   const handleDescriptionChange = (e) => {
@@ -43,17 +41,18 @@ const Inspector = ({ selectedNodeId, nodes, onSelectNode, updateNode, onDeleteNo
           <button 
             className="delete-btn-subtle" 
             onClick={() => {
-              if (window.confirm('Are you sure you want to delete this task and all its sub-tasks?')) {
+              if (window.confirm(t('common.confirm_delete'))) {
                 onDeleteNode(node.id);
               }
             }}
+            title={t('common.delete')}
           >
             <Trash2 size={16} />
           </button>
         </div>
         <h2>{node.title}</h2>
         <div className="inspector-progress">
-          <div className="progress-label">Overall Progress</div>
+          <div className="progress-label">{t('inspector.progress')}</div>
           <div className="progress-bar-bg">
             <div 
               className="progress-bar-fill" 
@@ -71,21 +70,21 @@ const Inspector = ({ selectedNodeId, nodes, onSelectNode, updateNode, onDeleteNo
         <div className="inspector-warning-card">
           <AlertTriangle size={18} color="var(--warning-color)" />
           <div>
-            <h4>Logic Gap Warning</h4>
-            <p>This node only has one child. A proper logic tree breakdown usually requires at least two mutually exclusive elements (MECE).</p>
+            <h4>{t('inspector.logic_gap_title')}</h4>
+            <p>{t('inspector.logic_gap_desc')}</p>
           </div>
         </div>
       )}
 
       <section className="inspector-section">
         <h3 className="section-title">
-          <ChevronUp size={14} /> Why? (Purpose)
+          <ChevronUp size={14} /> {t('inspector.why')}
         </h3>
         <div className="why-path">
           {pathToRoot.length === 0 ? (
             <div className="path-item root">
               <Target size={14} />
-              <span>This is a top-level goal.</span>
+              <span>{t('inspector.root_goal')}</span>
             </div>
           ) : (
             pathToRoot.map((n, i) => (
@@ -105,17 +104,22 @@ const Inspector = ({ selectedNodeId, nodes, onSelectNode, updateNode, onDeleteNo
             <span className="path-title current">{node.title}</span>
           </div>
         </div>
+        <p className="logic-guide">
+          {pathToRoot.length > 0 
+            ? t('inspector.achieve_context', { parent: pathToRoot[pathToRoot.length - 1].title })
+            : t('inspector.focus_objective')}
+        </p>
       </section>
 
       <section className="inspector-section">
         <h3 className="section-title">
-          <ChevronDown size={14} /> How? (Execution)
+          <ChevronDown size={14} /> {t('inspector.how')}
         </h3>
         <div className="how-list">
           {children.length === 0 ? (
             <div className="empty-how">
-              <p>No sub-tasks defined yet.</p>
-              <p className="hint">Break this down into smaller, actionable steps.</p>
+              <p>{t('inspector.no_subtasks')}</p>
+              <p className="hint">{t('inspector.breakdown_hint')}</p>
             </div>
           ) : (
             children.map(child => (
@@ -134,10 +138,10 @@ const Inspector = ({ selectedNodeId, nodes, onSelectNode, updateNode, onDeleteNo
       </section>
 
       <section className="inspector-section">
-        <h3 className="section-title">Description & Notes</h3>
+        <h3 className="section-title">{t('inspector.description')}</h3>
         <textarea 
           className="description-area"
-          placeholder="Add notes or detailed requirements..."
+          placeholder={t('inspector.placeholder_desc')}
           defaultValue={node.description}
           onBlur={handleDescriptionChange}
         />
