@@ -70,3 +70,7 @@
 - **詳細仕様**: [flow_hierarchy_spec.md](./specs/flow_hierarchy_spec.md)
 - **日付**: 2026-04-28
 
+### [DONE] AI機能の修正
+- **内容**: AIに分解案をお願いした時に、タイトルを簡潔（15文字以内）にし、詳細は説明（description）に自動設定されるように修正。一括追加関数 `addNodes` を導入し、属性を一貫性のある状態で自動付与するようにした。
+- **詳細仕様**: [ai_feature_spec.md](./specs/ai_feature_spec.md)
+- **日付**: 2026-04-28

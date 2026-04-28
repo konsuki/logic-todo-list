@@ -13,6 +13,7 @@ function App() {
     nodes, 
     rootNodes, 
     addNode, 
+    addNodes,
     deleteNode, 
     toggleStatus, 
     updateNode, 
@@ -125,6 +126,7 @@ function App() {
           selectedNodeId={selectedNodeId}
           nodes={nodes}
           addNode={addNode}
+          addNodes={addNodes}
           onSelectNode={handleSelectNode}
           updateNode={updateNode}
           onDeleteNode={deleteNode}

@@ -7,6 +7,7 @@ const Inspector = ({
   selectedNodeId, 
   nodes, 
   addNode, 
+  addNodes,
   onSelectNode, 
   updateNode, 
   onDeleteNode,
@@ -103,6 +104,7 @@ const Inspector = ({
         node={node} 
         nodes={nodes} 
         addNode={addNode} 
+        addNodes={addNodes}
         lang={lang} 
         t={t} 
       />

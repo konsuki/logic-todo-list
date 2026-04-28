@@ -4,7 +4,7 @@ import { useAI } from '../../../hooks/useAI';
 import { NODE_TYPES } from '../../../logic/treeLogic';
 import './AIInsights.css';
 
-const AIInsights = ({ node, nodes, addNode, lang, t }) => {
+const AIInsights = ({ node, nodes, addNode, addNodes, lang, t }) => {
   const { getBreakdownSuggestions, getLogicAudit, isLoading, error } = useAI();
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestions, setSelectedSuggestions] = useState(new Set());
@@ -26,17 +26,20 @@ const AIInsights = ({ node, nodes, addNode, lang, t }) => {
 
   const handleAddSelected = () => {
     const nextType = node.type === NODE_TYPES.GOAL ? NODE_TYPES.STRATEGY : NODE_TYPES.ACTION;
-    selectedSuggestions.forEach(title => {
-      addNode(node.id, nextType, title);
-    });
+    const titles = Array.from(selectedSuggestions);
+    
+    if (titles.length > 0) {
+      addNodes(node.id, nextType, titles);
+    }
+    
     setSuggestions([]);
     setSelectedSuggestions(new Set());
   };
 
-  const toggleSuggestion = (title) => {
+  const toggleSuggestion = (suggestion) => {
     const next = new Set(selectedSuggestions);
-    if (next.has(title)) next.delete(title);
-    else next.add(title);
+    if (next.has(suggestion)) next.delete(suggestion);
+    else next.add(suggestion);
     setSelectedSuggestions(next);
   };
 
@@ -87,7 +90,10 @@ const AIInsights = ({ node, nodes, addNode, lang, t }) => {
               <div className="checkbox">
                 {selectedSuggestions.has(s) && <Check size={12} />}
               </div>
-              <span>{s}</span>
+              <div className="suggestion-content">
+                <div className="suggestion-title">{s.title}</div>
+                {s.description && <div className="suggestion-desc">{s.description}</div>}
+              </div>
             </div>
           ))}
           <button className="add-selected-btn" onClick={handleAddSelected}>

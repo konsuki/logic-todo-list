@@ -21,6 +21,10 @@ export const useTodoTree = () => {
     setNodes(prev => treeLogic.addNode(prev, parentId, type, title));
   }, []);
 
+  const handleAddNodes = useCallback((parentId, type, titles) => {
+    setNodes(prev => treeLogic.addNodes(prev, parentId, type, titles));
+  }, []);
+
   const handleDeleteNode = useCallback((nodeId) => {
     setNodes(prev => treeLogic.deleteNode(prev, nodeId));
   }, []);
@@ -95,6 +99,7 @@ export const useTodoTree = () => {
     nodes,
     rootNodes,
     addNode: handleAddNode,
+    addNodes: handleAddNodes,
     deleteNode: handleDeleteNode,
     toggleStatus: handleToggleStatus,
     updateNode: handleUpdateNode,

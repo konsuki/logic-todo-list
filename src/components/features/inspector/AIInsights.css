@@ -101,6 +101,23 @@
   transition: all 0.2s;
 }
 
+.suggestion-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.suggestion-title {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.suggestion-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 .suggestion-item:hover {
   background-color: hsla(220, 100%, 100%, 0.06);
 }

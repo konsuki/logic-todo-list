@@ -106,50 +106,69 @@ export const checkCircularDependency = (nodes, nodeId, dependencyId) => {
  * Creates a new node and attaches it to its parent.
  */
 export const addNode = (nodes, parentId, type, title = 'New Task') => {
-  const id = crypto.randomUUID();
+  return addNodes(nodes, parentId, type, [title]);
+};
+
+/**
+ * Creates multiple nodes and attaches them to their parent in sequence.
+ */
+export const addNodes = (nodes, parentId, type, titles) => {
+  if (!titles || titles.length === 0) return nodes;
+
+  let newNodes = { ...nodes };
   
-  // Calculate order based on siblings
-  let order = 0;
+  // Calculate starting order based on existing siblings
+  let nextOrder = 0;
   if (parentId && nodes[parentId]) {
     const siblingIds = nodes[parentId].children || [];
     const maxOrder = siblingIds.reduce((max, sid) => {
       return Math.max(max, nodes[sid]?.order || 0);
     }, -1);
-    order = maxOrder + 1;
+    nextOrder = maxOrder + 1;
   } else {
     // Root level order
     const rootIds = Object.values(nodes).filter(n => !n.parentId).map(n => n.id);
     const maxOrder = rootIds.reduce((max, rid) => {
       return Math.max(max, nodes[rid]?.order || 0);
     }, -1);
-    order = maxOrder + 1;
+    nextOrder = maxOrder + 1;
   }
 
-  const newNode = {
-    id,
-    parentId,
-    type,
-    title,
-    description: '',
-    status: NODE_STATUS.TODO,
-    progress: 0,
-    children: [],
-    dependsOn: [],
-    phase: 'PREP', // Default phase
-    dueDate: null, // Default due date
-    order,         // Execution order
-    metadata: {
-      createdAt: Date.now(),
-      updatedAt: Date.now()
-    }
-  };
+  const newChildIds = [];
 
-  const newNodes = { ...nodes, [id]: newNode };
+  titles.forEach(item => {
+    // Handle both simple strings and { title, description } objects
+    const title = typeof item === 'string' ? item : item.title;
+    const description = typeof item === 'object' ? (item.description || '') : '';
+    
+    const id = crypto.randomUUID();
+    const newNode = {
+      id,
+      parentId,
+      type,
+      title,
+      description,
+      status: NODE_STATUS.TODO,
+      progress: 0,
+      children: [],
+      dependsOn: [],
+      phase: 'PREP', // Default phase
+      dueDate: null, // Default due date
+      order: nextOrder++, // Assign sequential order
+      metadata: {
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      }
+    };
+    newNodes[id] = newNode;
+    newChildIds.push(id);
+  });
 
   if (parentId && newNodes[parentId]) {
     newNodes[parentId] = {
       ...newNodes[parentId],
-      children: [...newNodes[parentId].children, id],
+      children: [...(newNodes[parentId].children || []), ...newChildIds],
+      // If parent was ACTION, it becomes STRATEGY when children are added
       type: newNodes[parentId].type === NODE_TYPES.ACTION ? NODE_TYPES.STRATEGY : newNodes[parentId].type
     };
   }
