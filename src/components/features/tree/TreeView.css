@@ -29,8 +29,8 @@
 
 .flow-link {
   stroke: var(--primary-color) !important;
-  stroke-opacity: 0.6;
-  stroke-dasharray: 5, 5;
+  stroke-opacity: 0.2;
+  stroke-dasharray: 4, 4;
   animation: dashFlow 20s linear infinite;
 }
 
@@ -39,26 +39,40 @@
   to { stroke-dashoffset: 0; }
 }
 
-.tree-link.is-highlighted {
-  stroke: var(--primary-color) !important;
-  stroke-width: 3px !important;
-  stroke-opacity: 1 !important;
-}
-
-.flow-link.is-highlighted {
+.link-path.is-highlighted {
   stroke: var(--primary-color) !important;
   stroke-width: 4px !important;
   stroke-opacity: 1 !important;
-  stroke-dasharray: 5, 5 !important;
+  stroke-dasharray: 0 !important;
 }
 
-.dependency-link {
+/* Enclosure Container Styles */
+.parent-enclosure {
+  stroke: hsla(220, 100%, 100%, 0.08);
+  stroke-width: 1px;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+.enclosure-progress-border {
   fill: none;
-  stroke: var(--warning-color);
-  stroke-width: 1.5px;
-  stroke-dasharray: 4, 4;
+  stroke: var(--primary-color);
+  stroke-width: 3px;
+  stroke-opacity: 0.5;
+  stroke-linecap: round;
+  pointer-events: none;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 4px var(--primary-glow));
+}
+
+.enclosure-label {
+  font-size: 11px;
+  font-weight: 800;
+  fill: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  pointer-events: none;
   opacity: 0.4;
-  transition: all 0.3s ease;
 }
 
 .tree-node {
@@ -70,12 +84,12 @@
   fill: var(--surface-color);
   stroke: var(--border-color);
   stroke-width: 1px;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tree-node:hover .node-rect {
   stroke: var(--text-muted);
-  filter: brightness(1.2);
+  filter: brightness(1.1);
   transform: translateY(-2px);
 }
 
@@ -124,7 +138,7 @@
   pointer-events: none;
 }
 
-/* Control Panel Alignment & Refinement */
+/* Control Panels */
 .tree-controls {
   position: absolute;
   top: 24px;
@@ -132,16 +146,15 @@
   z-index: 20;
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Slightly tighter gap */
+  gap: 8px;
   pointer-events: none;
   align-items: flex-start;
 }
 
-/* Unified width for all top-level control elements */
 .control-group-glass,
 .control-hint,
 .orientation-controls-wrapper {
-  width: 260px; /* Fixed unified width */
+  width: 260px;
   box-sizing: border-box;
 }
 
@@ -167,13 +180,121 @@
 }
 
 .orientation-controls-wrapper.is-visible {
-  max-height: 60px;
+  max-height: 100px;
   opacity: 1;
   transform: translateX(0);
 }
 
+/* Floating Settings UI */
+.floating-settings-container {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.floating-settings-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.floating-settings-btn:hover {
+  background-color: hsla(220, 100%, 100%, 0.1);
+  color: var(--text-main);
+  transform: rotate(30deg);
+}
+
+.floating-settings-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  transform: rotate(90deg);
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.settings-floating-panel {
+  width: 280px;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.panel-header {
+  padding: 12px 16px;
+  background-color: hsla(220, 100%, 100%, 0.05);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.close-panel-btn {
+  margin-left: auto;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.close-panel-btn:hover {
+  background-color: hsla(0, 100%, 50%, 0.1);
+  color: #ff4d4d;
+}
+
+.settings-panel {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-item label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.setting-item input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary-color);
+  cursor: pointer;
+}
+
 .mode-btn {
-  flex: 1; /* Stretch buttons to fill the unified width */
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;

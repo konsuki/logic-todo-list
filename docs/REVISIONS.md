@@ -64,3 +64,8 @@
 - **内容**: control-group-glass の中身の2つ目のmode-btnの右側に空間ができてしまっている部分の修正。全コントロール要素の横幅を260pxに統一し、配置を最適化。
 - **詳細仕様**: [ui_alignment_fix_spec.md](./specs/ui_alignment_fix_spec.md)
 - **日付**: 2026-04-28
+
+### [DONE] フロー表示の視覚的階層化（包含型フレームとプログレス連動）
+- **内容**: 親ノードを独立した箱として並べず、子を包む「器（フレーム）」としてのみ描画する Pure Container モデルを実装。階層のネストと進捗の同期を視覚化した。
+- **詳細仕様**: [flow_hierarchy_spec.md](./specs/flow_hierarchy_spec.md)
+- **日付**: 2026-04-28

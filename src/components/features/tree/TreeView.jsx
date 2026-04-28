@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useMemo, useState } from 'react';
 import * as d3 from 'd3';
-import { Target, Zap, Share2, GitCommit, MoveRight, MoveDown } from 'lucide-react';
+import { Target, Zap, Share2, GitCommit, MoveRight, MoveDown, Settings2, X } from 'lucide-react';
 import * as treeLogic from '../../../logic/treeLogic';
 import './TreeView.css';
 
@@ -9,6 +9,14 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
   const containerRef = useRef(null);
   const [layoutMode, setLayoutMode] = useState('tree'); // 'tree' or 'flow'
   const [flowOrientation, setFlowOrientation] = useState('horizontal'); // 'horizontal' or 'vertical'
+  
+  // Confirmed Default Values from User
+  const [spacingH, setSpacingH] = useState(400);
+  const [spacingV, setSpacingV] = useState(140);
+  const [containerHPadding, setContainerHPadding] = useState(65);
+  const [containerVPaddingTop, setContainerVPaddingTop] = useState(80);
+  const [hierarchyGap, setHierarchyGap] = useState(15);
+  const [showSettings, setShowSettings] = useState(false);
 
   const hierarchyData = useMemo(() => {
     if (rootNodes.length === 0) return null;
@@ -38,24 +46,7 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    // Define Defs
-    const defs = svg.append('defs');
-    
-    // Arrow Marker
-    defs.append('marker')
-      .attr('id', 'arrowhead')
-      .attr('viewBox', '-0 -5 10 10')
-      .attr('refX', 10)
-      .attr('refY', 0)
-      .attr('orient', 'auto')
-      .attr('markerWidth', 6)
-      .attr('markerHeight', 6)
-      .append('path')
-      .attr('d', 'M 0,-4 L 8 ,0 L 0,4')
-      .attr('fill', 'var(--warning-color)');
-
     const g = svg.append('g');
-
     const zoom = d3.zoom()
       .scaleExtent([0.05, 4])
       .on('zoom', (event) => {
@@ -64,16 +55,15 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
 
     svg.call(zoom);
 
-    const nodeWidth = 200;
-    const nodeHeight = 60;
-    const spacingH = 350;
-    const spacingV = 150;
+    const nodeWidth = 260;
+    const nodeHeight = 65;
 
     let displayNodes = [];
     let displayLinks = [];
+    let enclosures = [];
 
     if (layoutMode === 'tree') {
-      const treeLayout = d3.tree().nodeSize([120, 350]);
+      const treeLayout = d3.tree().nodeSize([120, 380]);
       const root = d3.hierarchy(hierarchyData);
       treeLayout(root);
       displayNodes = root.descendants();
@@ -83,7 +73,10 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
         type: 'hierarchy'
       }));
     } else {
-      displayNodes = flattenedFlow.map((node, index) => ({
+      // Flow Layout
+      const leafNodes = flattenedFlow.filter(n => !n.children || n.children.length === 0);
+      
+      displayNodes = leafNodes.map((node, index) => ({
         data: node,
         pos: flowOrientation === 'horizontal' 
           ? { x: index * spacingH, y: 0 }
@@ -97,9 +90,89 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
           type: 'flow'
         });
       }
+
+      // Enclosures
+      const allParents = flattenedFlow.filter(n => n.children && n.children.length > 0);
+      const maxDepth = d3.max(allParents, d => d.depth) || 0;
+
+      allParents.forEach(parentNode => {
+        const getDescendantIds = (id) => {
+          const node = nodes[id];
+          if (!node) return [];
+          if (!node.children || node.children.length === 0) return [id];
+          return node.children.flatMap(cid => getDescendantIds(cid));
+        };
+        const leafIds = getDescendantIds(parentNode.id);
+        const groupLeaves = displayNodes.filter(dn => leafIds.includes(dn.data.id));
+
+        if (groupLeaves.length > 0) {
+          const minX = d3.min(groupLeaves, d => d.pos.x);
+          const maxX = d3.max(groupLeaves, d => d.pos.x);
+          const minY = d3.min(groupLeaves, d => d.pos.y);
+          const maxY = d3.max(groupLeaves, d => d.pos.y);
+
+          const rank = maxDepth - parentNode.depth;
+          const hPadding = containerHPadding + (rank * hierarchyGap);
+          const vPaddingTop = containerVPaddingTop + (rank * (hierarchyGap * 2.5));
+          const vPaddingBottom = 20 + (rank * (hierarchyGap * 0.5));
+
+          enclosures.push({
+            id: parentNode.id,
+            x: minX - hPadding,
+            y: minY - vPaddingTop,
+            width: flowOrientation === 'horizontal' ? (maxX - minX) + nodeWidth + (hPadding * 2) : nodeWidth + (hPadding * 2),
+            height: flowOrientation === 'horizontal' ? nodeHeight + (vPaddingTop + vPaddingBottom) : (maxY - minY) + nodeHeight + (vPaddingTop + vPaddingBottom),
+            progress: parentNode.progress,
+            title: parentNode.title,
+            depth: parentNode.depth,
+            rank: rank
+          });
+        }
+      });
+
+      enclosures.sort((a, b) => a.depth - b.depth);
     }
 
-    // 1. Links
+    // Enclosures
+    if (layoutMode === 'flow') {
+      const enclosureGroups = g.selectAll('.enclosure-group')
+        .data(enclosures)
+        .enter()
+        .append('g')
+        .attr('class', 'enclosure-group');
+
+      enclosureGroups.append('rect')
+        .attr('class', 'parent-enclosure')
+        .attr('x', d => d.x)
+        .attr('y', d => d.y)
+        .attr('width', d => d.width)
+        .attr('height', d => d.height)
+        .attr('rx', 25)
+        .style('fill', d => `hsla(220, 100%, 100%, ${0.01 + (d.rank * 0.005)})`);
+
+      enclosureGroups.append('rect')
+        .attr('class', 'enclosure-progress-border')
+        .attr('x', d => d.x)
+        .attr('y', d => d.y)
+        .attr('width', d => d.width)
+        .attr('height', d => d.height)
+        .attr('rx', 25)
+        .style('stroke-dasharray', d => {
+          const perimeter = 2 * (d.width + d.height);
+          return `${(d.progress / 100) * perimeter}, ${perimeter}`;
+        });
+        
+      enclosureGroups.append('text')
+        .attr('x', d => d.x + 20)
+        .attr('y', d => d.y + 25)
+        .attr('class', 'enclosure-label')
+        .text(d => {
+          const maxLength = flowOrientation === 'horizontal' ? 50 : 35;
+          return d.title.length > maxLength ? d.title.substring(0, maxLength) + '...' : d.title.toUpperCase();
+        });
+    }
+
+    // Links
     const allLinks = g.selectAll('path.link-path')
       .data(displayLinks)
       .enter()
@@ -108,51 +181,20 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
       .attr('d', d => {
         if (layoutMode === 'tree') {
           return d3.linkHorizontal()
-            .source(l => [l.source.y + 190, l.source.x])
+            .source(l => [l.source.y + (nodeWidth - 10), l.source.x])
             .target(l => [l.target.y - 10, l.target.x])(d);
         } else {
           const s = d.source.pos;
           const t = d.target.pos;
           if (flowOrientation === 'horizontal') {
-            return `M${s.x + 190},${s.y} L${t.x - 10},${t.y}`;
+            return `M${s.x + (nodeWidth - 10)},${s.y} L${t.x - 10},${t.y}`;
           } else {
-            return `M${s.x + 90},${s.y + 30} L${t.x + 90},${t.y - 30}`;
+            return `M${s.x + (nodeWidth / 2)},${s.y + (nodeHeight / 2)} L${t.x + (nodeWidth / 2)},${t.y - (nodeHeight / 2)}`;
           }
         }
       });
 
-    // 2. Dependency Links
-    if (layoutMode === 'tree') {
-      const nodesById = new Map(displayNodes.map(d => [d.data.id, d]));
-      const dependencyLinks = [];
-      displayNodes.forEach(targetNode => {
-        if (targetNode.data.dependsOn) {
-          targetNode.data.dependsOn.forEach(sourceId => {
-            const sourceNode = nodesById.get(sourceId);
-            if (sourceNode) {
-              dependencyLinks.push({ source: sourceNode, target: targetNode });
-            }
-          });
-        }
-      });
-
-      g.selectAll('.dependency-link')
-        .data(dependencyLinks)
-        .enter()
-        .append('path')
-        .attr('class', 'dependency-link')
-        .attr('d', d => {
-          const startX = d.source.y + 190;
-          const startY = d.source.x;
-          const endX = d.target.y - 10;
-          const endY = d.target.x;
-          const midX = (startX + endX) / 2;
-          return `M${startX},${startY} C${midX},${startY} ${midX},${endY} ${endX},${endY}`;
-        })
-        .attr('marker-end', 'url(#arrowhead)');
-    }
-
-    // 3. Nodes
+    // Nodes
     const nodeGroups = g.selectAll('.tree-node')
       .data(displayNodes)
       .enter()
@@ -194,7 +236,7 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
 
     nodeGroups.append('rect')
       .attr('x', -10)
-      .attr('y', 26)
+      .attr('y', 32)
       .attr('width', d => (d.data.progress / 100) * nodeWidth)
       .attr('height', 4)
       .attr('rx', 2)
@@ -211,7 +253,7 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
       .attr('x', 0)
       .attr('y', -5)
       .attr('width', nodeWidth - 20)
-      .attr('height', 30)
+      .attr('height', 35)
       .attr('class', 'node-title-foreign-object');
 
     titleContainer.append('xhtml:div')
@@ -222,52 +264,32 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
       .html(d => d.data.title);
 
     const initialTransform = d3.zoomIdentity
-      .translate(flowOrientation === 'vertical' && layoutMode === 'flow' ? width / 2 - 90 : width / 4, height / 4)
+      .translate(flowOrientation === 'vertical' && layoutMode === 'flow' ? width / 2 - 130 : width / 4, height / 4)
       .scale(0.8);
     svg.call(zoom.transform, initialTransform);
 
-  }, [hierarchyData, flattenedFlow, layoutMode, flowOrientation, selectedNodeId, onSelectNode]);
+  }, [hierarchyData, flattenedFlow, layoutMode, flowOrientation, selectedNodeId, onSelectNode, nodes, spacingH, spacingV, containerHPadding, containerVPaddingTop, hierarchyGap]);
 
-  if (rootNodes.length === 0) {
-    return (
-      <div className="empty-state">
-        <Target size={64} color="var(--border-color)" />
-        <h2>{t('tree.empty')}</h2>
-        <p>{t('tree.switch_to_list')}</p>
-      </div>
-    );
-  }
+  if (rootNodes.length === 0) return null;
 
   return (
     <div className="tree-view-container" ref={containerRef}>
       <div className="tree-controls">
         <div className="control-group-glass">
-          <button 
-            className={`mode-btn ${layoutMode === 'tree' ? 'active' : ''}`}
-            onClick={() => setLayoutMode('tree')}
-          >
+          <button className={`mode-btn ${layoutMode === 'tree' ? 'active' : ''}`} onClick={() => setLayoutMode('tree')}>
             <Share2 size={14} /> Tree
           </button>
-          <button 
-            className={`mode-btn ${layoutMode === 'flow' ? 'active' : ''}`}
-            onClick={() => setLayoutMode('flow')}
-          >
+          <button className={`mode-btn ${layoutMode === 'flow' ? 'active' : ''}`} onClick={() => setLayoutMode('flow')}>
             <GitCommit size={14} /> Flow
           </button>
         </div>
 
         <div className={`orientation-controls-wrapper ${layoutMode === 'flow' ? 'is-visible' : ''}`}>
           <div className="control-group-glass">
-            <button 
-              className={`mode-btn ${flowOrientation === 'horizontal' ? 'active' : ''}`}
-              onClick={() => setFlowOrientation('horizontal')}
-            >
+            <button className={`mode-btn ${flowOrientation === 'horizontal' ? 'active' : ''}`} onClick={() => setFlowOrientation('horizontal')}>
               <MoveRight size={14} /> Horizontal
             </button>
-            <button 
-              className={`mode-btn ${flowOrientation === 'vertical' ? 'active' : ''}`}
-              onClick={() => setFlowOrientation('vertical')}
-            >
+            <button className={`mode-btn ${flowOrientation === 'vertical' ? 'active' : ''}`} onClick={() => setFlowOrientation('vertical')}>
               <MoveDown size={14} /> Vertical
             </button>
           </div>
@@ -277,6 +299,44 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
           <Zap size={14} /> {t('tree.hint')}
         </div>
       </div>
+
+      {/* Floating Settings Button & Panel (Bottom Right) */}
+      <div className="floating-settings-container">
+        {showSettings && (
+          <div className="control-group-glass settings-floating-panel">
+            <div className="panel-header">
+              <Settings2 size={14} /> <span>{t('tree.layoutSettings')}</span>
+              <button className="close-panel-btn" onClick={() => setShowSettings(false)}><X size={14} /></button>
+            </div>
+            <div className="settings-panel">
+              <div className="setting-item">
+                <label>Spacing (V): {spacingV}</label>
+                <input type="range" min="80" max="400" value={spacingV} onChange={(e) => setSpacingV(parseInt(e.target.value))} />
+              </div>
+              <div className="setting-item">
+                <label>Spacing (H): {spacingH}</label>
+                <input type="range" min="200" max="800" value={spacingH} onChange={(e) => setSpacingH(parseInt(e.target.value))} />
+              </div>
+              <div className="setting-item">
+                <label>Container Width: {containerHPadding}</label>
+                <input type="range" min="20" max="150" value={containerHPadding} onChange={(e) => setContainerHPadding(parseInt(e.target.value))} />
+              </div>
+              <div className="setting-item">
+                <label>Label Gap (V): {containerVPaddingTop}</label>
+                <input type="range" min="40" max="200" value={containerVPaddingTop} onChange={(e) => setContainerVPaddingTop(parseInt(e.target.value))} />
+              </div>
+              <div className="setting-item">
+                <label>Hierarchy Gap: {hierarchyGap}</label>
+                <input type="range" min="0" max="60" value={hierarchyGap} onChange={(e) => setHierarchyGap(parseInt(e.target.value))} />
+              </div>
+            </div>
+          </div>
+        )}
+        <button className={`floating-settings-btn ${showSettings ? 'active' : ''}`} onClick={() => setShowSettings(!showSettings)}>
+          <Settings2 size={18} />
+        </button>
+      </div>
+
       <svg ref={svgRef} width="100%" height="100%" className="tree-svg" />
     </div>
   );

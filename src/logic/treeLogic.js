@@ -290,7 +290,7 @@ export const getFlattenedFlow = (nodes, rootNodes) => {
   const result = [];
   const visited = new Set();
 
-  const traverse = (nodeId) => {
+  const traverse = (nodeId, depth = 0) => {
     if (!nodeId || visited.has(nodeId)) return;
     const node = nodes[nodeId];
     if (!node) return;
@@ -298,23 +298,27 @@ export const getFlattenedFlow = (nodes, rootNodes) => {
     visited.add(nodeId);
 
     if (node.children && node.children.length > 0) {
-      // Sort children by order
       const sortedChildren = [...node.children].sort((a, b) => {
         const nodeA = nodes[a];
         const nodeB = nodes[b];
         return (nodeA?.order || 0) - (nodeB?.order || 0);
       });
 
-      sortedChildren.forEach(childId => traverse(childId));
+      sortedChildren.forEach(childId => traverse(childId, depth + 1));
     }
 
-    // Post-order: Push self AFTER children
-    result.push(node);
+    // Push node with extra metadata
+    const isMilestone = node.type === 'GOAL' || node.type === 'STRATEGY';
+    result.push({
+      ...node,
+      depth,
+      isMilestone,
+      groupParentId: node.parentId // Children of this node will have this node's ID as groupParentId
+    });
   };
 
-  // Sort root nodes by order
   const sortedRoots = [...rootNodes].sort((a, b) => (a.order || 0) - (b.order || 0));
-  sortedRoots.forEach(root => traverse(root.id));
+  sortedRoots.forEach(root => traverse(root.id, 0));
 
   return result;
 };
