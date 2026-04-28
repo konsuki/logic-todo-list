@@ -15,19 +15,41 @@
   display: block;
 }
 
-.tree-link {
+.link-path {
   fill: none;
-  stroke: var(--border-color);
   stroke-width: 1.5px;
-  stroke-opacity: 0.4;
   transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.tree-link {
+  stroke: var(--border-color);
+  stroke-opacity: 0.4;
+}
+
+.flow-link {
+  stroke: var(--primary-color) !important;
+  stroke-opacity: 0.6;
+  stroke-dasharray: 5, 5;
+  animation: dashFlow 20s linear infinite;
+}
+
+@keyframes dashFlow {
+  from { stroke-dashoffset: 400; }
+  to { stroke-dashoffset: 0; }
 }
 
 .tree-link.is-highlighted {
-  stroke: var(--primary-color);
-  stroke-width: 3px;
-  stroke-opacity: 1;
-  filter: url(#link-glow);
+  stroke: var(--primary-color) !important;
+  stroke-width: 3px !important;
+  stroke-opacity: 1 !important;
+}
+
+.flow-link.is-highlighted {
+  stroke: var(--primary-color) !important;
+  stroke-width: 4px !important;
+  stroke-opacity: 1 !important;
+  stroke-dasharray: 5, 5 !important;
 }
 
 .dependency-link {
@@ -37,13 +59,6 @@
   stroke-dasharray: 4, 4;
   opacity: 0.4;
   transition: all 0.3s ease;
-}
-
-.dependency-link.is-highlighted {
-  stroke-width: 3px;
-  opacity: 1;
-  stroke-dasharray: 0;
-  filter: url(#link-glow);
 }
 
 .tree-node {
@@ -80,7 +95,7 @@
 }
 
 .node-title-foreign-object {
-  pointer-events: all; /* Allow scroll events */
+  pointer-events: all;
 }
 
 .node-title-scroll-container {
@@ -93,11 +108,9 @@
   display: flex;
   align-items: center;
   padding: 0 4px;
-  scrollbar-width: none; /* Firefox */
-  cursor: text;
+  scrollbar-width: none;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
 .node-title-scroll-container::-webkit-scrollbar {
   display: none;
 }
@@ -116,7 +129,55 @@
   top: 20px;
   left: 20px;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   pointer-events: none;
+}
+
+.control-group-glass {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  pointer-events: all;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.animate-in {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.mode-btn:hover {
+  background-color: hsla(220, 100%, 100%, 0.05);
+  color: var(--text-main);
+}
+
+.mode-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 0 10px var(--primary-glow);
 }
 
 .control-hint {
@@ -128,19 +189,11 @@
   backdrop-filter: blur(8px);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
 /* Specific node type styles */
-.node-rect.goal {
-  fill: hsla(190, 100%, 60%, 0.08);
-}
-
-.node-rect.strategy {
-  fill: hsla(150, 80%, 50%, 0.08);
-}
-
-.node-rect.action {
-  fill: hsla(220, 10%, 70%, 0.08);
-}
+.node-rect.goal { fill: hsla(190, 100%, 60%, 0.08); }
+.node-rect.strategy { fill: hsla(150, 80%, 50%, 0.08); }
+.node-rect.action { fill: hsla(220, 10%, 70%, 0.08); }

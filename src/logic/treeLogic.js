@@ -281,3 +281,40 @@ export const toggleNodeStatus = (nodes, nodeId) => {
   setStatusRecursively(nodeId, newStatus);
   return updateProgressRecursively(newNodes, node.parentId);
 };
+
+/**
+ * Flattens the tree into a linear sequence for Flow View.
+ * Visits nodes in pre-order, sorting siblings by their 'order' property.
+ */
+export const getFlattenedFlow = (nodes, rootNodes) => {
+  const result = [];
+  const visited = new Set();
+
+  const traverse = (nodeId) => {
+    if (!nodeId || visited.has(nodeId)) return;
+    const node = nodes[nodeId];
+    if (!node) return;
+
+    visited.add(nodeId);
+
+    if (node.children && node.children.length > 0) {
+      // Sort children by order
+      const sortedChildren = [...node.children].sort((a, b) => {
+        const nodeA = nodes[a];
+        const nodeB = nodes[b];
+        return (nodeA?.order || 0) - (nodeB?.order || 0);
+      });
+
+      sortedChildren.forEach(childId => traverse(childId));
+    }
+
+    // Post-order: Push self AFTER children
+    result.push(node);
+  };
+
+  // Sort root nodes by order
+  const sortedRoots = [...rootNodes].sort((a, b) => (a.order || 0) - (b.order || 0));
+  sortedRoots.forEach(root => traverse(root.id));
+
+  return result;
+};
