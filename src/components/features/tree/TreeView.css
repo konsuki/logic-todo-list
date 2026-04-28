@@ -79,11 +79,27 @@
   pointer-events: none;
 }
 
-.node-title-label {
+.node-title-foreign-object {
+  pointer-events: all; /* Allow scroll events */
+}
+
+.node-title-scroll-container {
   font-size: 14px;
   font-weight: 500;
-  fill: var(--text-main);
-  pointer-events: none;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  scrollbar-width: none; /* Firefox */
+  cursor: text;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.node-title-scroll-container::-webkit-scrollbar {
+  display: none;
 }
 
 .node-step-label {

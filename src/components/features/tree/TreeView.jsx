@@ -71,18 +71,18 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
     const root = d3.hierarchy(hierarchyData);
     treeLayout(root);
 
-    // 1. Regular Hierarchy Links (Refined Connection Points)
+    // 1. Regular Hierarchy Links
     const links = g.selectAll('.tree-link')
       .data(root.links())
       .enter()
       .append('path')
       .attr('class', 'tree-link')
       .attr('d', d3.linkHorizontal()
-        .source(d => [d.source.y + 190, d.source.x]) // Right edge center
-        .target(d => [d.target.y - 10, d.target.x])  // Left edge center
+        .source(d => [d.source.y + 190, d.source.x])
+        .target(d => [d.target.y - 10, d.target.x])
       );
 
-    // 2. Dependency Links (The "Vines")
+    // 2. Dependency Links
     const nodesById = new Map(root.descendants().map(d => [d.data.id, d]));
     const dependencyLinks = [];
     
@@ -127,7 +127,6 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
         onSelectNode(d.data.id);
       })
       .on('mouseenter', (event, d) => {
-        // Highlight outgoing and incoming links
         links.filter(l => l.source.data.id === d.data.id || l.target.data.id === d.data.id)
           .classed('is-highlighted', true);
         depPaths.filter(l => l.source.data.id === d.data.id || l.target.data.id === d.data.id)
@@ -146,7 +145,7 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
       .attr('rx', 10)
       .attr('class', d => `node-rect ${d.data.type.toLowerCase()}`);
 
-    // Execution Order Step Badge (if available)
+    // Execution Order Step Badge
     nodeGroups.filter(d => d.data.order !== undefined)
       .append('text')
       .attr('x', -5)
@@ -169,14 +168,20 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
       .attr('class', 'node-type-label')
       .text(d => d.data.type);
 
-    nodeGroups.append('text')
-      .attr('dy', 12)
-      .attr('dx', 10)
-      .attr('class', 'node-title-label')
-      .text(d => {
-        const title = d.data.title;
-        return title.length > 20 ? title.substring(0, 18) + '...' : title;
-      });
+    // Improved Title with Horizontal Scrolling
+    const titleContainer = nodeGroups.append('foreignObject')
+      .attr('x', 0)
+      .attr('y', -5)
+      .attr('width', nodeWidth - 20)
+      .attr('height', 30)
+      .attr('class', 'node-title-foreign-object');
+
+    titleContainer.append('xhtml:div')
+      .attr('class', 'node-title-scroll-container')
+      .attr('title', d => d.data.title)
+      .style('width', '100%')
+      .style('height', '100%')
+      .html(d => d.data.title);
 
     // Center the tree initially
     const initialTransform = d3.zoomIdentity
