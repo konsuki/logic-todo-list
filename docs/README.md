@@ -19,6 +19,7 @@
 - 各機能の「現在の正しい仕様」。
 - [ai_feature_spec.md](./specs/ai_feature_spec.md): AI 提案機能。
 - [flow_view_spec.md](./specs/flow_view_spec.md): 一直線フロー表示。
+- [node_relationship_spec.md](./specs/node_relationship_spec.md): ノード間の順序と論理的関係の定義。
 - [dependency_spec.md](./specs/dependency_spec.md): 依存関係。
 - [timeline_spec.md](./specs/timeline_spec.md): フェーズと期限。
 - [i18n_spec.md](./specs/i18n_spec.md): 多言語対応。
