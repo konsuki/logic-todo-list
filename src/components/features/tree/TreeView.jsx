@@ -83,7 +83,6 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
         type: 'hierarchy'
       }));
     } else {
-      // Flow Layout
       displayNodes = flattenedFlow.map((node, index) => ({
         data: node,
         pos: flowOrientation === 'horizontal' 
@@ -117,14 +116,12 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
           if (flowOrientation === 'horizontal') {
             return `M${s.x + 190},${s.y} L${t.x - 10},${t.y}`;
           } else {
-            // Vertical: Bottom center to Top center
-            // Rect is -10 to 190 (center 90), -30 to 30 (center 0)
             return `M${s.x + 90},${s.y + 30} L${t.x + 90},${t.y - 30}`;
           }
         }
       });
 
-    // 2. Dependency Links (Tree Mode only)
+    // 2. Dependency Links
     if (layoutMode === 'tree') {
       const nodesById = new Map(displayNodes.map(d => [d.data.id, d]));
       const dependencyLinks = [];
@@ -224,7 +221,6 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
       .style('height', '100%')
       .html(d => d.data.title);
 
-    // Initial center adjustment
     const initialTransform = d3.zoomIdentity
       .translate(flowOrientation === 'vertical' && layoutMode === 'flow' ? width / 2 - 90 : width / 4, height / 4)
       .scale(0.8);
@@ -260,8 +256,8 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
           </button>
         </div>
 
-        {layoutMode === 'flow' && (
-          <div className="control-group-glass animate-in">
+        <div className={`orientation-controls-wrapper ${layoutMode === 'flow' ? 'is-visible' : ''}`}>
+          <div className="control-group-glass">
             <button 
               className={`mode-btn ${flowOrientation === 'horizontal' ? 'active' : ''}`}
               onClick={() => setFlowOrientation('horizontal')}
@@ -275,7 +271,7 @@ const TreeView = ({ nodes, rootNodes, selectedNodeId, onSelectNode, t }) => {
               <MoveDown size={14} /> Vertical
             </button>
           </div>
-        )}
+        </div>
 
         <div className="control-hint">
           <Zap size={14} /> {t('tree.hint')}

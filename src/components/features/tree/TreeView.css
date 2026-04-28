@@ -124,15 +124,25 @@
   pointer-events: none;
 }
 
+/* Control Panel Alignment & Refinement */
 .tree-controls {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
+  top: 24px;
+  left: 24px;
+  z-index: 20;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px; /* Slightly tighter gap */
   pointer-events: none;
+  align-items: flex-start;
+}
+
+/* Unified width for all top-level control elements */
+.control-group-glass,
+.control-hint,
+.orientation-controls-wrapper {
+  width: 260px; /* Fixed unified width */
+  box-sizing: border-box;
 }
 
 .control-group-glass {
@@ -140,57 +150,67 @@
   gap: 4px;
   padding: 4px;
   background-color: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  border: 1px solid hsla(0, 0%, 100%, 0.12);
   border-radius: 12px;
   pointer-events: all;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.animate-in {
-  animation: slideIn 0.3s ease-out forwards;
+.orientation-controls-wrapper {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-10px);
 }
 
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(-10px); }
-  to { opacity: 1; transform: translateX(0); }
+.orientation-controls-wrapper.is-visible {
+  max-height: 60px;
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .mode-btn {
+  flex: 1; /* Stretch buttons to fill the unified width */
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 0;
   border-radius: 8px;
   font-size: 11px;
   font-weight: 600;
   color: var(--text-muted);
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .mode-btn:hover {
-  background-color: hsla(220, 100%, 100%, 0.05);
+  background-color: hsla(220, 100%, 100%, 0.08);
   color: var(--text-main);
 }
 
 .mode-btn.active {
   background-color: var(--primary-color);
   color: white;
-  box-shadow: 0 0 10px var(--primary-glow);
+  box-shadow: 0 0 12px var(--primary-glow);
 }
 
 .control-hint {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 10px;
+  padding: 10px 16px;
   background-color: var(--glass-bg);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
-  border-radius: 20px;
+  border-radius: 12px;
   font-size: 11px;
   color: var(--text-muted);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: all;
 }
 
 /* Specific node type styles */
