@@ -203,6 +203,44 @@
   color: var(--warning-color);
 }
 
+.timeline-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.phase-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background-color: hsla(220, 100%, 100%, 0.1);
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.phase-badge.prep { background-color: hsla(200, 70%, 60%, 0.2); color: hsl(200, 70%, 60%); }
+.phase-badge.exec { background-color: hsla(30, 90%, 60%, 0.2); color: hsl(30, 90%, 60%); }
+.phase-badge.review { background-color: hsla(150, 60%, 50%, 0.2); color: hsl(150, 60%, 50%); }
+
+.due-date-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.due-date-badge.overdue {
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+.due-date-badge.due-soon {
+  color: var(--warning-color);
+  font-weight: 600;
+}
+
 .node-progress-container {
   position: absolute;
   bottom: 0;

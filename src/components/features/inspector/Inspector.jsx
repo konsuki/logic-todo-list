@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus } from 'lucide-react';
+import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar } from 'lucide-react';
 import AIInsights from './AIInsights';
 import './Inspector.css';
 
@@ -56,6 +56,14 @@ const Inspector = ({
     updateNode(selectedNodeId, { description: e.target.value });
   };
 
+  const handlePhaseChange = (e) => {
+    updateNode(selectedNodeId, { phase: e.target.value });
+  };
+
+  const handleDueDateChange = (e) => {
+    updateNode(selectedNodeId, { dueDate: e.target.value });
+  };
+
   return (
     <div className="inspector-container">
       <header className="inspector-header">
@@ -97,6 +105,36 @@ const Inspector = ({
         lang={lang} 
         t={t} 
       />
+
+      {/* Schedule & Phase Section */}
+      <section className="inspector-section">
+        <h3 className="section-title">
+          <Calendar size={14} /> {t('inspector.schedule')}
+        </h3>
+        <div className="schedule-controls">
+          <div className="control-group">
+            <label>{t('inspector.phase')}</label>
+            <select 
+              value={node.phase || 'PREP'} 
+              onChange={handlePhaseChange}
+              className="phase-select"
+            >
+              <option value="PREP">{t('phases.PREP')}</option>
+              <option value="EXEC">{t('phases.EXEC')}</option>
+              <option value="REVIEW">{t('phases.REVIEW')}</option>
+            </select>
+          </div>
+          <div className="control-group">
+            <label>{t('inspector.due_date')}</label>
+            <input 
+              type="date" 
+              value={node.dueDate || ''} 
+              onChange={handleDueDateChange}
+              className="date-input"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Dependency Management Section */}
       <section className="inspector-section">

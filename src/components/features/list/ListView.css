@@ -16,9 +16,44 @@
   margin-bottom: 32px;
 }
 
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .list-view-header h1 {
   font-size: 28px;
   letter-spacing: -0.5px;
+}
+
+.phase-filter-bar {
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  background-color: hsla(220, 100%, 100%, 0.03);
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.phase-filter-btn {
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.phase-filter-btn:hover {
+  color: var(--text-main);
+  background-color: hsla(220, 100%, 100%, 0.05);
+}
+
+.phase-filter-btn.active {
+  background-color: var(--surface-color);
+  color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .add-goal-btn {
@@ -65,4 +100,16 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  color: var(--text-muted);
+  gap: 16px;
+  border: 1px dashed var(--border-color);
+  border-radius: 20px;
 }

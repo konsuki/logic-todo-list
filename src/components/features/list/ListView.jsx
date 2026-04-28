@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import TodoItem from './TodoItem';
-import { Target, Plus } from 'lucide-react';
+import { Target, Plus, Filter } from 'lucide-react';
 import { NODE_TYPES } from '../../../logic/treeLogic';
 import './ListView.css';
 
@@ -15,6 +15,42 @@ const ListView = ({
   onSelectNode,
   t
 }) => {
+  const [phaseFilter, setPhaseFilter] = useState('ALL');
+
+  // Logic to determine which nodes should be visible based on phase filter
+  const visibleNodeIds = useMemo(() => {
+    if (phaseFilter === 'ALL') return null; // Show everything
+
+    const visibleSet = new Set();
+    
+    // Recursive helper to check if a node or any of its descendants match the filter
+    const checkVisibility = (nodeId) => {
+      const node = nodes[nodeId];
+      if (!node) return false;
+
+      const matchesPhase = node.phase === phaseFilter;
+      
+      // Check if any children match
+      let childMatches = false;
+      if (node.children) {
+        node.children.forEach(childId => {
+          if (checkVisibility(childId)) {
+            childMatches = true;
+          }
+        });
+      }
+
+      if (matchesPhase || childMatches) {
+        visibleSet.add(nodeId);
+        return true;
+      }
+      return false;
+    };
+
+    rootNodes.forEach(root => checkVisibility(root.id));
+    return visibleSet;
+  }, [nodes, rootNodes, phaseFilter]);
+
   if (rootNodes.length === 0) {
     return (
       <div className="empty-state">
@@ -34,10 +70,28 @@ const ListView = ({
     );
   }
 
+  // Filter the root nodes if they don't have any matching descendants
+  const displayedRootNodes = phaseFilter === 'ALL' 
+    ? rootNodes 
+    : rootNodes.filter(root => visibleNodeIds.has(root.id));
+
   return (
     <div className="list-view-container">
       <div className="list-view-header">
-        <h1>{t('list.title')}</h1>
+        <div className="header-left">
+          <h1>{t('list.title')}</h1>
+          <div className="phase-filter-bar">
+            {['ALL', 'PREP', 'EXEC', 'REVIEW'].map(p => (
+              <button 
+                key={p}
+                className={`phase-filter-btn ${phaseFilter === p ? 'active' : ''}`}
+                onClick={() => setPhaseFilter(p)}
+              >
+                {t(`phases.${p}`)}
+              </button>
+            ))}
+          </div>
+        </div>
         <button 
           className="add-goal-btn"
           onClick={() => {
@@ -50,24 +104,32 @@ const ListView = ({
       </div>
 
       <div className="list-view-content">
-        {rootNodes.map(root => (
-          <TodoItem
-            key={root.id}
-            node={root}
-            allNodes={nodes}
-            onAddChild={(parentId) => {
-              const title = prompt(t('list.enter_task'));
-              if (title) addNode(parentId, NODE_TYPES.ACTION, title);
-            }}
-            onDelete={deleteNode}
-            onToggle={toggleStatus}
-            onUpdate={updateNode}
-            selectedNodeId={selectedNodeId}
-            onSelectNode={onSelectNode}
-            depth={0}
-            t={t}
-          />
-        ))}
+        {displayedRootNodes.length === 0 ? (
+          <div className="no-results">
+            <Filter size={48} color="var(--border-color)" />
+            <p>{t('list.no_tasks_in_phase')}</p>
+          </div>
+        ) : (
+          displayedRootNodes.map(root => (
+            <TodoItem
+              key={root.id}
+              node={root}
+              allNodes={nodes}
+              onAddChild={(parentId) => {
+                const title = prompt(t('list.enter_task'));
+                if (title) addNode(parentId, NODE_TYPES.ACTION, title);
+              }}
+              onDelete={deleteNode}
+              onToggle={toggleStatus}
+              onUpdate={updateNode}
+              selectedNodeId={selectedNodeId}
+              onSelectNode={onSelectNode}
+              depth={0}
+              t={t}
+              visibleNodeIds={visibleNodeIds} // Pass down visibility info
+            />
+          ))
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock } from 'lucide-react';
+import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock, Clock } from 'lucide-react';
 import * as treeLogic from '../../../logic/treeLogic';
 import './TodoItem.css';
 
@@ -13,7 +13,8 @@ const TodoItem = ({
   selectedNodeId,
   onSelectNode,
   depth = 0,
-  t
+  t,
+  visibleNodeIds = null
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -29,6 +30,14 @@ const TodoItem = ({
   const unsatisfiedDeps = (node.dependsOn || [])
     .map(id => allNodes[id])
     .filter(n => n && n.status !== 'DONE');
+
+  // Timeline logic
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const dueDate = node.dueDate ? new Date(node.dueDate) : null;
+  const isOverdue = dueDate && dueDate < today && !isDone;
+  const isDueSoon = dueDate && !isOverdue && !isDone && (dueDate.getTime() - today.getTime()) <= (3 * 24 * 60 * 60 * 1000);
 
   const showMeceWarning = node.type === 'STRATEGY' && childrenCount === 1;
 
@@ -46,6 +55,11 @@ const TodoItem = ({
     onSelectNode(node.id);
   };
 
+  // Filter children based on visibility set
+  const displayedChildren = node.children.filter(childId => 
+    !visibleNodeIds || visibleNodeIds.has(childId)
+  );
+
   return (
     <div className={`todo-item-container depth-${depth} ${isSelected ? 'is-selected' : ''} ${isLocked ? 'is-locked' : ''}`}>
       <div 
@@ -56,7 +70,7 @@ const TodoItem = ({
 
         <div className="todo-item-content" style={{ paddingLeft: `${depth * 24}px` }}>
           <button 
-            className={`expand-btn ${!hasChildren ? 'invisible' : ''}`}
+            className={`expand-btn ${displayedChildren.length === 0 ? 'invisible' : ''}`}
             onClick={(e) => {
               e.stopPropagation();
               setIsExpanded(!isExpanded);
@@ -99,6 +113,21 @@ const TodoItem = ({
                 {node.title}
               </span>
             )}
+
+            {/* Timeline Badges */}
+            <div className="timeline-meta">
+              {node.phase && (
+                <span className={`phase-badge ${node.phase.toLowerCase()}`}>
+                  {t(`phases.${node.phase}`)}
+                </span>
+              )}
+              {node.dueDate && (
+                <span className={`due-date-badge ${isOverdue ? 'overdue' : isDueSoon ? 'due-soon' : ''}`}>
+                  <Clock size={10} />
+                  {node.dueDate}
+                </span>
+              )}
+            </div>
             
             {showMeceWarning && (
               <div className="mece-warning-icon" title={t('inspector.logic_gap_desc')}>
@@ -154,9 +183,9 @@ const TodoItem = ({
         </div>
       </div>
 
-      {isExpanded && hasChildren && (
+      {isExpanded && displayedChildren.length > 0 && (
         <div className="todo-item-children">
-          {node.children.map(childId => (
+          {displayedChildren.map(childId => (
             <TodoItem
               key={childId}
               node={allNodes[childId]}
@@ -169,6 +198,7 @@ const TodoItem = ({
               onSelectNode={onSelectNode}
               depth={depth + 1}
               t={t}
+              visibleNodeIds={visibleNodeIds}
             />
           ))}
         </div>

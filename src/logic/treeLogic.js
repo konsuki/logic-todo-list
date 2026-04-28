@@ -116,7 +116,9 @@ export const addNode = (nodes, parentId, type, title = 'New Task') => {
     status: NODE_STATUS.TODO,
     progress: 0,
     children: [],
-    dependsOn: [], // New dependency field
+    dependsOn: [],
+    phase: 'PREP', // Default phase
+    dueDate: null, // Default due date
     metadata: {
       createdAt: Date.now(),
       updatedAt: Date.now()

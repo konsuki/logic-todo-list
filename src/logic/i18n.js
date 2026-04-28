@@ -7,6 +7,14 @@ export const translations = {
       confirm_delete: 'このタスクとすべてのサブタスクを削除してもよろしいですか？',
       loading: '読み込み中...',
       wait_for_predecessor: '先行タスクの完了を待っています',
+      overdue: '期限切れ',
+      due_soon: '期限間近',
+    },
+    phases: {
+      PREP: '準備期',
+      EXEC: '実行期',
+      REVIEW: '完了/見直し',
+      ALL: 'すべて',
     },
     header: {
       tree_view: 'ツリー表示',
@@ -20,6 +28,7 @@ export const translations = {
       enter_goal: 'メイン目標を入力してください:',
       enter_task: 'タスク名を入力してください:',
       add_child: '子タスクを追加',
+      no_tasks_in_phase: 'このフェーズに該当するタスクはありません。',
     },
     inspector: {
       empty: 'タスクを選択して論理コンテキストを表示',
@@ -38,6 +47,9 @@ export const translations = {
       predecessors: '先行タスク (依存関係)',
       no_predecessors: '依存しているタスクはありません。',
       search_to_link: 'タスクを検索してリンク...',
+      schedule: 'スケジュール・フェーズ',
+      phase: '実行フェーズ',
+      due_date: '期限日',
     },
     tree: {
       hint: 'ドラッグで移動 / スクロールでズーム',
@@ -60,6 +72,14 @@ export const translations = {
       confirm_delete: 'Are you sure you want to delete this task and all its sub-tasks?',
       loading: 'Loading...',
       wait_for_predecessor: 'Waiting for predecessor to complete',
+      overdue: 'Overdue',
+      due_soon: 'Due Soon',
+    },
+    phases: {
+      PREP: 'Prep',
+      EXEC: 'Exec',
+      REVIEW: 'Review',
+      ALL: 'All',
     },
     header: {
       tree_view: 'Tree View',
@@ -73,6 +93,7 @@ export const translations = {
       enter_goal: 'Enter your main goal:',
       enter_task: 'Enter task name:',
       add_child: 'Add Child',
+      no_tasks_in_phase: 'No tasks found in this phase.',
     },
     inspector: {
       empty: 'Select a task to view its logic context',
@@ -91,6 +112,9 @@ export const translations = {
       predecessors: 'Predecessors (Dependencies)',
       no_predecessors: 'No dependencies defined.',
       search_to_link: 'Search tasks to link...',
+      schedule: 'Schedule & Phase',
+      phase: 'Execution Phase',
+      due_date: 'Due Date',
     },
     tree: {
       hint: 'Drag to Pan / Scroll to Zoom',
