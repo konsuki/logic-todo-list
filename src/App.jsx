@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutGrid, List, Info, Zap, Globe } from 'lucide-react';
+import { LayoutGrid, List, Info, Zap, Globe, Settings } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTodoTree } from './hooks/useTodoTree';
@@ -8,6 +8,7 @@ import { useShortcuts } from './hooks/useShortcuts';
 import ListView from './components/features/list/ListView';
 import TreeView from './components/features/tree/TreeView';
 import Inspector from './components/features/inspector/Inspector';
+import SettingsPanel from './components/features/settings/SettingsPanel';
 import './App.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
   const { t, lang, setLang } = useI18n();
   const [view, setView] = useState('list');
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [completedGoals, setCompletedGoals] = useState(new Set());
   const [expandedNodeIds, setExpandedNodeIds] = useState(new Set());
@@ -141,6 +143,13 @@ function App() {
           </button>
           <button 
             className="icon-btn"
+            onClick={() => setIsSettingsOpen(true)}
+            title="Settings"
+          >
+            <Settings size={20} color="var(--text-muted)" />
+          </button>
+          <button 
+            className="icon-btn"
             onClick={() => setIsInspectorOpen(!isInspectorOpen)}
           >
             <Info size={20} color={isInspectorOpen ? 'var(--primary-color)' : 'var(--text-muted)'} />
@@ -193,6 +202,12 @@ function App() {
           lang={lang}
         />
       </aside>
+
+      <SettingsPanel 
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        t={t}
+      />
     </div>
   );
 }

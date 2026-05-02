@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock, Clock } from 'lucide-react';
 import * as treeLogic from '../../../logic/treeLogic';
+import { useSettings } from '../../../logic/SettingsContext';
 import './TodoItem.css';
 
 const TodoItem = ({ 
@@ -18,6 +19,7 @@ const TodoItem = ({
   t,
   visibleNodeIds = null
 }) => {
+  const { settings } = useSettings();
   const isExpanded = expandedNodeIds.has(node.id);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(node.title);
@@ -167,7 +169,7 @@ const TodoItem = ({
               <span className="progress-badge">{node.progress}%</span>
             )}
 
-            {node.description && (
+            {node.description && settings.showDescriptionInList && (
               <div className="node-description-preview" title={node.description}>
                 {node.description.length > 50 ? node.description.substring(0, 50) + '...' : node.description}
               </div>

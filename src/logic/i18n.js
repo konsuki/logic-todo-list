@@ -65,6 +65,12 @@ export const translations = {
       thinking: 'AI思考中...',
       suggestions_title: 'AIからの提案',
       add_to_tree: 'ツリーに追加',
+    },
+    settings: {
+      title: 'アプリ設定',
+      view_preferences: '表示設定',
+      show_description_in_list: 'リスト表示で説明を表示',
+      show_description_in_list_desc: 'リストビュー内のタスク名の下に説明文を表示するかどうかを切り替えます。',
     }
   },
   en: {
@@ -133,6 +139,12 @@ export const translations = {
       thinking: 'AI Thinking...',
       suggestions_title: 'AI Suggestions',
       add_to_tree: 'Add to Tree',
+    },
+    settings: {
+      title: 'App Settings',
+      view_preferences: 'View Preferences',
+      show_description_in_list: 'Show Description in List',
+      show_description_in_list_desc: 'Toggle visibility of task descriptions in the list view.',
     }
   }
 };
