@@ -238,7 +238,7 @@
   box-shadow: 0 0 15px var(--primary-glow);
 }
 
-.settings-floating-panel {
+.tree-settings-floating-wrapper {
   width: 280px;
   flex-direction: column;
   padding: 0;
@@ -279,7 +279,7 @@
   color: #ff4d4d;
 }
 
-.settings-panel {
+.tree-settings-content {
   padding: 16px;
   display: flex;
   flex-direction: column;

@@ -1,12 +1,13 @@
 # LogiDo 修正・機能追加リクエスト (REVISIONS)
 
 ## テンプレ
-- 05-02: 内容
+- [RX] 05-02: 内容
 
 ## 🚀 未完了 (Incomplete)
-- 05-02: 内容
+- [RX] 05-02: 内容
 
 ## ✅ 完了済み (Completed)
+- [x] 05-02: [R1] TreeView内の設定モーダルのUI崩れ修正 (@settings_modal_fix_spec.md)
 - [x] 05-02: 設定UIの実装とリストビューの説明表示切り替え機能 (@global_settings_spec.md)
 
 - 05-02: description部分にリンクを書いた場合、リンクとして認識できるようにする

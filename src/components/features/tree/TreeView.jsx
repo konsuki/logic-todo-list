@@ -355,12 +355,12 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       {/* Floating Settings Button & Panel (Bottom Right) */}
       <div className="floating-settings-container">
         {showSettings && (
-          <div className="control-group-glass settings-floating-panel">
+          <div className="control-group-glass tree-settings-floating-wrapper">
             <div className="panel-header">
               <Settings2 size={14} /> <span>{t('tree.layoutSettings')}</span>
               <button className="close-panel-btn" onClick={() => setShowSettings(false)}><X size={14} /></button>
             </div>
-            <div className="settings-panel">
+            <div className="tree-settings-content">
               <div className="setting-item">
                 <label>Spacing (V): {spacingV}</label>
                 <input type="range" min="80" max="400" value={spacingV} onChange={(e) => setSpacingV(parseInt(e.target.value))} />
