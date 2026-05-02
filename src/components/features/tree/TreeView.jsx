@@ -356,28 +356,28 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       <div className="floating-settings-container">
         {showSettings && (
           <div className="control-group-glass tree-settings-floating-wrapper">
-            <div className="panel-header">
+            <div className="tree-panel-header">
               <Settings2 size={14} /> <span>{t('tree.layoutSettings')}</span>
-              <button className="close-panel-btn" onClick={() => setShowSettings(false)}><X size={14} /></button>
+              <button className="tree-close-panel-btn" onClick={() => setShowSettings(false)}><X size={14} /></button>
             </div>
             <div className="tree-settings-content">
-              <div className="setting-item">
+              <div className="tree-setting-item">
                 <label>Spacing (V): {spacingV}</label>
                 <input type="range" min="80" max="400" value={spacingV} onChange={(e) => setSpacingV(parseInt(e.target.value))} />
               </div>
-              <div className="setting-item">
+              <div className="tree-setting-item">
                 <label>Spacing (H): {spacingH}</label>
                 <input type="range" min="200" max="800" value={spacingH} onChange={(e) => setSpacingH(parseInt(e.target.value))} />
               </div>
-              <div className="setting-item">
+              <div className="tree-setting-item">
                 <label>Container Width: {containerHPadding}</label>
                 <input type="range" min="20" max="150" value={containerHPadding} onChange={(e) => setContainerHPadding(parseInt(e.target.value))} />
               </div>
-              <div className="setting-item">
+              <div className="tree-setting-item">
                 <label>Label Gap (V): {containerVPaddingTop}</label>
                 <input type="range" min="40" max="200" value={containerVPaddingTop} onChange={(e) => setContainerVPaddingTop(parseInt(e.target.value))} />
               </div>
-              <div className="setting-item">
+              <div className="tree-setting-item">
                 <label>Hierarchy Gap: {hierarchyGap}</label>
                 <input type="range" min="0" max="60" value={hierarchyGap} onChange={(e) => setHierarchyGap(parseInt(e.target.value))} />
               </div>

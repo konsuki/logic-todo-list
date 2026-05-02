@@ -12,6 +12,9 @@
 | :--- | :--- | :--- |
 | `.settings-panel` | `.tree-settings-content` | 設定項目のリストを包むコンテナ |
 | `.settings-floating-panel` | `.tree-settings-floating-wrapper` | フローティング表示されるパネル全体のラッパー |
+| `.setting-item` | `.tree-setting-item` | 個々の設定項目 |
+| `.panel-header` | `.tree-panel-header` | パネルのヘッダー |
+| `.close-panel-btn` | `.tree-close-panel-btn` | パネルを閉じるボタン |
 
 ### 2.2 デザインの維持
 - 既存の D3.js 連携によるパラメータ調整機能（Spacing V/H 等）はそのまま維持する。

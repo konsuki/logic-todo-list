@@ -9,9 +9,13 @@
 
 ### 2.1 TreeView.jsx の修正
 - `className="settings-panel"` を `className="tree-settings-content"` に変更。
+- `className="settings-floating-panel"` を `className="tree-settings-floating-wrapper"` に変更。
+- `className="setting-item"` を `className="tree-setting-item"` に変更。
+- `className="panel-header"` を `className="tree-panel-header"` に変更。
+- `className="close-panel-btn"` を `className="tree-close-panel-btn"` に変更。
 
 ### 2.2 TreeView.css の修正
-- `.settings-panel` セレクタを `.tree-settings-content` に変更。
+- 各クラスセレクタを上記の改称後の名称に変更。
 
 ## 3. 確認事項
 - 修正後、TreeView 右下の歯車アイコンをクリックした際に、設定パネルが元の位置（ボタンの上）に正しく表示されることを確認する。

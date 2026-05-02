@@ -251,7 +251,7 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.panel-header {
+.tree-panel-header {
   padding: 12px 16px;
   background-color: hsla(220, 100%, 100%, 0.05);
   border-bottom: 1px solid var(--glass-border);
@@ -265,7 +265,7 @@
   letter-spacing: 1px;
 }
 
-.close-panel-btn {
+.tree-close-panel-btn {
   margin-left: auto;
   color: var(--text-muted);
   cursor: pointer;
@@ -286,20 +286,20 @@
   gap: 16px;
 }
 
-.setting-item {
+.tree-setting-item {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.setting-item label {
+.tree-setting-item label {
   font-size: 10px;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
 }
 
-.setting-item input[type="range"] {
+.tree-setting-item input[type="range"] {
   width: 100%;
   accent-color: var(--primary-color);
   cursor: pointer;
