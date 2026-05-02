@@ -16,10 +16,10 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
   
   // Confirmed Default Values from User
   const [spacingH, setSpacingH] = useState(400);
-  const [spacingV, setSpacingV] = useState(140);
-  const [containerHPadding, setContainerHPadding] = useState(65);
+  const [spacingV, setSpacingV] = useState(144);
+  const [containerHPadding, setContainerHPadding] = useState(64);
   const [containerVPaddingTop, setContainerVPaddingTop] = useState(80);
-  const [hierarchyGap, setHierarchyGap] = useState(15);
+  const [hierarchyGap, setHierarchyGap] = useState(16);
   const [showSettings, setShowSettings] = useState(false);
 
   const hierarchyData = useMemo(() => {
@@ -77,16 +77,68 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
         type: 'hierarchy'
       }));
     } else {
-      // Flow Layout
+      // Flow Layout: Dynamic Spacing Logic (Robust Sequence)
       const leafNodes = flattenedFlow.filter(n => !n.children || n.children.length === 0);
+      const depthMap = new Map(flattenedFlow.map(n => [n.id, n.depth]));
       
-      displayNodes = leafNodes.map((node, index) => ({
-        data: node,
-        pos: flowOrientation === 'horizontal' 
-          ? { x: index * spacingH, y: 0 }
-          : { x: 0, y: index * spacingV }
-      }));
+      const getAncestors = (nodeId) => {
+        const path = [];
+        let curr = nodes[nodeId];
+        while (curr && curr.parentId) {
+          path.push(curr.parentId);
+          curr = nodes[curr.parentId];
+        }
+        return path;
+      };
+
+      const allParents = flattenedFlow.filter(n => n.children && n.children.length > 0);
+      const maxDepth = d3.max(allParents, d => d.depth) || 0;
       
+      let currentOffset = 0;
+      const baseGap = (flowOrientation === 'horizontal' ? spacingH : spacingV) || 144;
+      displayNodes = [];
+
+      for (let i = 0; i < leafNodes.length; i++) {
+        const node = leafNodes[i];
+        const prevNode = leafNodes[i - 1];
+        const currentAncestors = getAncestors(node.id);
+        const prevAncestors = prevNode ? getAncestors(prevNode.id) : [];
+
+        const startingAncestors = currentAncestors.filter(id => !prevAncestors.includes(id));
+        const endingAncestors = prevAncestors.filter(id => !currentAncestors.includes(id));
+
+        // Add padding for enclosures ending at the previous node
+        endingAncestors.forEach(id => {
+          const depth = depthMap.get(id) || 0;
+          const rank = maxDepth - depth;
+          const vPaddingBottom = 24 + (rank * (hierarchyGap * 0.5));
+          const hPaddingRight = 32 + (rank * hierarchyGap);
+          currentOffset += (flowOrientation === 'horizontal' ? hPaddingRight : vPaddingBottom);
+        });
+
+        // Add padding for enclosures starting at this node
+        startingAncestors.forEach(id => {
+          const depth = depthMap.get(id) || 0;
+          const rank = maxDepth - depth;
+          const vPaddingTop = containerVPaddingTop + (rank * (hierarchyGap * 2));
+          const hPaddingLeft = containerHPadding + (rank * hierarchyGap);
+          currentOffset += (flowOrientation === 'horizontal' ? hPaddingLeft : vPaddingTop);
+        });
+
+        const pos = flowOrientation === 'horizontal' 
+          ? { x: currentOffset, y: 0 }
+          : { x: 0, y: currentOffset };
+        
+        displayNodes.push({ data: node, pos });
+
+        // Advance offset for next node
+        const step = flowOrientation === 'horizontal' 
+          ? (nodeWidth + baseGap * 0.2) 
+          : (nodeHeight + baseGap * 0.4);
+        
+        currentOffset += step;
+      }
+
       for (let i = 0; i < displayNodes.length - 1; i++) {
         displayLinks.push({
           source: displayNodes[i],
@@ -96,8 +148,6 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       }
 
       // Enclosures
-      const allParents = flattenedFlow.filter(n => n.children && n.children.length > 0);
-      const maxDepth = d3.max(allParents, d => d.depth) || 0;
 
       allParents.forEach(parentNode => {
         const getDescendantIds = (id) => {
@@ -117,8 +167,8 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
 
           const rank = maxDepth - parentNode.depth;
           const hPadding = containerHPadding + (rank * hierarchyGap);
-          const vPaddingTop = containerVPaddingTop + (rank * (hierarchyGap * 2.5));
-          const vPaddingBottom = 20 + (rank * (hierarchyGap * 0.5));
+          const vPaddingTop = containerVPaddingTop + (rank * (hierarchyGap * 2));
+          const vPaddingBottom = 24 + (rank * (hierarchyGap * 0.5));
 
           enclosures.push({
             id: parentNode.id,
@@ -363,23 +413,23 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
             <div className="tree-settings-content">
               <div className="tree-setting-item">
                 <label>Spacing (V): {spacingV}</label>
-                <input type="range" min="80" max="400" value={spacingV} onChange={(e) => setSpacingV(parseInt(e.target.value))} />
+                <input type="range" min="80" max="400" step="8" value={spacingV} onChange={(e) => setSpacingV(parseInt(e.target.value))} />
               </div>
               <div className="tree-setting-item">
                 <label>Spacing (H): {spacingH}</label>
-                <input type="range" min="200" max="800" value={spacingH} onChange={(e) => setSpacingH(parseInt(e.target.value))} />
+                <input type="range" min="200" max="800" step="8" value={spacingH} onChange={(e) => setSpacingH(parseInt(e.target.value))} />
               </div>
               <div className="tree-setting-item">
                 <label>Container Width: {containerHPadding}</label>
-                <input type="range" min="20" max="150" value={containerHPadding} onChange={(e) => setContainerHPadding(parseInt(e.target.value))} />
+                <input type="range" min="16" max="160" step="8" value={containerHPadding} onChange={(e) => setContainerHPadding(parseInt(e.target.value))} />
               </div>
               <div className="tree-setting-item">
                 <label>Label Gap (V): {containerVPaddingTop}</label>
-                <input type="range" min="40" max="200" value={containerVPaddingTop} onChange={(e) => setContainerVPaddingTop(parseInt(e.target.value))} />
+                <input type="range" min="40" max="200" step="8" value={containerVPaddingTop} onChange={(e) => setContainerVPaddingTop(parseInt(e.target.value))} />
               </div>
               <div className="tree-setting-item">
                 <label>Hierarchy Gap: {hierarchyGap}</label>
-                <input type="range" min="0" max="60" value={hierarchyGap} onChange={(e) => setHierarchyGap(parseInt(e.target.value))} />
+                <input type="range" min="0" max="64" step="8" value={hierarchyGap} onChange={(e) => setHierarchyGap(parseInt(e.target.value))} />
               </div>
             </div>
           </div>

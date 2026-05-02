@@ -4,9 +4,11 @@
 - [RX] 05-02: 内容
 
 ## 🚀 未完了 (Incomplete)
+## 🚀 未完了 (Incomplete)
 - [RX] 05-02: 内容
 
 ## ✅ 完了済み (Completed)
+- [x] 05-02: [R2] Flow モードへの論理的レイアウトロジック（8pxグリッド）の適用 (@impeccable_layout_spec.md)
 - [x] 05-02: [R1] TreeView内の設定モーダルのUI崩れ修正 (@settings_modal_fix_spec.md)
 - [x] 05-02: 設定UIの実装とリストビューの説明表示切り替え機能 (@global_settings_spec.md)
 
