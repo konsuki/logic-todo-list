@@ -4,7 +4,7 @@
 - [RX] 05-02: 内容
 
 ## 🚀 未完了 (Incomplete)
-- [RX] 05-02: 内容
+- [R4] 05-02: GOALが複数存在している時、TreeViewのtreeモードで1つ目のGOAL以外のツリーが表示されない問題の修正
 
 ## ✅ 完了済み (Completed)
 - [x] 05-02: [R3] キーボードショートカットの実装 (Enter: 兄弟追加, Tab: 子追加, Shift+Tab: アウトデント) (@node_shortcuts_spec.md)
