@@ -283,3 +283,19 @@
   color: var(--text-muted);
   text-decoration: line-through;
 }
+
+.node-description-preview {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 4px;
+  max-width: 300px;
+  font-style: italic;
+}
+
+.todo-item-row.is-done .node-description-preview {
+  text-decoration: line-through;
+}

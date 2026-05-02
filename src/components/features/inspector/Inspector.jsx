@@ -19,6 +19,7 @@ const Inspector = ({
 }) => {
   const node = nodes[selectedNodeId];
   const [searchQuery, setSearchQuery] = useState('');
+  const [isEditingDesc, setIsEditingDesc] = useState(false);
 
   if (!node) {
     return (
@@ -64,6 +65,30 @@ const Inspector = ({
 
   const handleDueDateChange = (e) => {
     updateNode(selectedNodeId, { dueDate: e.target.value });
+  };
+
+  const renderDescription = (text) => {
+    if (!text) return null;
+    const urlRegex = /(https?:\/\/[^\s\n]+)/g;
+    const parts = text.split(urlRegex);
+    
+    return parts.map((part, i) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a 
+            key={i} 
+            href={part} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="description-link"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {part} <ExternalLink size={10} style={{ marginLeft: '2px', verticalAlign: 'middle' }} />
+          </a>
+        );
+      }
+      return part;
+    });
   };
 
   return (
@@ -280,13 +305,36 @@ const Inspector = ({
       </section>
 
       <section className="inspector-section">
-        <h3 className="section-title">{t('inspector.description')}</h3>
-        <textarea 
-          className="description-area"
-          placeholder={t('inspector.placeholder_desc')}
-          defaultValue={node.description}
-          onBlur={handleDescriptionChange}
-        />
+        <div className="section-header-with-action">
+          <h3 className="section-title">{t('inspector.description')}</h3>
+          {!isEditingDesc && node.description && (
+            <button className="edit-subtle-btn" onClick={() => setIsEditingDesc(true)}>
+              {t('common.edit') || 'Edit'}
+            </button>
+          )}
+        </div>
+        
+        {isEditingDesc || !node.description ? (
+          <textarea 
+            key={node.id}
+            autoFocus={isEditingDesc}
+            className="description-area"
+            placeholder={t('inspector.placeholder_desc')}
+            defaultValue={node.description || ''}
+            onBlur={(e) => {
+              handleDescriptionChange(e);
+              setIsEditingDesc(false);
+            }}
+          />
+        ) : (
+          <div 
+            className="description-display" 
+            onClick={() => setIsEditingDesc(true)}
+            title="Click to edit"
+          >
+            {renderDescription(node.description)}
+          </div>
+        )}
       </section>
     </div>
   );

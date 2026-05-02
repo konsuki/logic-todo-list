@@ -166,6 +166,12 @@ const TodoItem = ({
             {node.progress > 0 && node.progress < 100 && (
               <span className="progress-badge">{node.progress}%</span>
             )}
+
+            {node.description && (
+              <div className="node-description-preview" title={node.description}>
+                {node.description.length > 50 ? node.description.substring(0, 50) + '...' : node.description}
+              </div>
+            )}
           </div>
 
           <div className="node-actions">
