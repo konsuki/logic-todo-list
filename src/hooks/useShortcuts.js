@@ -17,7 +17,11 @@ export const useShortcuts = ({
   setView,
   isInspectorOpen,
   setIsInspectorOpen,
-  t
+  t,
+  editingNodeId,
+  setEditingNodeId,
+  outdentNode,
+  setExpandedNodeIds
 }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -52,9 +56,37 @@ export const useShortcuts = ({
           const node = nodes[selectedNodeId];
           if (!node) return;
 
-          const title = prompt(t('list.enter_task'));
-          if (title) {
-            addNode(node.parentId, node.type, title);
+          const newId = crypto.randomUUID();
+          addNode(node.parentId, node.type, 'New Task', newId);
+          setSelectedNodeId(newId);
+          setEditingNodeId(newId);
+          break;
+        }
+
+        case 'Tab': {
+          e.preventDefault();
+          if (!selectedNodeId) return;
+          const node = nodes[selectedNodeId];
+          if (!node) return;
+
+          if (e.shiftKey) {
+            // Shift + Tab: Outdent
+            outdentNode(selectedNodeId);
+          } else {
+            // Tab: Add Child
+            const newId = crypto.randomUUID();
+            // Default new child type based on parent logic will be handled by treeLogic, but we pass 'ACTION' as default
+            addNode(selectedNodeId, 'ACTION', 'New Task', newId);
+            
+            // Expand parent so we can see the new child safely
+            setExpandedNodeIds(prev => {
+              const next = new Set(prev);
+              next.add(selectedNodeId);
+              return next;
+            });
+            
+            setSelectedNodeId(newId);
+            setEditingNodeId(newId);
           }
           break;
         }
@@ -108,7 +140,11 @@ export const useShortcuts = ({
     view, 
     setView, 
     isInspectorOpen, 
-    setIsInspectorOpen, 
-    t
+    setIsInspectorOpen,
+    t,
+    editingNodeId,
+    setEditingNodeId,
+    outdentNode,
+    setExpandedNodeIds
   ]);
 };

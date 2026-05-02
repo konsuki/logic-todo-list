@@ -4,8 +4,7 @@
 - [RX] 05-02: 内容
 
 ## 🚀 未完了 (Incomplete)
-## 🚀 未完了 (Incomplete)
-- [RX] 05-02: 内容
+- [R3] 05-02: [IN_PROGRESS] キーボードショートカットの実装 (Enter: 兄弟追加, Tab: 子追加, Shift+Tab: アウトデント)
 
 ## ✅ 完了済み (Completed)
 - [x] 05-02: [R2] Flow モードへの論理的レイアウトロジック（8pxグリッド）の適用 (@impeccable_layout_spec.md)

@@ -17,8 +17,8 @@ export const useTodoTree = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes));
   }, [nodes]);
 
-  const handleAddNode = useCallback((parentId, type, title) => {
-    setNodes(prev => treeLogic.addNode(prev, parentId, type, title));
+  const handleAddNode = useCallback((parentId, type, title, predefinedId) => {
+    setNodes(prev => treeLogic.addNode(prev, parentId, type, title, predefinedId));
   }, []);
 
   const handleAddNodes = useCallback((parentId, type, titles) => {
@@ -90,6 +90,10 @@ export const useTodoTree = () => {
     setNodes(prev => treeLogic.reorderNode(prev, nodeId, direction));
   }, []);
 
+  const handleOutdentNode = useCallback((nodeId) => {
+    setNodes(prev => treeLogic.outdentNode(prev, nodeId));
+  }, []);
+
   /**
    * Helper to get the root nodes (those without parentId)
    */
@@ -106,6 +110,7 @@ export const useTodoTree = () => {
     addDependency: handleAddDependency,
     removeDependency: handleRemoveDependency,
     reorderNode: handleReorderNode,
+    outdentNode: handleOutdentNode,
     isNodeLocked: (nodeId) => treeLogic.isNodeLocked(nodes, nodeId)
   };
 };

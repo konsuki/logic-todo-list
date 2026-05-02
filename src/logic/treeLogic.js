@@ -105,8 +105,9 @@ export const checkCircularDependency = (nodes, nodeId, dependencyId) => {
 /**
  * Creates a new node and attaches it to its parent.
  */
-export const addNode = (nodes, parentId, type, title = 'New Task') => {
-  return addNodes(nodes, parentId, type, [title]);
+export const addNode = (nodes, parentId, type, title = 'New Task', predefinedId = null) => {
+  const item = predefinedId ? { title, id: predefinedId } : title;
+  return addNodes(nodes, parentId, type, [item]);
 };
 
 /**
@@ -141,7 +142,7 @@ export const addNodes = (nodes, parentId, type, titles) => {
     const title = typeof item === 'string' ? item : item.title;
     const description = typeof item === 'object' ? (item.description || '') : '';
     
-    const id = crypto.randomUUID();
+    const id = (typeof item === 'object' && item.id) ? item.id : crypto.randomUUID();
     const newNode = {
       id,
       parentId,
@@ -213,6 +214,58 @@ export const reorderNode = (nodes, nodeId, direction) => {
   const tempOrder = currentNode.order;
   newNodes[nodeId] = { ...currentNode, order: targetNode.order };
   newNodes[targetNode.id] = { ...targetNode, order: tempOrder };
+
+  return newNodes;
+};
+
+/**
+ * Outdents a node (moves it to become a sibling of its parent).
+ */
+export const outdentNode = (nodes, nodeId) => {
+  const node = nodes[nodeId];
+  if (!node || !node.parentId) return nodes;
+
+  const parent = nodes[node.parentId];
+  if (!parent) return nodes;
+
+  const newParentId = parent.parentId; // The grandparent
+  let newNodes = { ...nodes };
+
+  // Remove from old parent
+  newNodes[parent.id] = {
+    ...parent,
+    children: parent.children.filter(id => id !== nodeId)
+  };
+
+  // Add to new parent (or root)
+  if (newParentId && newNodes[newParentId]) {
+    const newParent = newNodes[newParentId];
+    // Insert after the old parent
+    const parentIndex = newParent.children.indexOf(parent.id);
+    const newChildren = [...newParent.children];
+    if (parentIndex !== -1) {
+      newChildren.splice(parentIndex + 1, 0, nodeId);
+    } else {
+      newChildren.push(nodeId);
+    }
+    
+    newNodes[newParentId] = {
+      ...newParent,
+      children: newChildren
+    };
+  }
+
+  // Update node
+  newNodes[nodeId] = {
+    ...node,
+    parentId: newParentId || null
+  };
+
+  // Update progress for both old and new paths
+  newNodes = updateProgressRecursively(newNodes, parent.id);
+  if (newParentId) {
+    newNodes = updateProgressRecursively(newNodes, newParentId);
+  }
 
   return newNodes;
 };

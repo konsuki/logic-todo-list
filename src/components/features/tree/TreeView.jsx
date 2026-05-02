@@ -4,13 +4,11 @@ import { Target, Zap, Share2, GitCommit, MoveRight, MoveDown, Settings2, X } fro
 import * as treeLogic from '../../../logic/treeLogic';
 import './TreeView.css';
 
-const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, expandedNodeIds, toggleExpand, t }) => {
+const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, expandedNodeIds, toggleExpand, t, editingNodeId, setEditingNodeId }) => {
   const svgRef = useRef(null);
   const containerRef = useRef(null);
   const [layoutMode, setLayoutMode] = useState('tree'); // 'tree' or 'flow'
   const [flowOrientation, setFlowOrientation] = useState('horizontal'); // 'horizontal' or 'vertical'
-  const [editingNodeId, setEditingNodeId] = useState(null);
-  const [editTitle, setEditTitle] = useState('');
   const prevLayoutRef = useRef(layoutMode);
   const prevOrientationRef = useRef(flowOrientation);
   
@@ -317,7 +315,7 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       if (isEditing) {
         const input = container.append('xhtml:input')
           .attr('class', 'node-edit-input')
-          .attr('value', editTitle)
+          .attr('value', d.data.title)
           .style('width', '100%')
           .style('height', '100%')
           .on('keydown', (event) => {
@@ -345,7 +343,6 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
           .on('dblclick', (event) => {
             event.stopPropagation();
             setEditingNodeId(d.data.id);
-            setEditTitle(d.data.title);
           })
           .html(d.data.title);
       }
@@ -370,7 +367,7 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       svg.call(zoom.transform, currentTransform);
     }
 
-  }, [hierarchyData, flattenedFlow, layoutMode, flowOrientation, selectedNodeId, onSelectNode, nodes, spacingH, spacingV, containerHPadding, containerVPaddingTop, hierarchyGap, editingNodeId, editTitle, updateNode]);
+  }, [hierarchyData, flattenedFlow, layoutMode, flowOrientation, selectedNodeId, onSelectNode, nodes, spacingH, spacingV, containerHPadding, containerVPaddingTop, hierarchyGap, editingNodeId, updateNode]);
 
   if (rootNodes.length === 0) return null;
 

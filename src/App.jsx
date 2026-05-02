@@ -22,13 +22,15 @@ function App() {
     updateNode, 
     addDependency, 
     removeDependency,
-    reorderNode
+    reorderNode,
+    outdentNode
   } = useTodoTree();
   const { t, lang, setLang } = useI18n();
   const [view, setView] = useState('list');
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
+  const [editingNodeId, setEditingNodeId] = useState(null);
   const [completedGoals, setCompletedGoals] = useState(new Set());
   const [expandedNodeIds, setExpandedNodeIds] = useState(new Set());
 
@@ -61,7 +63,11 @@ function App() {
     setView,
     isInspectorOpen,
     setIsInspectorOpen,
-    t
+    t,
+    editingNodeId,
+    setEditingNodeId,
+    outdentNode,
+    setExpandedNodeIds
   });
 
   // Celebration Logic
@@ -182,6 +188,8 @@ function App() {
             expandedNodeIds={expandedNodeIds}
             toggleExpand={toggleExpand}
             t={t}
+            editingNodeId={editingNodeId}
+            setEditingNodeId={setEditingNodeId}
           />
         )}
       </main>
