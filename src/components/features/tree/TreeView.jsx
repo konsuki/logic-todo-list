@@ -22,7 +22,6 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
 
   const hierarchyData = useMemo(() => {
     if (rootNodes.length === 0) return null;
-    const root = rootNodes[0];
     const buildHierarchy = (nodeId) => {
       const node = nodes[nodeId];
       if (!node) return null;
@@ -32,7 +31,13 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
         children: node.children ? node.children.map(id => buildHierarchy(id)).filter(Boolean) : []
       };
     };
-    return buildHierarchy(root.id);
+    
+    // Create a virtual root to hold all actual root nodes
+    return {
+      id: 'VIRTUAL_ROOT',
+      isVirtual: true,
+      children: rootNodes.map(root => buildHierarchy(root.id)).filter(Boolean)
+    };
   }, [nodes, rootNodes]);
 
   const flattenedFlow = useMemo(() => {
@@ -68,12 +73,14 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       const treeLayout = d3.tree().nodeSize([120, 380]);
       const root = d3.hierarchy(hierarchyData);
       treeLayout(root);
-      displayNodes = root.descendants();
-      displayLinks = root.links().map(l => ({
-        source: l.source,
-        target: l.target,
-        type: 'hierarchy'
-      }));
+      displayNodes = root.descendants().filter(d => !d.data.isVirtual);
+      displayLinks = root.links()
+        .filter(l => !l.source.data.isVirtual)
+        .map(l => ({
+          source: l.source,
+          target: l.target,
+          type: 'hierarchy'
+        }));
     } else {
       // Flow Layout: Dynamic Spacing Logic (Robust Sequence)
       const leafNodes = flattenedFlow.filter(n => !n.children || n.children.length === 0);
