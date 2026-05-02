@@ -4,9 +4,10 @@
 - [RX] 05-02: 内容
 
 ## 🚀 未完了 (Incomplete)
-- [R4] 05-02: [IN_PROGRESS] GOALが複数存在している時、TreeViewのtreeモードで1つ目のGOAL以外のツリーが表示されない問題の修正
+- [R5] 05-02: 見た目が現在の暗い感じだと使いづらい人もいるため、明るめのテーマを追加する
 
 ## ✅ 完了済み (Completed)
+- [x] 05-02: [R4] GOALが複数存在している時、TreeViewのtreeモードで1つ目のGOAL以外のツリーが表示されない問題の修正
 - [x] 05-02: [R3] キーボードショートカットの実装 (Enter: 兄弟追加, Tab: 子追加, Shift+Tab: アウトデント) (@node_shortcuts_spec.md)
 - [x] 05-02: [R2] Flow モードへの論理的レイアウトロジック（8pxグリッド）の適用 (@impeccable_layout_spec.md)
 - [x] 05-02: [R1] TreeView内の設定モーダルのUI崩れ修正 (@settings_modal_fix_spec.md)
