@@ -21,13 +21,12 @@ const DesignSandbox = () => {
       minHeight: '100vh',
       background: isLight 
         ? 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%)' 
-        : '#0B0E14', // 深みのあるミッドナイトブラック
+        : '#0B0E14', 
       padding: '20px',
       gap: '24px',
       transition: 'all 0.5s ease',
       fontFamily: "'Inter', sans-serif"
     }}>
-      {/* Background Glow for Dark Theme */}
       {!isLight && (
         <div style={{
           position: 'absolute',
@@ -42,7 +41,6 @@ const DesignSandbox = () => {
         }} />
       )}
 
-      {/* Theme Toggle */}
       <div style={{ 
         display: 'flex', 
         background: isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)', 
@@ -98,7 +96,7 @@ const DesignSandbox = () => {
         style={{
           background: isLight 
             ? 'rgba(255, 255, 255, 0.8)' 
-            : 'linear-gradient(180deg, #1A1F26 0%, #151921 100%)', // 王道のダークグレー
+            : 'linear-gradient(180deg, #1A1F26 0%, #151921 100%)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           border: isLight 
@@ -115,7 +113,6 @@ const DesignSandbox = () => {
           zIndex: 1
         }}
       >
-        {/* Subtle Highlight for Dark Theme */}
         {!isLight && (
           <div style={{
             position: 'absolute',
@@ -167,7 +164,6 @@ const DesignSandbox = () => {
             インディゴのアクセントを加えた洗練された配色案です。
           </p>
 
-          {/* Progress Section */}
           <div style={{ marginBottom: '32px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '12px' }}>
               <span style={{ color: isLight ? '#94A3B8' : '#64748B', fontWeight: '500' }}>Progress</span>
@@ -189,13 +185,12 @@ const DesignSandbox = () => {
                   height: '100%', 
                   background: isLight 
                     ? 'linear-gradient(90deg, #6366F1, #4F46E5)' 
-                    : 'linear-gradient(90deg, #6366F1, #A855F7)' // パープルを加えたグラデーション
+                    : 'linear-gradient(90deg, #6366F1, #A855F7)' 
                 }}
               />
             </div>
           </div>
 
-          {/* Action Button */}
           <motion.button 
             whileHover={{ scale: 1.01, translateY: -1 }}
             whileTap={{ scale: 0.99 }}

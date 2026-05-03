@@ -10,6 +10,7 @@ import TreeView from './components/features/tree/TreeView';
 import Inspector from './components/features/inspector/Inspector';
 import SettingsPanel from './components/features/settings/SettingsPanel';
 import DesignSandbox from './components/sandbox/DesignSandbox';
+import { themes } from './constants/themes';
 import './App.css';
 
 function App() {
@@ -34,6 +35,22 @@ function App() {
   const [editingNodeId, setEditingNodeId] = useState(null);
   const [completedGoals, setCompletedGoals] = useState(new Set());
   const [expandedNodeIds, setExpandedNodeIds] = useState(new Set());
+
+  // Theme Management
+  const [themeName, setThemeName] = useState(() => localStorage.getItem('themeName') || 'classic');
+  const [themeMode, setThemeMode] = useState(() => localStorage.getItem('themeMode') || 'dark');
+
+  useEffect(() => {
+    const selectedTheme = themes[themeName][themeMode];
+    Object.entries(selectedTheme).forEach(([key, value]) => {
+      document.documentElement.style.setProperty(key, value);
+    });
+    localStorage.setItem('themeName', themeName);
+    localStorage.setItem('themeMode', themeMode);
+    
+    // Also update body background for seamless transitions
+    document.body.style.backgroundColor = selectedTheme['--bg-color'];
+  }, [themeName, themeMode]);
 
   // Auto-expand new nodes or roots
   useEffect(() => {
@@ -225,6 +242,10 @@ function App() {
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         t={t}
+        themeName={themeName}
+        setThemeName={setThemeName}
+        themeMode={themeMode}
+        setThemeMode={setThemeMode}
       />
     </div>
   );

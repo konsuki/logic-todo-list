@@ -207,7 +207,8 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
         .attr('width', d => d.width)
         .attr('height', d => d.height)
         .attr('rx', 25)
-        .style('fill', d => `hsla(220, 100%, 100%, ${0.01 + (d.rank * 0.005)})`);
+        .style('fill', d => `var(--border-color)`)
+        .style('opacity', d => 0.2 + (d.rank * 0.05));
 
       enclosureGroups.append('rect')
         .attr('class', 'enclosure-progress-border')

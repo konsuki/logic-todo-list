@@ -12,6 +12,7 @@ export const useSettings = () => {
 
 export const SettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState(() => {
+    const savedSettings = localStorage.getItem('logido_settings');
     return savedSettings ? JSON.parse(savedSettings) : {
       showDescriptionInList: true,
       theme: 'theme-classic',

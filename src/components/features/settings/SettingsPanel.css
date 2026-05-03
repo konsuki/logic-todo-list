@@ -82,12 +82,18 @@
   gap: 32px;
 }
 
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .settings-section h3 {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--primary-color);
-  margin-bottom: 24px;
+  margin-bottom: 8px; /* Reduced from 24px because of section gap */
   font-weight: 700;
 }
 
@@ -182,15 +188,15 @@
   bottom: 3px;
   background-color: var(--text-muted);
   transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(24px);
   background-color: white;
 }
@@ -203,19 +209,68 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+.segmented-control {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.segmented-control button {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.segmented-control button.active {
+  background: var(--primary-color);
+  color: #000;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.segmented-control button:not(.active):hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.theme-select {
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.theme-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+
 /* Dark mode adjustments if needed */
 @media (prefers-color-scheme: dark) {
   .settings-panel {
-    background: rgba(30, 30, 35, 0.7);
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
   }
   
   .setting-item {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
   }
   
   .setting-item:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
   }
 }

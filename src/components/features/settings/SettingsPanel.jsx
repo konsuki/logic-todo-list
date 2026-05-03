@@ -1,10 +1,18 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Eye, EyeOff } from 'lucide-react';
+import { X, Settings, Eye, EyeOff, Sun, Moon, Palette } from 'lucide-react';
 import { useSettings } from '../../../logic/SettingsContext';
 import './SettingsPanel.css';
 
-const SettingsPanel = ({ isOpen, onClose, t }) => {
+const SettingsPanel = ({ 
+  isOpen, 
+  onClose, 
+  t, 
+  themeName, 
+  setThemeName, 
+  themeMode, 
+  setThemeMode 
+}) => {
   const { settings, updateSetting } = useSettings();
 
   const containerVariants = {
@@ -62,6 +70,52 @@ const SettingsPanel = ({ isOpen, onClose, t }) => {
             </div>
 
             <div className="settings-content">
+              <motion.section className="settings-section" variants={itemVariants}>
+                <h3>{t('settings.appearance') || 'Appearance'}</h3>
+                
+                <motion.div className="setting-item" variants={itemVariants}>
+                  <div className="setting-info">
+                    <div className="setting-label">
+                      {themeMode === 'light' ? <Sun size={18} /> : <Moon size={18} />}
+                      <span>{t('settings.mode') || 'Mode'}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="segmented-control">
+                    <button 
+                      className={themeMode === 'light' ? 'active' : ''} 
+                      onClick={() => setThemeMode('light')}
+                    >
+                      {t('settings.light') || 'Light'}
+                    </button>
+                    <button 
+                      className={themeMode === 'dark' ? 'active' : ''} 
+                      onClick={() => setThemeMode('dark')}
+                    >
+                      {t('settings.dark') || 'Dark'}
+                    </button>
+                  </div>
+                </motion.div>
+
+                <motion.div className="setting-item" variants={itemVariants}>
+                  <div className="setting-info">
+                    <div className="setting-label">
+                      <Palette size={18} />
+                      <span>{t('settings.theme') || 'Theme Color'}</span>
+                    </div>
+                  </div>
+                  
+                  <select 
+                    className="theme-select"
+                    value={themeName}
+                    onChange={(e) => setThemeName(e.target.value)}
+                  >
+                    <option value="classic">{t('settings.theme_classic') || 'Classic'}</option>
+                    <option value="premium">{t('settings.theme_premium') || 'Premium'}</option>
+                  </select>
+                </motion.div>
+              </motion.section>
+
               <motion.section className="settings-section" variants={itemVariants}>
                 <h3>{t('settings.view_preferences') || 'View Preferences'}</h3>
                 

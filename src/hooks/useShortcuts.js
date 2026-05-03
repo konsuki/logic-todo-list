@@ -30,7 +30,7 @@ export const useShortcuts = ({
         return;
       }
 
-      switch (e.code) {
+      switch (e.key) {
         case 'ArrowUp':
         case 'ArrowDown': {
           e.preventDefault();
@@ -40,7 +40,7 @@ export const useShortcuts = ({
           const currentIndex = visibleNodes.findIndex(n => n.id === selectedNodeId);
           let nextIndex = 0;
 
-          if (e.code === 'ArrowUp') {
+          if (e.key === 'ArrowUp') {
             nextIndex = currentIndex <= 0 ? visibleNodes.length - 1 : currentIndex - 1;
           } else {
             nextIndex = currentIndex >= visibleNodes.length - 1 || currentIndex === -1 ? 0 : currentIndex + 1;
@@ -50,8 +50,7 @@ export const useShortcuts = ({
           break;
         }
 
-        case 'Enter':
-        case 'NumpadEnter': {
+        case 'Enter': {
           e.preventDefault();
           if (!selectedNodeId) return;
           const node = nodes[selectedNodeId];
@@ -78,21 +77,21 @@ export const useShortcuts = ({
             const newId = crypto.randomUUID();
             // Default new child type based on parent logic will be handled by treeLogic, but we pass 'ACTION' as default
             addNode(selectedNodeId, 'ACTION', 'New Task', newId);
-            
+
             // Expand parent so we can see the new child safely
             setExpandedNodeIds(prev => {
               const next = new Set(prev);
               next.add(selectedNodeId);
               return next;
             });
-            
+
             setSelectedNodeId(newId);
             setEditingNodeId(newId);
           }
           break;
         }
 
-        case 'Space': { // Space
+        case ' ': { // Space
           e.preventDefault();
           if (selectedNodeId) {
             toggleStatus(selectedNodeId);
@@ -110,21 +109,15 @@ export const useShortcuts = ({
           break;
         }
 
-        case 'KeyV': {
+        case 'v':
+        case 'V': {
           setView(view === 'list' ? 'tree' : 'list');
           break;
         }
 
-        case 'KeyI': {
+        case 'i':
+        case 'I': {
           setIsInspectorOpen(!isInspectorOpen);
-          break;
-        }
-
-        case 'KeyP': {
-          if (e.altKey) {
-            e.preventDefault();
-            setView(prev => prev === 'preview' ? 'list' : 'preview');
-          }
           break;
         }
 
@@ -136,17 +129,17 @@ export const useShortcuts = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
-    nodes, 
-    rootNodes, 
-    selectedNodeId, 
-    setSelectedNodeId, 
-    expandedNodeIds, 
-    addNode, 
-    deleteNode, 
-    toggleStatus, 
-    view, 
-    setView, 
-    isInspectorOpen, 
+    nodes,
+    rootNodes,
+    selectedNodeId,
+    setSelectedNodeId,
+    expandedNodeIds,
+    addNode,
+    deleteNode,
+    toggleStatus,
+    view,
+    setView,
+    isInspectorOpen,
     setIsInspectorOpen,
     t,
     editingNodeId,
