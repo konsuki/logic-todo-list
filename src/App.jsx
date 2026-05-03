@@ -165,13 +165,15 @@ function App() {
             <Globe size={18} style={{ marginRight: '6px' }} />
             <span className="lang-label">{lang.toUpperCase()}</span>
           </button>
-          <button 
-            className={`icon-btn ${view === 'preview' ? 'active' : ''}`}
-            onClick={() => setView(view === 'preview' ? 'list' : 'preview')}
-            title="Design Preview (Alt+P)"
-          >
-            <Zap size={20} color={view === 'preview' ? 'var(--primary-color)' : 'var(--text-muted)'} />
-          </button>
+          {import.meta.env.DEV && (
+            <button 
+              className={`icon-btn ${view === 'preview' ? 'active' : ''}`}
+              onClick={() => setView(view === 'preview' ? 'list' : 'preview')}
+              title="Design Preview (Alt+P)"
+            >
+              <Zap size={20} color={view === 'preview' ? 'var(--primary-color)' : 'var(--text-muted)'} />
+            </button>
+          )}
           <button 
             className="icon-btn"
             onClick={() => setIsSettingsOpen(true)}
@@ -189,7 +191,7 @@ function App() {
       </header>
 
       <main className="main-content" style={{ padding: view === 'tree' || view === 'preview' ? '0' : '40px' }}>
-        {view === 'preview' ? (
+        {import.meta.env.DEV && view === 'preview' ? (
           <DesignSandbox />
         ) : view === 'list' ? (
           <ListView 

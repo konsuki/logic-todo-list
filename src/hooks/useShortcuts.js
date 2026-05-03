@@ -30,6 +30,13 @@ export const useShortcuts = ({
         return;
       }
 
+      // Dev-only Preview Shortcut (Alt+P)
+      if (e.altKey && e.code === 'KeyP' && import.meta.env.DEV) {
+        e.preventDefault();
+        setView(prev => prev === 'preview' ? 'list' : 'preview');
+        return;
+      }
+
       switch (e.key) {
         case 'ArrowUp':
         case 'ArrowDown': {
