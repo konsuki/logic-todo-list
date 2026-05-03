@@ -9,6 +9,7 @@ import ListView from './components/features/list/ListView';
 import TreeView from './components/features/tree/TreeView';
 import Inspector from './components/features/inspector/Inspector';
 import SettingsPanel from './components/features/settings/SettingsPanel';
+import DesignSandbox from './components/sandbox/DesignSandbox';
 import './App.css';
 
 function App() {
@@ -148,6 +149,13 @@ function App() {
             <span className="lang-label">{lang.toUpperCase()}</span>
           </button>
           <button 
+            className={`icon-btn ${view === 'preview' ? 'active' : ''}`}
+            onClick={() => setView(view === 'preview' ? 'list' : 'preview')}
+            title="Design Preview (Alt+P)"
+          >
+            <Zap size={20} color={view === 'preview' ? 'var(--primary-color)' : 'var(--text-muted)'} />
+          </button>
+          <button 
             className="icon-btn"
             onClick={() => setIsSettingsOpen(true)}
             title="Settings"
@@ -163,8 +171,10 @@ function App() {
         </div>
       </header>
 
-      <main className="main-content" style={{ padding: view === 'tree' ? '0' : '40px' }}>
-        {view === 'list' ? (
+      <main className="main-content" style={{ padding: view === 'tree' || view === 'preview' ? '0' : '40px' }}>
+        {view === 'preview' ? (
+          <DesignSandbox />
+        ) : view === 'list' ? (
           <ListView 
             nodes={nodes}
             rootNodes={rootNodes}

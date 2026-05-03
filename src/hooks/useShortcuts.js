@@ -30,7 +30,7 @@ export const useShortcuts = ({
         return;
       }
 
-      switch (e.key) {
+      switch (e.code) {
         case 'ArrowUp':
         case 'ArrowDown': {
           e.preventDefault();
@@ -40,7 +40,7 @@ export const useShortcuts = ({
           const currentIndex = visibleNodes.findIndex(n => n.id === selectedNodeId);
           let nextIndex = 0;
 
-          if (e.key === 'ArrowUp') {
+          if (e.code === 'ArrowUp') {
             nextIndex = currentIndex <= 0 ? visibleNodes.length - 1 : currentIndex - 1;
           } else {
             nextIndex = currentIndex >= visibleNodes.length - 1 || currentIndex === -1 ? 0 : currentIndex + 1;
@@ -50,7 +50,8 @@ export const useShortcuts = ({
           break;
         }
 
-        case 'Enter': {
+        case 'Enter':
+        case 'NumpadEnter': {
           e.preventDefault();
           if (!selectedNodeId) return;
           const node = nodes[selectedNodeId];
@@ -91,7 +92,7 @@ export const useShortcuts = ({
           break;
         }
 
-        case ' ': { // Space
+        case 'Space': { // Space
           e.preventDefault();
           if (selectedNodeId) {
             toggleStatus(selectedNodeId);
@@ -109,15 +110,21 @@ export const useShortcuts = ({
           break;
         }
 
-        case 'v':
-        case 'V': {
+        case 'KeyV': {
           setView(view === 'list' ? 'tree' : 'list');
           break;
         }
 
-        case 'i':
-        case 'I': {
+        case 'KeyI': {
           setIsInspectorOpen(!isInspectorOpen);
+          break;
+        }
+
+        case 'KeyP': {
+          if (e.altKey) {
+            e.preventDefault();
+            setView(prev => prev === 'preview' ? 'list' : 'preview');
+          }
           break;
         }
 

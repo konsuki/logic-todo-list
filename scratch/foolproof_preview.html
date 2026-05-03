@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Logic-Todo Preview</title>
+    <!-- React & Tailwind CSS (CDN) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .progress-gradient {
+            background: linear-gradient(90deg, #00E5FF, #0055FF);
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function App() {
+            const [isCompleted, setIsCompleted] = useState(false);
+
+            return (
+                <div className="animate-float">
+                    <div className={`glass w-96 rounded-3xl p-8 transition-all duration-500 ${isCompleted ? 'opacity-50 scale-95' : 'opacity-100'}`}>
+                        <div className="flex justify-between items-center mb-6">
+                            <span className="bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
+                                GOAL
+                            </span>
+                            <span className="text-white/40 text-sm">20:30</span>
+                        </div>
+
+                        <h2 className="text-white text-2xl font-medium mb-3 tracking-tight">
+                            プレミアムUIの検証
+                        </h2>
+                        
+                        <p className="text-white/60 text-sm leading-relaxed mb-8">
+                            グラスモーフィズムと滑らかなアニメーションを組み合わせた、次世代のタスク管理UIのプレビューです。
+                        </p>
+
+                        <div className="w-full h-1.5 bg-white/10 rounded-full mb-8 overflow-hidden">
+                            <div 
+                                className="h-full progress-gradient transition-all duration-1000 ease-out" 
+                                style={{ width: isCompleted ? '100%' : '65%' }}
+                            ></div>
+                        </div>
+
+                        <button 
+                            onClick={() => setIsCompleted(!isCompleted)}
+                            className="w-full py-4 rounded-xl bg-white/10 hover:bg-white text-white hover:text-black font-medium transition-all duration-300 border border-white/5 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-95"
+                        >
+                            {isCompleted ? 'タスクを元に戻す' : 'タスクを完了する'}
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
