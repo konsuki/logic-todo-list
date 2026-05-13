@@ -112,6 +112,7 @@ const SettingsPanel = ({
                   >
                     <option value="classic">{t('settings.theme_classic') || 'Classic'}</option>
                     <option value="premium">{t('settings.theme_premium') || 'Premium'}</option>
+                    <option value="github">{t('settings.theme_github') || 'GitHub Actions'}</option>
                   </select>
                 </motion.div>
               </motion.section>

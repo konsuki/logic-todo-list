@@ -54,5 +54,37 @@ export const themes = {
       '--glass-bg': 'rgba(255, 255, 255, 0.7)',
       '--glass-border': 'rgba(0, 0, 0, 0.1)',
     }
+  },
+  github: {
+    dark: {
+      '--bg-color': '#0d1117',
+      '--surface-color': '#161b22',
+      '--primary-color': '#2f81f7',
+      '--primary-glow': 'rgba(47, 129, 247, 0.2)',
+      '--success-color': '#238636',
+      '--warning-color': '#d29922',
+      '--text-main': '#c9d1d9',
+      '--text-muted': '#8b949e',
+      '--border-color': '#30363d',
+      '--glass-bg': 'rgba(22, 27, 34, 0.7)',
+      '--glass-border': 'rgba(48, 54, 61, 0.8)',
+      '--node-radius': '6px',
+      '--enclosure-radius': '12px',
+    },
+    light: {
+      '--bg-color': '#f6f8fa',
+      '--surface-color': '#ffffff',
+      '--primary-color': '#0969da',
+      '--primary-glow': 'rgba(9, 105, 218, 0.1)',
+      '--success-color': '#1a7f37',
+      '--warning-color': '#bf8700',
+      '--text-main': '#24292f',
+      '--text-muted': '#57606a',
+      '--border-color': '#d0d7de',
+      '--glass-bg': 'rgba(255, 255, 255, 0.7)',
+      '--glass-border': 'rgba(208, 215, 222, 0.8)',
+      '--node-radius': '6px',
+      '--enclosure-radius': '12px',
+    }
   }
 };

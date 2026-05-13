@@ -206,7 +206,7 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
         .attr('y', d => d.y)
         .attr('width', d => d.width)
         .attr('height', d => d.height)
-        .attr('rx', 25)
+        .style('rx', 'var(--enclosure-radius, 25px)')
         .style('fill', d => `var(--border-color)`)
         .style('opacity', d => 0.2 + (d.rank * 0.05));
 
@@ -216,7 +216,7 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
         .attr('y', d => d.y)
         .attr('width', d => d.width)
         .attr('height', d => d.height)
-        .attr('rx', 25)
+        .style('rx', 'var(--enclosure-radius, 25px)')
         .style('stroke-dasharray', d => {
           const perimeter = 2 * (d.width + d.height);
           return `${(d.progress / 100) * perimeter}, ${perimeter}`;
@@ -280,7 +280,7 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       .attr('y', -30)
       .attr('width', nodeWidth)
       .attr('height', nodeHeight)
-      .attr('rx', 10)
+      .style('rx', 'var(--node-radius, 10px)')
       .attr('class', d => `node-rect ${d.data.type.toLowerCase()}`);
 
     nodeGroups.append('text')
