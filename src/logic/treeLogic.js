@@ -422,3 +422,31 @@ export const getVisibleNodesList = (nodes, rootNodes, expandedNodeIds) => {
 
   return result;
 };
+
+/**
+ * Converts the flat nodes map into a nested tree structure for react-arborist.
+ * Each node becomes: { id, name, children?, ...originalNodeData }
+ */
+export const buildArboristTree = (nodes, rootNodes) => {
+  const buildNode = (nodeId) => {
+    const node = nodes[nodeId];
+    if (!node) return null;
+
+    const sortedChildIds = node.children && node.children.length > 0
+      ? [...node.children].sort((a, b) => (nodes[a]?.order || 0) - (nodes[b]?.order || 0))
+      : [];
+
+    const children = sortedChildIds.length > 0
+      ? sortedChildIds.map(buildNode).filter(Boolean)
+      : undefined; // undefined = leaf node in react-arborist
+
+    return {
+      ...node,
+      name: node.title,
+      children,
+    };
+  };
+
+  const sortedRoots = [...rootNodes].sort((a, b) => (a.order || 0) - (b.order || 0));
+  return sortedRoots.map(root => buildNode(root.id)).filter(Boolean);
+};

@@ -97,9 +97,9 @@
 }
 
 .list-view-content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  flex: 1;
+  min-height: 400px;
+  position: relative;
 }
 
 .no-results {
@@ -112,4 +112,26 @@
   gap: 16px;
   border: 1px dashed var(--border-color);
   border-radius: 20px;
+}
+
+/* react-arborist overrides */
+[role="treeitem"] {
+  outline: none;
+}
+
+[role="treeitem"]:focus {
+  outline: none;
+}
+
+/* Drag preview styling */
+[data-react-arborist-dragging="true"] .todo-item-row {
+  opacity: 0.5;
+  border: 1px dashed var(--primary-color);
+}
+
+/* Drop cursor / insertion line */
+.react-arborist-drop-cursor {
+  background-color: var(--primary-color) !important;
+  height: 2px !important;
+  border-radius: 1px;
 }

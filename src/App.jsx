@@ -25,7 +25,8 @@ function App() {
     addDependency, 
     removeDependency,
     reorderNode,
-    outdentNode
+    outdentNode,
+    moveNode
   } = useTodoTree();
   const { t, lang, setLang } = useI18n();
   const [view, setView] = useState('list');
@@ -208,6 +209,7 @@ function App() {
             onSelectNode={handleSelectNode}
             expandedNodeIds={expandedNodeIds}
             toggleExpand={toggleExpand}
+            moveNode={moveNode}
             t={t}
           />
         ) : (

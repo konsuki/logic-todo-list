@@ -94,6 +94,81 @@ export const useTodoTree = () => {
     setNodes(prev => treeLogic.outdentNode(prev, nodeId));
   }, []);
 
+  const handleMoveNode = useCallback((dragIds, newParentId, index) => {
+    setNodes(prev => {
+      const nodeId = dragIds[0];
+      const node = prev[nodeId];
+      if (!node) return prev;
+
+      let newNodes = { ...prev };
+      const oldParentId = node.parentId;
+
+      // 1. Remove from old parent's children
+      if (oldParentId && newNodes[oldParentId]) {
+        newNodes[oldParentId] = {
+          ...newNodes[oldParentId],
+          children: newNodes[oldParentId].children.filter(id => id !== nodeId),
+        };
+      }
+
+      // 2. Insert into new parent's children at index
+      if (newParentId && newNodes[newParentId]) {
+        const parentChildren = [...(newNodes[newParentId].children || [])];
+        parentChildren.splice(index, 0, nodeId);
+        newNodes[newParentId] = {
+          ...newNodes[newParentId],
+          children: parentChildren,
+        };
+      }
+
+      // 3. Update the moved node's parentId
+      newNodes[nodeId] = {
+        ...newNodes[nodeId],
+        parentId: newParentId || null,
+      };
+
+      // 4. Re-assign order for all siblings in the new parent
+      const newSiblingIds = newParentId && newNodes[newParentId]
+        ? newNodes[newParentId].children
+        : Object.values(newNodes).filter(n => !n.parentId).sort((a, b) => (a.order || 0) - (b.order || 0)).map(n => n.id);
+
+      // For root-level drops without a parent, insert at index
+      if (!newParentId) {
+        const rootIds = Object.values(newNodes)
+          .filter(n => !n.parentId)
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
+          .map(n => n.id);
+        // Re-order: remove nodeId then insert at index
+        const filtered = rootIds.filter(id => id !== nodeId);
+        filtered.splice(index, 0, nodeId);
+        filtered.forEach((id, i) => {
+          newNodes[id] = { ...newNodes[id], order: i };
+        });
+      } else {
+        newSiblingIds.forEach((id, i) => {
+          newNodes[id] = { ...newNodes[id], order: i };
+        });
+      }
+
+      // 5. Also re-assign order for old parent's remaining children
+      if (oldParentId && newNodes[oldParentId]) {
+        newNodes[oldParentId].children.forEach((id, i) => {
+          newNodes[id] = { ...newNodes[id], order: i };
+        });
+      }
+
+      // 6. Recalculate progress for both old and new parents
+      if (oldParentId) {
+        newNodes = treeLogic.updateProgressRecursively(newNodes, oldParentId);
+      }
+      if (newParentId) {
+        newNodes = treeLogic.updateProgressRecursively(newNodes, newParentId);
+      }
+
+      return newNodes;
+    });
+  }, []);
+
   /**
    * Helper to get the root nodes (those without parentId)
    */
@@ -111,6 +186,8 @@ export const useTodoTree = () => {
     removeDependency: handleRemoveDependency,
     reorderNode: handleReorderNode,
     outdentNode: handleOutdentNode,
+    moveNode: handleMoveNode,
     isNodeLocked: (nodeId) => treeLogic.isNodeLocked(nodes, nodeId)
   };
 };
+
