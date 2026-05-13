@@ -22,6 +22,7 @@
 - [dependency_spec.md](./specs/dependency_spec.md): 依存関係。
 - [timeline_spec.md](./specs/timeline_spec.md): フェーズと期限。
 - [i18n_spec.md](./specs/i18n_spec.md): 多言語対応。
+- [bulk_import_spec.md](./specs/bulk_import_spec.md): タスクツリーの一括インポート。
 
 ### 4. [plans/](./plans/) - 実実装の記録
 - 過去のタスクにおける具体的な実装手順と結果のアーカイブ。

@@ -274,3 +274,28 @@ input:checked+.slider:before {
     background: rgba(255, 255, 255, 0.06);
   }
 }
+
+.import-btn {
+  position: relative;
+  z-index: 2;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: var(--primary-color);
+  color: #000;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.import-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 16px var(--primary-glow);
+}
+
+.import-btn:active {
+  transform: translateY(0);
+}

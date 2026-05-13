@@ -12,12 +12,13 @@ export const parseImportData = (text) => {
   const trimmed = text.trim();
   if (!trimmed) throw new Error('Input is empty');
 
-  if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+  if (trimmed.startsWith('{') || (trimmed.startsWith('[') && !trimmed.startsWith('[GOAL') && !trimmed.startsWith('[STRATEGY') && !trimmed.startsWith('[ACTION'))) {
     try {
       const data = JSON.parse(trimmed);
       return normalizeJson(data);
     } catch (e) {
-      throw new Error('Invalid JSON format: ' + e.message);
+      // If it looks like JSON but fails to parse, it might be Markdown with [tags]
+      // Fall through to parseMarkdown
     }
   }
 

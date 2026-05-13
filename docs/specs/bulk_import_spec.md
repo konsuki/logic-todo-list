@@ -60,4 +60,5 @@
 - **Parser**:
     - JSON: `JSON.parse` を使用。
     - Markdown: 改行で分割し、正規表現でインデント数とコンテンツを抽出する再帰的なパーサーを実装。
-- **Logic**: `treeLogic.js` に `importTree(nodes, importData)` 関数を追加、または既存の `addNodes` を拡張する。
+    - **ハイブリッド判定**: テキストが `{` または `[` で始まる場合でも、JSONとしてパースに失敗した場合は自動的にMarkdownとして処理し、柔軟なインポートを可能にする。
+- **Logic**: `treeLogic.js` に `importTreeToNodes(nodes, importedData)` 関数を追加。

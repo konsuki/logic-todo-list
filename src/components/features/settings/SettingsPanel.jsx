@@ -140,6 +140,8 @@ const SettingsPanel = ({
                     />
                     <span className="slider round"></span>
                   </label>
+                </motion.div>
+
                 <motion.div className="setting-item" variants={itemVariants}>
                   <div className="setting-info">
                     <div className="setting-label">
@@ -152,12 +154,11 @@ const SettingsPanel = ({
                   </div>
                   
                   <button 
-                    className="secondary-btn" 
+                    className="import-btn" 
                     onClick={() => {
                       onClose();
                       onOpenImport();
                     }}
-                    style={{ padding: '6px 12px', fontSize: '12px', background: 'var(--border-color)' }}
                   >
                     {t('settings.open_import') || 'Open'}
                   </button>
