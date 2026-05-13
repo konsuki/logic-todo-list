@@ -23,7 +23,7 @@
 - [timeline_spec.md](./specs/timeline_spec.md): フェーズと期限。
 - [i18n_spec.md](./specs/i18n_spec.md): 多言語対応。
 - [bulk_import_spec.md](./specs/bulk_import_spec.md): タスクツリーの一括インポート。
-- [phase_badge_visibility_spec.md](./specs/phase_badge_visibility_spec.md): フェーズバッジの表示制御。
+- [node_badge_visibility_spec.md](./specs/node_badge_visibility_spec.md): 各種バッジ・タグの表示制御。
 
 ### 4. [plans/](./plans/) - 実実装の記録
 - 過去のタスクにおける具体的な実装手順と結果のアーカイブ。
