@@ -15,6 +15,7 @@ export const SettingsProvider = ({ children }) => {
     const savedSettings = localStorage.getItem('logido_settings');
     return savedSettings ? JSON.parse(savedSettings) : {
       showDescriptionInList: true,
+      showPhaseBadges: true,
       theme: 'theme-classic',
     };
   });

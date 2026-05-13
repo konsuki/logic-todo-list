@@ -119,7 +119,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
 
             {/* Timeline Badges */}
             <div className="timeline-meta">
-              {data.phase && (
+              {settings.showPhaseBadges && data.phase && (
                 <span className={`phase-badge ${data.phase.toLowerCase()}`}>
                   {t(`phases.${data.phase}`)}
                 </span>

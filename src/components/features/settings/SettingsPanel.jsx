@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText } from 'lucide-react';
+import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText, Tag } from 'lucide-react';
 import { useSettings } from '../../../logic/SettingsContext';
 import './SettingsPanel.css';
 
@@ -137,6 +137,27 @@ const SettingsPanel = ({
                       type="checkbox" 
                       checked={settings.showDescriptionInList} 
                       onChange={(e) => updateSetting('showDescriptionInList', e.target.checked)}
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                </motion.div>
+
+                <motion.div className="setting-item" variants={itemVariants}>
+                  <div className="setting-info">
+                    <div className="setting-label">
+                      <Tag size={18} />
+                      <span>{t('settings.show_phase_badges') || 'Show Phase Badges'}</span>
+                    </div>
+                    <p className="setting-desc">
+                      {t('settings.show_phase_badges_desc') || 'Toggle visibility of execution phase badges in the list view.'}
+                    </p>
+                  </div>
+                  
+                  <label className="switch">
+                    <input 
+                      type="checkbox" 
+                      checked={settings.showPhaseBadges} 
+                      onChange={(e) => updateSetting('showPhaseBadges', e.target.checked)}
                     />
                     <span className="slider round"></span>
                   </label>

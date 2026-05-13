@@ -1,17 +1,14 @@
-/**
- * LogiDo Import Logic
- * Parses JSON and Markdown (indented text) into a nested tree structure.
- */
-
 import { NODE_TYPES } from './treeLogic';
 
 /**
- * Detects format and parses input string.
+ * Main entry point for parsing import data.
+ * Supports JSON and Indented Text (Markdown-like).
  */
 export const parseImportData = (text) => {
   const trimmed = text.trim();
   if (!trimmed) throw new Error('Input is empty');
 
+  // Detection logic with fallback
   if (trimmed.startsWith('{') || (trimmed.startsWith('[') && !trimmed.startsWith('[GOAL') && !trimmed.startsWith('[STRATEGY') && !trimmed.startsWith('[ACTION'))) {
     try {
       const data = JSON.parse(trimmed);
@@ -26,105 +23,95 @@ export const parseImportData = (text) => {
 };
 
 /**
- * Normalizes JSON data into the expected nested structure.
+ * Normalizes JSON data into a nested node structure.
  */
 const normalizeJson = (data) => {
-  const normalizeNode = (node) => {
-    if (!node.title) throw new Error('Node missing title');
-    
-    const children = (node.children || []).map(normalizeNode);
-    
-    // Auto-tagging if type is missing
-    let type = node.type;
-    if (!type || !NODE_TYPES[type]) {
-      type = children.length > 0 ? NODE_TYPES.STRATEGY : NODE_TYPES.ACTION;
-    }
-
-    return {
-      title: node.title,
-      type: type,
-      children: children
-    };
-  };
-
-  // If input is an array, wrap it in a dummy root or handle accordingly
-  // For simplicity, we expect a single root or we pick the first one
   if (Array.isArray(data)) {
-    return data.map(normalizeNode);
+    return data.map(item => processJsonNode(item));
   }
-  return [normalizeNode(data)];
+  return [processJsonNode(data)];
+};
+
+const processJsonNode = (node) => {
+  if (!node.title) throw new Error('Each node must have a title');
+  
+  return {
+    title: node.title,
+    type: node.type || detectType(node),
+    children: (node.children || []).map(child => processJsonNode(child))
+  };
+};
+
+const detectType = (node) => {
+  if (node.children && node.children.length > 0) return NODE_TYPES.STRATEGY;
+  return NODE_TYPES.ACTION;
 };
 
 /**
- * Parses indented Markdown-like text into a nested structure.
+ * Parses indented text into a nested node structure.
  */
 const parseMarkdown = (text) => {
-  const lines = text.split('\n');
-  const result = [];
+  const lines = text.split('\n').filter(line => line.trim() !== '');
+  if (lines.length === 0) return [];
+
+  const rootNodes = [];
   const stack = [];
 
-  lines.forEach((line, index) => {
-    if (!line.trim()) return;
-
-    // Count indentation (spaces or tabs)
+  lines.forEach(line => {
     const indentMatch = line.match(/^(\s*)/);
     const indent = indentMatch ? indentMatch[1].length : 0;
-    
     const content = line.trim();
-    
-    // Extract type tag if present
+
+    // Parse type tags if present
     const tagMatch = content.match(/^\[(GOAL|STRATEGY|ACTION)\]\s*(.*)/i);
     let type = null;
     let title = content;
-    
+
     if (tagMatch) {
       type = tagMatch[1].toUpperCase();
       title = tagMatch[2];
     }
 
-    const node = {
+    const newNode = {
       title,
       type,
-      children: [],
       indent,
-      lineIndex: index
+      children: []
     };
 
-    // Find parent in stack
     while (stack.length > 0 && stack[stack.length - 1].indent >= indent) {
       stack.pop();
     }
 
     if (stack.length === 0) {
-      result.push(node);
+      rootNodes.push(newNode);
     } else {
-      stack[stack.length - 1].children.push(node);
+      stack[stack.length - 1].children.push(newNode);
     }
 
-    stack.push(node);
+    stack.push(newNode);
   });
 
-  // Final pass: Auto-tagging based on structure
-  const finalizeNode = (node, depth) => {
-    const children = node.children.map(c => finalizeNode(c, depth + 1));
-    
-    let type = node.type;
-    if (!type) {
-      if (depth === 0) {
-        type = NODE_TYPES.GOAL;
-      } else if (children.length > 0) {
-        type = NODE_TYPES.STRATEGY;
-      } else {
-        type = NODE_TYPES.ACTION;
-      }
+  // Second pass: Finalize types and clean up
+  return rootNodes.map(node => finalizeMarkdownNode(node, null));
+};
+
+const finalizeMarkdownNode = (node, parentType) => {
+  let type = node.type;
+  
+  if (!type) {
+    if (!parentType) {
+      type = NODE_TYPES.GOAL;
+    } else if (node.children.length > 0) {
+      type = NODE_TYPES.STRATEGY;
+    } else {
+      type = NODE_TYPES.ACTION;
     }
+  }
 
-    return {
-      title: node.title,
-      type,
-      children
-    };
+  return {
+    title: node.title,
+    type,
+    children: node.children.map(child => finalizeMarkdownNode(child, type))
   };
-
-  return result.map(n => finalizeNode(n, 0));
 };

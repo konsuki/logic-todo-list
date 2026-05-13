@@ -93,7 +93,7 @@
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--primary-color);
-  margin-bottom: 8px; /* Reduced from 24px because of section gap */
+  margin-bottom: 8px;
   font-weight: 700;
 }
 
@@ -152,7 +152,6 @@
   line-height: 1.5;
 }
 
-/* Toggle Switch Styles - Precision Industrial Look */
 .switch {
   position: relative;
   display: inline-block;
@@ -259,7 +258,6 @@ input:checked+.slider:before {
   box-shadow: 0 0 0 2px var(--primary-glow);
 }
 
-/* Dark mode adjustments if needed */
 @media (prefers-color-scheme: dark) {
   .settings-panel {
     background: var(--glass-bg);
