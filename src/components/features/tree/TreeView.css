@@ -350,3 +350,42 @@
 .node-rect.goal { fill: hsla(190, 100%, 60%, 0.08); }
 .node-rect.strategy { fill: hsla(150, 80%, 50%, 0.08); }
 .node-rect.action { fill: hsla(220, 10%, 70%, 0.08); }
+
+/* GitHub Actions Theme Overrides */
+.theme-github .flow-link {
+  stroke: var(--border-color) !important;
+  stroke-dasharray: none;
+  stroke-opacity: 1;
+  animation: none;
+}
+
+.theme-github .node-rect.goal,
+.theme-github .node-rect.strategy,
+.theme-github .node-rect.action {
+  fill: var(--surface-color);
+}
+
+.theme-github .parent-enclosure {
+  fill: var(--surface-color) !important;
+  opacity: 1 !important;
+}
+
+.theme-github .enclosure-label {
+  fill: var(--text-main);
+  opacity: 0.9;
+}
+
+.theme-github .tree-node:hover .node-rect {
+  transform: none !important;
+  filter: drop-shadow(var(--node-hover-shadow, 0 4px 6px rgba(0, 0, 0, 0.12))) !important;
+  stroke: var(--border-color);
+}
+
+.theme-github .control-group-glass {
+  border-color: var(--border-color);
+}
+
+.theme-github .control-group-glass button.mode-btn.active {
+  color: var(--btn-active-text) !important;
+  background-color: var(--btn-active-bg) !important;
+}

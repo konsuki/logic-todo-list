@@ -70,13 +70,16 @@ export const themes = {
       '--glass-border': 'rgba(48, 54, 61, 0.8)',
       '--node-radius': '6px',
       '--enclosure-radius': '12px',
+      '--node-hover-shadow': '0 4px 6px rgba(1, 4, 9, 0.8)',
+      '--btn-active-bg': '#30363d',
+      '--btn-active-text': 'var(--text-main)',
     },
     light: {
       '--bg-color': '#f6f8fa',
       '--surface-color': '#ffffff',
       '--primary-color': '#0969da',
       '--primary-glow': 'rgba(9, 105, 218, 0.1)',
-      '--success-color': '#1a7f37',
+      '--success-color': '#1f883d',
       '--warning-color': '#bf8700',
       '--text-main': '#24292f',
       '--text-muted': '#57606a',
@@ -85,6 +88,9 @@ export const themes = {
       '--glass-border': 'rgba(208, 215, 222, 0.8)',
       '--node-radius': '6px',
       '--enclosure-radius': '12px',
+      '--node-hover-shadow': '0 4px 6px rgba(0, 0, 0, 0.12)',
+      '--btn-active-bg': '#e6e6e6',
+      '--btn-active-text': 'var(--text-main)',
     }
   }
 };

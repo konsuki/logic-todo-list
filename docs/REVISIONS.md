@@ -6,7 +6,7 @@
 ## 🚀 未完了 (Incomplete)
 
 ## ✅ 完了済み (Completed)
-- [x] 05-13: [R8] GitHub Actionsのノードデザインを模したテーマの追加と、それに合わせたUI全体の調整 (@github_actions_theme_spec.md)
+- [x] 05-13: [R9] GitHub Actionsテーマの色味とスタイルを実際の画像に完全に一致させる (@github_actions_theme_spec.md)
 - [x] 05-03: [R7] Viteの開発モードの時だけプレビュー機能を有効にする (@dev_only_preview_spec.md)
 - [x] 05-03: [R5] テーマシステムの実装（ライト/ダークモード、クラシック/プレミアム配色） (@theme_system_spec.md)
 - [x] 05-03: [R6] デザインプレビュー機能（Sandbox）のデベロッパー向け永続化

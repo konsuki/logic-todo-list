@@ -50,6 +50,9 @@ function App() {
     
     // Also update body background for seamless transitions
     document.body.style.backgroundColor = selectedTheme['--bg-color'];
+    
+    // Add theme class to body for specific CSS overrides
+    document.body.className = `theme-${themeName}`;
   }, [themeName, themeMode]);
 
   // Auto-expand new nodes or roots

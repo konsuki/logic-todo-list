@@ -148,3 +148,23 @@
   color: var(--text-main);
   margin-bottom: 8px;
 }
+
+/* GitHub Theme Flat Adjustments */
+.theme-github * {
+  box-shadow: none !important;
+}
+
+.theme-github .logo,
+.theme-github .enclosure-progress-border,
+.theme-github .tree-node.is-selected .node-rect {
+  filter: none !important;
+}
+
+.theme-github .view-switcher button.view-btn.active {
+  color: var(--btn-active-text) !important;
+  background-color: transparent !important;
+}
+
+.theme-github .view-switcher button.view-btn.active .active-bg {
+  background-color: var(--btn-active-bg) !important;
+}

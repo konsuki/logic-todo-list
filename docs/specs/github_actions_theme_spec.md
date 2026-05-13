@@ -1,41 +1,36 @@
 # GitHub Actions Theme Specification
 
 ## 概要
-GitHub Actionsのワークフローにおけるノード（Job）のデザインを模倣した新しいテーマ「github」を追加する。このテーマは、GitHubライクなクリーンな外観、フラットな境界線、明確なステータスカラーを特徴とする。
+ユーザーから提供された実際のGitHub Actionsの画像に基づき、ノードのデザイン、背景色、ラインのスタイルを完全に一致させる修正を行う。
 
-## 目的
-ユーザーが「github」テーマを選択した際、全体的なUIがGitHub Actionsのノードデザインに合わせたスタイルになること。
+## 追加・修正する仕様詳細
+画像分析から以下のCSS詳細を適用する。
 
-## 色仕様 (Color Palette)
-
-### Dark Mode (GitHub Dimmed/Dark)
-- `--bg-color`: `#0d1117` (GitHubのメイン背景)
-- `--surface-color`: `#161b22` (ノード/カードの背景)
-- `--primary-color`: `#2f81f7` (GitHubのリンク/アクティブカラー)
-- `--primary-glow`: `rgba(47, 129, 247, 0.2)`
-- `--success-color`: `#238636` (成功時の緑)
-- `--warning-color`: `#d29922` (進行中の黄)
-- `--text-main`: `#c9d1d9`
-- `--text-muted`: `#8b949e`
-- `--border-color`: `#30363d` (ノードの境界線)
-- `--glass-bg`: `rgba(22, 27, 34, 0.7)`
-- `--glass-border`: `rgba(48, 54, 61, 0.8)`
-
-### Light Mode (GitHub Default)
-- `--bg-color`: `#f6f8fa` (GitHubのメイン背景)
-- `--surface-color`: `#ffffff` (ノード/カードの背景)
-- `--primary-color`: `#0969da` (GitHubのリンク/アクティブカラー)
-- `--primary-glow`: `rgba(9, 105, 218, 0.1)`
-- `--success-color`: `#1a7f37` (成功時の緑)
-- `--warning-color`: `#bf8700` (進行中の黄)
+### Color Palette (Light Mode を基準とするがDarkも追従)
+- `--bg-color`: `#f6f8fa` (全体の背景)
+- `--surface-color`: `#ffffff` (ノード・エンクロージャの背景)
+- `--border-color`: `#d0d7de` (ノード・ライン・エンクロージャの枠線)
+- `--success-color`: `#1f883d` (緑のチェックアイコン等)
 - `--text-main`: `#24292f`
 - `--text-muted`: `#57606a`
-- `--border-color`: `#d0d7de` (ノードの境界線)
-- `--glass-bg`: `rgba(255, 255, 255, 0.7)`
-- `--glass-border`: `rgba(208, 215, 222, 0.8)`
+- `--btn-active-bg`: `#e6e6e6` (light) / `#21262d` (dark) - アクティブボタンの背景色
+- `--btn-active-text`: `var(--text-main)` - アクティブボタンのテキスト色
+- `--node-shadow`: `0 1px 3px rgba(27,31,35,0.12)` (ノードのドロップシャドウ)
 
-## 適用箇所
-1. `src/constants/themes.js` に `github` テーマ（dark/light）を追加
-2. `src/logic/i18n.js` のテーマ一覧に `github` の翻訳を追加
-3. `src/components/features/settings/SettingsPanel.jsx` のセレクトボックスに `github` オプションを追加
-4. Nodeコンポーネントにおけるボーダーや背景がこのテーマ変数によって適切にGitHub Actions風になることを確認（現在の `themeMode` が適用された際に違和感がないか）
+### UIの振る舞い（CSSオーバーライド）
+GitHub Actionsのワークフロー表示に近づけるため、テーマが `github` の場合（`body.theme-github` 等）に以下のスタイルを強制する。
+1. **Flow Link (コネクタ線)**
+   - アニメーション(`dashFlow`)や破線(`stroke-dasharray`)を無効化。
+   - `stroke` を `var(--border-color)` にし、透明度を1にする。
+2. **Node Rect (ノード自体)**
+   - 背景色は `#ffffff` (var(--surface-color))。
+   - ボーダーは `#d0d7de`。
+   - シャドウ (`drop-shadow` または `box-shadow`) を付与。
+3. **Enclosure (親要素の枠)**
+   - 背景を白色(`var(--surface-color)`)に。
+   - `opacity` は 1。
+   - 枠線を `#d0d7de` とする。
+4. **Active Buttons (トグル・ビュー切り替えボタン)**
+   - `mode-btn.active` および `view-btn.active .active-bg` に対し、`--btn-active-bg` を背景色として適用する。
+   - テキスト色は `--btn-active-text` とする。
+   - 背景専用要素(`active-bg`)に対するデフォルトのシャドウを無効化する。
