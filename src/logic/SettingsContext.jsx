@@ -16,6 +16,8 @@ export const SettingsProvider = ({ children }) => {
     return savedSettings ? JSON.parse(savedSettings) : {
       showDescriptionInList: true,
       showPhaseBadges: true,
+      showNodeTypeTags: true,
+      showStepBadges: true,
       theme: 'theme-classic',
     };
   });

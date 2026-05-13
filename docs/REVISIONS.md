@@ -6,6 +6,7 @@
 ## 🚀 未完了 (Incomplete)
 
 ## ✅ 完了済み (Completed)
+- [R15] 05-14: ノードタイプタグとステップバッジの表示・非表示設定の実装 (@node_badge_visibility_spec.md)
 - [R14] 05-14: リストビューでのフェーズバッジ（実行フェーズ）の表示・非表示設定の実装 (@phase_badge_visibility_spec.md)
 - [R13] 05-14: JSON/Markdown形式によるタスクツリーの一括インポート機能の実装 (@bulk_import_spec.md)
 - [x] 05-13: [R11] react-arboristを使ってリストビューでの階層構造D&Dを実装する (@hierarchical_dnd_spec.md)

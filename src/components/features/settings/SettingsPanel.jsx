@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText, Tag } from 'lucide-react';
+import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText, Tag, Layers, ListOrdered } from 'lucide-react';
 import { useSettings } from '../../../logic/SettingsContext';
 import './SettingsPanel.css';
 
@@ -158,6 +158,48 @@ const SettingsPanel = ({
                       type="checkbox" 
                       checked={settings.showPhaseBadges} 
                       onChange={(e) => updateSetting('showPhaseBadges', e.target.checked)}
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                </motion.div>
+
+                <motion.div className="setting-item" variants={itemVariants}>
+                  <div className="setting-info">
+                    <div className="setting-label">
+                      <Layers size={18} />
+                      <span>{t('settings.show_node_type_tags') || 'Show Node Types'}</span>
+                    </div>
+                    <p className="setting-desc">
+                      {t('settings.show_node_type_tags_desc') || 'Show tags indicating task types.'}
+                    </p>
+                  </div>
+                  
+                  <label className="switch">
+                    <input 
+                      type="checkbox" 
+                      checked={settings.showNodeTypeTags} 
+                      onChange={(e) => updateSetting('showNodeTypeTags', e.target.checked)}
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                </motion.div>
+
+                <motion.div className="setting-item" variants={itemVariants}>
+                  <div className="setting-info">
+                    <div className="setting-label">
+                      <ListOrdered size={18} />
+                      <span>{t('settings.show_step_badges') || 'Show Step Numbers'}</span>
+                    </div>
+                    <p className="setting-desc">
+                      {t('settings.show_step_badges_desc') || 'Show sequence numbers within each level.'}
+                    </p>
+                  </div>
+                  
+                  <label className="switch">
+                    <input 
+                      type="checkbox" 
+                      checked={settings.showStepBadges} 
+                      onChange={(e) => updateSetting('showStepBadges', e.target.checked)}
                     />
                     <span className="slider round"></span>
                   </label>

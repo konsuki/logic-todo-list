@@ -95,9 +95,11 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
           </button>
 
           <div className="node-info">
-            <span className={`node-type-tag ${data.type.toLowerCase()}`}>{data.type}</span>
+            {settings.showNodeTypeTags && (
+              <span className={`node-type-tag ${data.type.toLowerCase()}`}>{data.type}</span>
+            )}
 
-            {stepNumber !== null && (
+            {settings.showStepBadges && stepNumber !== null && (
               <span className="step-badge">Step {stepNumber}</span>
             )}
 
