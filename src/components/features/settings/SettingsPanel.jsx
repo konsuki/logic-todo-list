@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Eye, EyeOff, Sun, Moon, Palette } from 'lucide-react';
+import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText } from 'lucide-react';
 import { useSettings } from '../../../logic/SettingsContext';
 import './SettingsPanel.css';
 
@@ -11,7 +11,8 @@ const SettingsPanel = ({
   themeName, 
   setThemeName, 
   themeMode, 
-  setThemeMode 
+  setThemeMode,
+  onOpenImport
 }) => {
   const { settings, updateSetting } = useSettings();
 
@@ -139,6 +140,27 @@ const SettingsPanel = ({
                     />
                     <span className="slider round"></span>
                   </label>
+                <motion.div className="setting-item" variants={itemVariants}>
+                  <div className="setting-info">
+                    <div className="setting-label">
+                      <FileText size={18} />
+                      <span>{t('settings.bulk_import') || 'Bulk Import'}</span>
+                    </div>
+                    <p className="setting-desc">
+                      {t('settings.bulk_import_desc_short') || 'Import multiple tasks at once from JSON or text.'}
+                    </p>
+                  </div>
+                  
+                  <button 
+                    className="secondary-btn" 
+                    onClick={() => {
+                      onClose();
+                      onOpenImport();
+                    }}
+                    style={{ padding: '6px 12px', fontSize: '12px', background: 'var(--border-color)' }}
+                  >
+                    {t('settings.open_import') || 'Open'}
+                  </button>
                 </motion.div>
               </motion.section>
             </div>

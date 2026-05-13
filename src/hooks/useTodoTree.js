@@ -169,6 +169,10 @@ export const useTodoTree = () => {
     });
   }, []);
 
+  const handleImportNodes = useCallback((importedData) => {
+    setNodes(prev => treeLogic.importTreeToNodes(prev, importedData));
+  }, []);
+
   /**
    * Helper to get the root nodes (those without parentId)
    */
@@ -179,6 +183,7 @@ export const useTodoTree = () => {
     rootNodes,
     addNode: handleAddNode,
     addNodes: handleAddNodes,
+    importNodes: handleImportNodes,
     deleteNode: handleDeleteNode,
     toggleStatus: handleToggleStatus,
     updateNode: handleUpdateNode,

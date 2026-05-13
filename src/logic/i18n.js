@@ -79,6 +79,14 @@ export const translations = {
       view_preferences: '表示設定',
       show_description_in_list: 'リスト表示で説明を表示',
       show_description_in_list_desc: 'リストビュー内のタスク名の下に説明文を表示するかどうかを切り替えます。',
+      bulk_import: '一括インポート',
+      bulk_import_desc_short: 'JSONまたはテキストから複数のタスクを一度に取り込みます。',
+      bulk_import_title: 'タスクの一括インポート',
+      bulk_import_desc: 'JSONまたはインデント付きのテキストを貼り付けて、タスクツリーをインポートします。',
+      bulk_import_placeholder: '例:\n新しいプロジェクト\n  戦略フェーズ\n    タスク1\n    タスク2',
+      bulk_import_hint: '形式: JSON または インデント付きテキスト',
+      import_button: 'ツリーをインポート',
+      open_import: '開く',
     }
   },
   en: {
@@ -161,6 +169,14 @@ export const translations = {
       view_preferences: 'View Preferences',
       show_description_in_list: 'Show Description in List',
       show_description_in_list_desc: 'Toggle visibility of task descriptions in the list view.',
+      bulk_import: 'Bulk Import',
+      bulk_import_desc_short: 'Import multiple tasks at once from JSON or text.',
+      bulk_import_title: 'Bulk Import Tasks',
+      bulk_import_desc: 'Paste JSON or indented text to import a task tree.',
+      bulk_import_placeholder: 'Example:\nMy Project\n  Strategic Phase\n    Task 1\n    Task 2',
+      bulk_import_hint: 'Formats: JSON or Indented Text',
+      import_button: 'Import Tree',
+      open_import: 'Open',
     }
   }
 };

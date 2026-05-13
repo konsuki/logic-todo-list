@@ -9,6 +9,7 @@ import ListView from './components/features/list/ListView';
 import TreeView from './components/features/tree/TreeView';
 import Inspector from './components/features/inspector/Inspector';
 import SettingsPanel from './components/features/settings/SettingsPanel';
+import ImportModal from './components/features/import/ImportModal';
 import DesignSandbox from './components/sandbox/DesignSandbox';
 import { themes } from './constants/themes';
 import './App.css';
@@ -19,6 +20,7 @@ function App() {
     rootNodes, 
     addNode, 
     addNodes,
+    importNodes,
     deleteNode, 
     toggleStatus, 
     updateNode, 
@@ -32,6 +34,7 @@ function App() {
   const [view, setView] = useState('list');
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [editingNodeId, setEditingNodeId] = useState(null);
   const [completedGoals, setCompletedGoals] = useState(new Set());
@@ -253,6 +256,14 @@ function App() {
         setThemeName={setThemeName}
         themeMode={themeMode}
         setThemeMode={setThemeMode}
+        onOpenImport={() => setIsImportModalOpen(true)}
+      />
+
+      <ImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImport={importNodes}
+        t={t}
       />
     </div>
   );

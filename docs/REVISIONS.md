@@ -6,6 +6,7 @@
 ## 🚀 未完了 (Incomplete)
 
 ## ✅ 完了済み (Completed)
+- [R13] 05-14: JSON/Markdown形式によるタスクツリーの一括インポート機能の実装 (@bulk_import_spec.md)
 - [x] 05-13: [R11] react-arboristを使ってリストビューでの階層構造D&Dを実装する (@hierarchical_dnd_spec.md)
 - [x] 05-13: [R9] GitHub Actionsテーマの色味とスタイルを実際の画像に完全に一致させる (@github_actions_theme_spec.md)
 - [x] 05-03: [R7] Viteの開発モードの時だけプレビュー機能を有効にする (@dev_only_preview_spec.md)

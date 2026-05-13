@@ -450,3 +450,78 @@ export const buildArboristTree = (nodes, rootNodes) => {
   const sortedRoots = [...rootNodes].sort((a, b) => (a.order || 0) - (b.order || 0));
   return sortedRoots.map(root => buildNode(root.id)).filter(Boolean);
 };
+/**
+ * Imports a nested tree structure into the existing nodes map.
+ * Each root in importedData will be added as a new GOAL.
+ */
+export const importTreeToNodes = (nodes, importedData) => {
+  let currentNodes = { ...nodes };
+
+  const addRecursive = (parentId, nodeData) => {
+    const id = crypto.randomUUID();
+    const newNode = {
+      id,
+      parentId,
+      type: nodeData.type,
+      title: nodeData.title,
+      description: '',
+      status: NODE_STATUS.TODO,
+      progress: 0,
+      children: [],
+      dependsOn: [],
+      phase: 'PREP',
+      order: 0,
+      metadata: {
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      }
+    };
+    
+    currentNodes[id] = newNode;
+    
+    if (nodeData.children && nodeData.children.length > 0) {
+      const childIds = nodeData.children.map((child, idx) => {
+        const cid = addRecursive(id, child);
+        currentNodes[cid].order = idx;
+        return cid;
+      });
+      currentNodes[id].children = childIds;
+      // If it has children but was marked as ACTION, upgrade it
+      if (currentNodes[id].type === NODE_TYPES.ACTION) {
+        currentNodes[id].type = NODE_TYPES.STRATEGY;
+      }
+    }
+    
+    return id;
+  };
+
+  const newRootIds = importedData.map(rootData => addRecursive(null, rootData));
+
+  // Fix root orders
+  const allRootNodes = Object.values(currentNodes).filter(n => !n.parentId);
+  // Sort by existing order or createdAt
+  const sortedRoots = allRootNodes.sort((a, b) => (a.order || 0) - (b.order || 0));
+  sortedRoots.forEach((n, idx) => {
+    currentNodes[n.id].order = idx;
+  });
+
+  // Re-calculate progress for all new nodes (starting from leaves)
+  // A simple way is to just call updateProgressRecursively on every new node
+  let finalNodes = currentNodes;
+  const allNewIds = [];
+  const collectIds = (id) => {
+    allNewIds.push(id);
+    if (finalNodes[id].children) finalNodes[id].children.forEach(collectIds);
+  };
+  newRootIds.forEach(collectIds);
+
+  // Update from bottom to top by sorting by depth (leaf nodes first)
+  // But updateProgressRecursively already handles parent updates, so just calling it on leaves is enough.
+  allNewIds.forEach(id => {
+    if (!finalNodes[id].children || finalNodes[id].children.length === 0) {
+      finalNodes = updateProgressRecursively(finalNodes, id);
+    }
+  });
+
+  return finalNodes;
+};
