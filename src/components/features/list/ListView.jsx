@@ -236,7 +236,7 @@ const ListView = ({
       const visibleSet = new Set();
       const checkVisibility = (nodeId) => {
         const node = nodes[nodeId];
-        if (!node) return false;
+        if (!node || node.deletedAt) return false; // Skip soft-deleted nodes
         const matchesPhase = node.phase === phaseFilter;
         let childMatches = false;
         if (node.children) {
@@ -265,7 +265,7 @@ const ListView = ({
       return filtered;
     })();
 
-    const filteredRoots = Object.values(filteredNodes).filter(n => !n.parentId);
+    const filteredRoots = Object.values(filteredNodes).filter(n => !n.parentId && !n.deletedAt);
     return treeLogic.buildArboristTree(filteredNodes, filteredRoots);
   }, [nodes, rootNodes, phaseFilter]);
 

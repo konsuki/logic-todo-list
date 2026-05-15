@@ -24,11 +24,13 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
     if (rootNodes.length === 0) return null;
     const buildHierarchy = (nodeId) => {
       const node = nodes[nodeId];
-      if (!node) return null;
+      if (!node || node.deletedAt) return null; // Skip soft-deleted nodes
       return {
         ...node,
         name: node.title,
-        children: node.children ? node.children.map(id => buildHierarchy(id)).filter(Boolean) : []
+        children: node.children
+          ? node.children.filter(id => !nodes[id]?.deletedAt).map(id => buildHierarchy(id)).filter(Boolean)
+          : []
       };
     };
     
@@ -157,9 +159,11 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       allParents.forEach(parentNode => {
         const getDescendantIds = (id) => {
           const node = nodes[id];
-          if (!node) return [];
+          if (!node || node.deletedAt) return []; // Skip soft-deleted nodes
           if (!node.children || node.children.length === 0) return [id];
-          return node.children.flatMap(cid => getDescendantIds(cid));
+          return node.children
+            .filter(cid => !nodes[cid]?.deletedAt)
+            .flatMap(cid => getDescendantIds(cid));
         };
         const leafIds = getDescendantIds(parentNode.id);
         const groupLeaves = displayNodes.filter(dn => leafIds.includes(dn.data.id));

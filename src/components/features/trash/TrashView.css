@@ -1,0 +1,211 @@
+.trash-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1100;
+  backdrop-filter: blur(2px);
+}
+
+.trash-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 360px;
+  max-width: 100vw;
+  height: 100dvh;
+  background: var(--bg-secondary, #1e1e2e);
+  border-right: 1px solid var(--border-color, rgba(255,255,255,0.08));
+  z-index: 1101;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Header --- */
+.trash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.08));
+  flex-shrink: 0;
+}
+
+.trash-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #cdd6f4);
+}
+
+.trash-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--accent-danger, #f38ba8);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.trash-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary, #a6adc8);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.trash-close-btn:hover {
+  background: var(--bg-hover, rgba(255,255,255,0.07));
+  color: var(--text-primary, #cdd6f4);
+}
+
+/* --- Body --- */
+.trash-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+}
+
+/* Empty state */
+.trash-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--text-secondary, #a6adc8);
+}
+.trash-empty p {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary, #cdd6f4);
+}
+.trash-empty span {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* --- List --- */
+.trash-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trash-item {
+  background: var(--bg-tertiary, rgba(255,255,255,0.04));
+  border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.15s;
+}
+.trash-item:hover {
+  border-color: var(--accent-muted, rgba(203,166,247,0.3));
+}
+
+.trash-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.trash-item-type-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+.trash-item-type-badge[data-type="GOAL"] { background: rgba(116,199,236,0.15); color: #74c7ec; }
+.trash-item-type-badge[data-type="STRATEGY"] { background: rgba(203,166,247,0.15); color: #cba6f7; }
+.trash-item-type-badge[data-type="ACTION"] { background: rgba(166,227,161,0.15); color: #a6e3a1; }
+
+.trash-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #cdd6f4);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.trash-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-secondary, #a6adc8);
+  opacity: 0.8;
+}
+
+.trash-item-children {
+  background: rgba(255,255,255,0.06);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* --- Actions --- */
+.trash-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.trash-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.trash-btn.restore {
+  background: rgba(166,227,161,0.1);
+  border-color: rgba(166,227,161,0.25);
+  color: #a6e3a1;
+}
+.trash-btn.restore:hover {
+  background: rgba(166,227,161,0.2);
+  border-color: rgba(166,227,161,0.45);
+}
+
+.trash-btn.permanent {
+  background: rgba(243,139,168,0.1);
+  border-color: rgba(243,139,168,0.25);
+  color: #f38ba8;
+}
+.trash-btn.permanent:hover {
+  background: rgba(243,139,168,0.2);
+  border-color: rgba(243,139,168,0.45);
+}

@@ -26,7 +26,15 @@ export const useTodoTree = () => {
   }, []);
 
   const handleDeleteNode = useCallback((nodeId) => {
-    setNodes(prev => treeLogic.deleteNode(prev, nodeId));
+    setNodes(prev => treeLogic.softDeleteNode(prev, nodeId));
+  }, []);
+
+  const handleRestoreNode = useCallback((nodeId) => {
+    setNodes(prev => treeLogic.restoreNode(prev, nodeId));
+  }, []);
+
+  const handlePermanentDeleteNode = useCallback((nodeId) => {
+    setNodes(prev => treeLogic.permanentDeleteNode(prev, nodeId));
   }, []);
 
   const handleToggleStatus = useCallback((nodeId) => {
@@ -173,18 +181,22 @@ export const useTodoTree = () => {
     setNodes(prev => treeLogic.importTreeToNodes(prev, importedData));
   }, []);
 
-  /**
-   * Helper to get the root nodes (those without parentId)
-   */
-  const rootNodes = Object.values(nodes).filter(node => !node.parentId);
+  // Active root nodes (exclude soft-deleted)
+  const rootNodes = Object.values(nodes).filter(node => !node.parentId && !node.deletedAt);
+
+  // Soft-deleted root nodes → shown in the trash view
+  const trashedRootNodes = Object.values(nodes).filter(node => !node.parentId && !!node.deletedAt);
 
   return {
     nodes,
     rootNodes,
+    trashedRootNodes,
     addNode: handleAddNode,
     addNodes: handleAddNodes,
     importNodes: handleImportNodes,
     deleteNode: handleDeleteNode,
+    restoreNode: handleRestoreNode,
+    permanentDeleteNode: handlePermanentDeleteNode,
     toggleStatus: handleToggleStatus,
     updateNode: handleUpdateNode,
     addDependency: handleAddDependency,

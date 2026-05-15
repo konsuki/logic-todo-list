@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutGrid, List, Info, Zap, Globe, Settings } from 'lucide-react';
+import { LayoutGrid, List, Info, Zap, Globe, Settings, Trash2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTodoTree } from './hooks/useTodoTree';
@@ -10,6 +10,7 @@ import TreeView from './components/features/tree/TreeView';
 import Inspector from './components/features/inspector/Inspector';
 import SettingsPanel from './components/features/settings/SettingsPanel';
 import ImportModal from './components/features/import/ImportModal';
+import TrashView from './components/features/trash/TrashView';
 import DesignSandbox from './components/sandbox/DesignSandbox';
 import { themes } from './constants/themes';
 import './App.css';
@@ -17,11 +18,14 @@ import './App.css';
 function App() {
   const { 
     nodes, 
-    rootNodes, 
+    rootNodes,
+    trashedRootNodes,
     addNode, 
     addNodes,
     importNodes,
-    deleteNode, 
+    deleteNode,
+    restoreNode,
+    permanentDeleteNode,
     toggleStatus, 
     updateNode, 
     addDependency, 
@@ -35,6 +39,7 @@ function App() {
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isTrashOpen, setIsTrashOpen] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [editingNodeId, setEditingNodeId] = useState(null);
   const [completedGoals, setCompletedGoals] = useState(new Set());
@@ -189,6 +194,22 @@ function App() {
             <Settings size={20} color="var(--text-muted)" />
           </button>
           <button 
+            className="icon-btn trash-icon-btn"
+            onClick={() => setIsTrashOpen(true)}
+            title="ゴミ箱"
+            style={{ position: 'relative' }}
+          >
+            <Trash2 size={20} color={trashedRootNodes.length > 0 ? 'var(--accent-danger, #f38ba8)' : 'var(--text-muted)'} />
+            {trashedRootNodes.length > 0 && (
+              <span style={{
+                position: 'absolute', top: '4px', right: '4px',
+                width: '8px', height: '8px', borderRadius: '50%',
+                background: 'var(--accent-danger, #f38ba8)',
+                border: '1.5px solid var(--bg-color)'
+              }} />
+            )}
+          </button>
+          <button 
             className="icon-btn"
             onClick={() => setIsInspectorOpen(!isInspectorOpen)}
           >
@@ -263,6 +284,16 @@ function App() {
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
         onImport={importNodes}
+        t={t}
+      />
+
+      <TrashView
+        isOpen={isTrashOpen}
+        onClose={() => setIsTrashOpen(false)}
+        trashedRootNodes={trashedRootNodes}
+        nodes={nodes}
+        onRestore={restoreNode}
+        onPermanentDelete={permanentDeleteNode}
         t={t}
       />
     </div>

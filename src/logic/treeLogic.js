@@ -24,17 +24,20 @@ export const calculateNodeProgress = (nodes, nodeId) => {
   const node = nodes[nodeId];
   if (!node) return 0;
 
+  // Active children only (exclude soft-deleted)
+  const activeChildren = (node.children || []).filter(id => !nodes[id]?.deletedAt);
+
   // Leaf node (Action) - Simplified binary progress for MVP
-  if (!node.children || node.children.length === 0) {
+  if (activeChildren.length === 0) {
     return node.status === NODE_STATUS.DONE ? 100 : 0;
   }
 
-  // Branch/Root node - Average of children
-  const totalProgress = node.children.reduce((acc, childId) => {
+  // Branch/Root node - Average of active children
+  const totalProgress = activeChildren.reduce((acc, childId) => {
     return acc + (nodes[childId]?.progress || 0);
   }, 0);
 
-  return Math.round(totalProgress / node.children.length);
+  return Math.round(totalProgress / activeChildren.length);
 };
 
 /**
@@ -271,10 +274,68 @@ export const outdentNode = (nodes, nodeId) => {
 };
 
 /**
- * Deletes a node and all its descendants.
+ * [Soft Delete] Marks a node and all its descendants as deleted by setting `deletedAt`.
+ * Data is preserved in localStorage and can be restored from the trash.
+ */
+export const softDeleteNode = (nodes, nodeId) => {
+  let newNodes = { ...nodes };
+  const nodeToDelete = newNodes[nodeId];
+  if (!nodeToDelete) return nodes;
+
+  const now = Date.now();
+
+  const markDeleted = (id) => {
+    const node = newNodes[id];
+    if (!node) return;
+    newNodes[id] = { ...node, deletedAt: now };
+    (node.children || []).forEach(childId => markDeleted(childId));
+  };
+
+  markDeleted(nodeId);
+
+  // Recalculate progress for the parent (active children changed)
+  const parentId = nodeToDelete.parentId;
+  if (parentId && newNodes[parentId]) {
+    return updateProgressRecursively(newNodes, parentId);
+  }
+
+  return newNodes;
+};
+
+/**
+ * [Restore] Removes the `deletedAt` flag from a node and all its descendants.
+ * Restores the entire sub-tree from the trash.
+ */
+export const restoreNode = (nodes, nodeId) => {
+  let newNodes = { ...nodes };
+  const nodeToRestore = newNodes[nodeId];
+  if (!nodeToRestore) return nodes;
+
+  const markRestored = (id) => {
+    const node = newNodes[id];
+    if (!node) return;
+    const { deletedAt, ...rest } = node;
+    newNodes[id] = rest;
+    (node.children || []).forEach(childId => markRestored(childId));
+  };
+
+  markRestored(nodeId);
+
+  // Recalculate progress for the parent
+  const parentId = nodeToRestore.parentId;
+  if (parentId && newNodes[parentId]) {
+    return updateProgressRecursively(newNodes, parentId);
+  }
+
+  return newNodes;
+};
+
+/**
+ * [Permanent Delete] Physically removes a node and all its descendants.
+ * Used for "empty trash" / "delete permanently" actions.
  * Also cleans up dependencies pointing to deleted nodes.
  */
-export const deleteNode = (nodes, nodeId) => {
+export const permanentDeleteNode = (nodes, nodeId) => {
   let newNodes = { ...nodes };
   const nodeToDelete = newNodes[nodeId];
   if (!nodeToDelete) return nodes;
@@ -293,24 +354,24 @@ export const deleteNode = (nodes, nodeId) => {
   };
 
   const allIdsToDelete = new Set(getDescendants(nodeId));
-  
-  // 1. Delete nodes
+
+  // 1. Remove nodes physically
   Object.keys(newNodes).forEach(id => {
     if (allIdsToDelete.has(id)) {
       delete newNodes[id];
     } else {
-      // 2. Clean up dependencies
+      // 2. Clean up dangling dependencies
       if (newNodes[id].dependsOn) {
         newNodes[id].dependsOn = newNodes[id].dependsOn.filter(depId => !allIdsToDelete.has(depId));
+      }
+      // 3. Clean up parent's children array
+      if (newNodes[id].children) {
+        newNodes[id].children = newNodes[id].children.filter(cid => !allIdsToDelete.has(cid));
       }
     }
   });
 
   if (parentId && newNodes[parentId]) {
-    newNodes[parentId] = {
-      ...newNodes[parentId],
-      children: newNodes[parentId].children.filter(id => id !== nodeId)
-    };
     return updateProgressRecursively(newNodes, parentId);
   }
 
@@ -365,16 +426,18 @@ export const getFlattenedFlow = (nodes, rootNodes) => {
   const traverse = (nodeId, depth = 0) => {
     if (!nodeId || visited.has(nodeId)) return;
     const node = nodes[nodeId];
-    if (!node) return;
+    if (!node || node.deletedAt) return; // Skip soft-deleted nodes
 
     visited.add(nodeId);
 
     if (node.children && node.children.length > 0) {
-      const sortedChildren = [...node.children].sort((a, b) => {
-        const nodeA = nodes[a];
-        const nodeB = nodes[b];
-        return (nodeA?.order || 0) - (nodeB?.order || 0);
-      });
+      const sortedChildren = [...node.children]
+        .filter(id => !nodes[id]?.deletedAt) // Exclude soft-deleted children
+        .sort((a, b) => {
+          const nodeA = nodes[a];
+          const nodeB = nodes[b];
+          return (nodeA?.order || 0) - (nodeB?.order || 0);
+        });
 
       sortedChildren.forEach(childId => traverse(childId, depth + 1));
     }
@@ -385,7 +448,7 @@ export const getFlattenedFlow = (nodes, rootNodes) => {
       ...node,
       depth,
       isMilestone,
-      groupParentId: node.parentId // Children of this node will have this node's ID as groupParentId
+      groupParentId: node.parentId
     });
   };
 
@@ -404,15 +467,15 @@ export const getVisibleNodesList = (nodes, rootNodes, expandedNodeIds) => {
   
   const traverse = (nodeId) => {
     const node = nodes[nodeId];
-    if (!node) return;
-    
+    if (!node || node.deletedAt) return; // Skip soft-deleted nodes
+
     result.push(node);
-    
+
     // Only traverse children if this node is expanded
     if (expandedNodeIds.has(nodeId) && node.children && node.children.length > 0) {
-      const sortedChildren = [...node.children].sort((a, b) => {
-        return (nodes[a]?.order || 0) - (nodes[b]?.order || 0);
-      });
+      const sortedChildren = [...node.children]
+        .filter(id => !nodes[id]?.deletedAt) // Exclude soft-deleted children
+        .sort((a, b) => (nodes[a]?.order || 0) - (nodes[b]?.order || 0));
       sortedChildren.forEach(childId => traverse(childId));
     }
   };
@@ -432,12 +495,13 @@ export const buildArboristTree = (nodes, rootNodes) => {
     const node = nodes[nodeId];
     if (!node) return null;
 
-    const sortedChildIds = node.children && node.children.length > 0
-      ? [...node.children].sort((a, b) => (nodes[a]?.order || 0) - (nodes[b]?.order || 0))
-      : [];
+    // Exclude soft-deleted children from the tree view
+    const activeChildIds = (node.children || [])
+      .filter(id => !nodes[id]?.deletedAt)
+      .sort((a, b) => (nodes[a]?.order || 0) - (nodes[b]?.order || 0));
 
-    const children = sortedChildIds.length > 0
-      ? sortedChildIds.map(buildNode).filter(Boolean)
+    const children = activeChildIds.length > 0
+      ? activeChildIds.map(buildNode).filter(Boolean)
       : undefined; // undefined = leaf node in react-arborist
 
     return {
