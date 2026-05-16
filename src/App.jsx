@@ -131,12 +131,12 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <div className="logo" onClick={() => setSelectedNodeId(null)} style={{ cursor: 'pointer' }}>
-          <svg width="22" height="26" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '9px', flexShrink: 0 }}>
-            <path d="M16 3 L11 3 Q7.5 3 7.5 7 L7.5 14 Q7.5 16 5.5 16 Q7.5 16 7.5 18 L7.5 25 Q7.5 29 11 29 L16 29"
-              stroke="var(--primary-color)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-            <circle cx="21" cy="16" r="2.5" fill="var(--primary-color)" opacity="0.55"/>
-          </svg>
-          <span className="logo-wordmark">logi<span className="logo-accent">do</span></span>
+          <img
+            src="/src/assets/hold_smartphone_color.png"
+            alt="LogiDo icon"
+            style={{ height: '32px', width: 'auto', display: 'inline', verticalAlign: 'middle', marginRight: '10px', flexShrink: 0 }}
+          />
+          <span className="logo-wordmark" style={{ fontFamily: "'Noto Sans JP','Hiragino Kaku Gothic ProN','Meiryo',sans-serif", fontWeight: 800, fontSize: '18px', letterSpacing: '0.05em', color: 'var(--text-main)', WebkitTextFillColor: 'var(--text-main)' }}>ビジュー</span>
         </div>
         
         <div className="view-switcher">
