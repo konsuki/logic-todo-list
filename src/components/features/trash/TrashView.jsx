@@ -32,9 +32,9 @@ const TrashView = ({ isOpen, onClose, trashedRootNodes, nodes, onRestore, onPerm
   };
 
   const panelVariants = {
-    hidden: { x: '-100%', opacity: 0 },
+    hidden: { x: '100%', opacity: 0 },
     visible: { x: 0, opacity: 1, transition: { type: 'spring', damping: 28, stiffness: 220 } },
-    exit: { x: '-100%', opacity: 0, transition: { duration: 0.2 } },
+    exit: { x: '100%', opacity: 0, transition: { duration: 0.2 } },
   };
 
   const itemVariants = {
