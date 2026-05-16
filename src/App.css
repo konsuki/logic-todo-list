@@ -53,14 +53,25 @@
 }
 
 .logo {
+  display: flex;
+  align-items: center;
   font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--primary-color), #00F0FF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.04em;
-  filter: drop-shadow(0 0 10px var(--primary-glow));
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--text-main);
+}
+
+.logo-wordmark {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.logo-accent {
+  color: var(--primary-color);
 }
 
 .view-switcher {

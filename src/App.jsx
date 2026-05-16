@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutGrid, List, Info, Zap, Globe, Settings, Trash2 } from 'lucide-react';
+import { LayoutGrid, List, Info, Globe, Settings } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTodoTree } from './hooks/useTodoTree';
@@ -131,8 +131,12 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <div className="logo" onClick={() => setSelectedNodeId(null)} style={{ cursor: 'pointer' }}>
-          <Zap size={24} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'bottom' }} />
-          LogiDo
+          <svg width="22" height="26" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '9px', flexShrink: 0 }}>
+            <path d="M16 3 L11 3 Q7.5 3 7.5 7 L7.5 14 Q7.5 16 5.5 16 Q7.5 16 7.5 18 L7.5 25 Q7.5 29 11 29 L16 29"
+              stroke="var(--primary-color)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            <circle cx="21" cy="16" r="2.5" fill="var(--primary-color)" opacity="0.55"/>
+          </svg>
+          <span className="logo-wordmark">logi<span className="logo-accent">do</span></span>
         </div>
         
         <div className="view-switcher">

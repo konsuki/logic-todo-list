@@ -3,6 +3,7 @@
 ## 🚀 未完了 (Incomplete)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
+- [39] 05-16: [ファビコン・ロゴをA-2（ブラケットモチーフ）にリデザイン](features/logo_favicon/spec.md)
 - [38] 05-16: [設定パネルのボタン・スイッチ・アイテムのデザインをアプリ全体で統一](features/settings_modal_fix/spec.md)
 - [37] 05-16: [設定パネルのヘッダータイトル（アプリ設定）の色を修正](features/settings_modal_fix/spec.md)
 - [36] 05-16: [ツリー復旧のためのゴミ箱を設定パネル内に配置](features/trash_in_settings/spec.md)
