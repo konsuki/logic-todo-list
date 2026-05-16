@@ -51,8 +51,7 @@
 
 - `TrashView` コンポーネントをインポート。
 - `restoreNode` / `permanentDeleteNode` / `trashedRootNodes` を `useTodoTree` から取得。
-- `showTrash` 状態（`useState(false)`）を追加。
-- ヘッダーに「ゴミ箱」ボタンを追加（削除済みアイテムがある時は赤いドット表示）。
+- `showTrash` 状態（`useState(false)`）を追加（現在は `SettingsPanel` から呼び出し）。
 - `<TrashView>` を描画するように変更。
 
 ### `src/components/features/list/ListView.jsx`
@@ -83,7 +82,7 @@
 | `t` | `function` | 翻訳関数 |
 
 **動作**:
-- 左からスライドインするパネル形式。
+- 右側からスライドインするパネル形式。
 - 削除されたルートノードを削除日時の降順で表示。
 - 各アイテムに「復元」「完全削除」ボタンを表示。
 - 完全削除には確認ダイアログを表示。
