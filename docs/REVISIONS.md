@@ -3,6 +3,7 @@
 ## 🚀 未完了 (Incomplete)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
+- [37] 05-16: [設定パネルのヘッダータイトル（アプリ設定）の色を修正](features/settings_modal_fix/spec.md)
 - [36] 05-16: [ツリー復旧のためのゴミ箱を設定パネル内に配置](features/trash_in_settings/spec.md)
 - [35] 05-16: [不要な実験用ディレクトリ（scratch/）の削除](features/remove_scratch/plans/remove_scratch_plan.md)
 - [34] 05-15: [論理削除（ソフトデリート）とゴミ箱機能の実装](features/soft_delete/spec.md)
