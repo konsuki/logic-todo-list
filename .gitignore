@@ -3,6 +3,9 @@ node_modules
 dist
 .vscode
 
+# Sandbox / design explorations
+docs/sandbox/
+
 # Images / binary assets
 src/assets/*.png
 src/assets/*.jpg
