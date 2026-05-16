@@ -153,7 +153,7 @@
 /* Control Panels */
 .tree-controls {
   position: absolute;
-  top: 24px;
+  top: calc(var(--header-height) + 12px);
   left: 24px;
   z-index: 20;
   display: flex;
