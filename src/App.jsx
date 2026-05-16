@@ -128,7 +128,7 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className={`app-container${!isInspectorOpen ? ' inspector-collapsed' : ''}`}>
       <header className="app-header">
         <div className="logo" onClick={() => setSelectedNodeId(null)} style={{ cursor: 'pointer' }}>
           <img

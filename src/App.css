@@ -8,6 +8,11 @@
   height: 100vh;
   width: 100vw;
   background-color: var(--bg-color);
+  transition: grid-template-columns 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-container.inspector-collapsed {
+  grid-template-columns: 1fr 0;
 }
 
 .header-actions {
@@ -126,15 +131,20 @@
   border-left: 1px solid var(--glass-border);
   padding: 32px 24px;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 32px;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: padding 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.2);
 }
 
 .inspector-panel.collapsed {
-  transform: translateX(100%);
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  border-left: none;
 }
 
 .section-title {
