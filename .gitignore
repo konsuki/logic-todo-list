@@ -2,3 +2,12 @@ node_modules
 .DS_Store
 dist
 .vscode
+
+# Images / binary assets
+src/assets/*.png
+src/assets/*.jpg
+src/assets/*.jpeg
+src/assets/*.gif
+src/assets/*.webp
+src/assets/*.svg
+public/favicon.png

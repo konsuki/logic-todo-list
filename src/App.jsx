@@ -132,7 +132,7 @@ function App() {
       <header className="app-header">
         <div className="logo" onClick={() => setSelectedNodeId(null)} style={{ cursor: 'pointer' }}>
           <img
-            src="/src/assets/hold_smartphone_color.png"
+            src="/src/assets/bizyu-logo-icon.png"
             alt="LogiDo icon"
             style={{ height: '32px', width: 'auto', display: 'inline', verticalAlign: 'middle', marginRight: '10px', flexShrink: 0 }}
           />
