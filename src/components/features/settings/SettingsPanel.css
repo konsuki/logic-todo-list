@@ -55,12 +55,12 @@
 }
 
 .close-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
   color: var(--text-muted);
   cursor: pointer;
   padding: 10px;
-  border-radius: 14px;
+  border-radius: 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
@@ -68,8 +68,9 @@
 }
 
 .close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-main);
+  background: var(--bg-color);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
   transform: rotate(90deg);
 }
 
@@ -102,10 +103,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 20px;
-  border: 1px solid var(--glass-border);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--surface-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
@@ -116,11 +117,12 @@
   inset: 0;
   background: linear-gradient(135deg, var(--primary-glow), transparent);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .setting-item:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-color);
   transform: translateX(-4px);
   border-color: var(--primary-color);
 }
@@ -173,9 +175,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--glass-border);
-  transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .slider:before {
@@ -186,8 +188,8 @@
   left: 3px;
   bottom: 3px;
   background-color: var(--text-muted);
-  transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 input:checked+.slider {
@@ -197,7 +199,7 @@ input:checked+.slider {
 
 input:checked+.slider:before {
   transform: translateX(24px);
-  background-color: white;
+  background-color: var(--bg-color);
 }
 
 .slider.round {
@@ -210,7 +212,8 @@ input:checked+.slider:before {
 
 .segmented-control {
   display: flex;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
   padding: 4px;
   border-radius: 12px;
   gap: 4px;
@@ -224,25 +227,28 @@ input:checked+.slider:before {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .segmented-control button.active {
   background: var(--primary-color);
-  color: #000;
-  box-shadow: 0 4px 12px var(--primary-glow);
+  color: var(--bg-color);
+  box-shadow: 0 2px 8px var(--primary-glow);
 }
 
 .segmented-control button:not(.active):hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-color);
   color: var(--text-main);
 }
 
 .theme-select {
   padding: 8px 12px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
   color: var(--text-main);
   font-size: 0.9rem;
   font-weight: 600;
@@ -262,15 +268,6 @@ input:checked+.slider:before {
   .settings-panel {
     background: var(--glass-bg);
   }
-  
-  .setting-item {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--glass-border);
-  }
-  
-  .setting-item:hover {
-    background: rgba(255, 255, 255, 0.06);
-  }
 }
 
 .import-btn {
@@ -279,10 +276,10 @@ input:checked+.slider:before {
   padding: 8px 16px;
   border-radius: 12px;
   background: var(--primary-color);
-  color: #000;
+  color: var(--bg-color);
   font-size: 0.85rem;
   font-weight: 700;
-  border: none;
+  border: 1px solid var(--primary-color);
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px var(--primary-glow);

@@ -190,14 +190,15 @@
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  background-color: hsla(220, 100%, 100%, 0.03);
+  background-color: var(--surface-color);
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .how-item:hover {
-  background-color: hsla(220, 100%, 100%, 0.08);
+  background-color: var(--bg-color);
+  border-color: var(--primary-color);
 }
 
 .status-dot {
@@ -358,7 +359,7 @@
   width: 100%;
   min-height: 100px;
   padding: 12px;
-  background-color: hsla(220, 100%, 100%, 0.03);
+  background-color: var(--surface-color);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
@@ -438,7 +439,7 @@
   width: 100%;
   min-height: 100px;
   padding: 12px;
-  background-color: hsla(220, 100%, 100%, 0.03);
+  background-color: var(--surface-color);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
@@ -449,7 +450,7 @@
 }
 
 .description-display:hover {
-  background-color: hsla(220, 100%, 100%, 0.05);
+  background-color: var(--bg-color);
 }
 
 .description-link {

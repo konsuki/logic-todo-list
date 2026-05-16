@@ -65,7 +65,7 @@
 
 .view-switcher {
   display: flex;
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--bg-color);
   padding: 6px;
   border-radius: 16px;
   border: 1px solid var(--border-color);
@@ -91,7 +91,7 @@
 
 .view-btn:not(.active):hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-color);
 }
 
 .active-bg {
