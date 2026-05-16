@@ -194,22 +194,6 @@ function App() {
             <Settings size={20} color="var(--text-muted)" />
           </button>
           <button 
-            className="icon-btn trash-icon-btn"
-            onClick={() => setIsTrashOpen(true)}
-            title="ゴミ箱"
-            style={{ position: 'relative' }}
-          >
-            <Trash2 size={20} color={trashedRootNodes.length > 0 ? 'var(--accent-danger, #f38ba8)' : 'var(--text-muted)'} />
-            {trashedRootNodes.length > 0 && (
-              <span style={{
-                position: 'absolute', top: '4px', right: '4px',
-                width: '8px', height: '8px', borderRadius: '50%',
-                background: 'var(--accent-danger, #f38ba8)',
-                border: '1.5px solid var(--bg-color)'
-              }} />
-            )}
-          </button>
-          <button 
             className="icon-btn"
             onClick={() => setIsInspectorOpen(!isInspectorOpen)}
           >
@@ -278,6 +262,8 @@ function App() {
         themeMode={themeMode}
         setThemeMode={setThemeMode}
         onOpenImport={() => setIsImportModalOpen(true)}
+        onOpenTrash={() => setIsTrashOpen(true)}
+        trashedCount={trashedRootNodes.length}
       />
 
       <ImportModal

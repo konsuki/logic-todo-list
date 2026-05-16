@@ -1,8 +1,9 @@
-# 修正・機能追加リクエスト
+# 修正・機ｗ能追加リクエスト
 
 ## 🚀 未完了 (Incomplete)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
+- [36] 05-16: [ツリー復旧のためのゴミ箱を設定パネル内に配置](features/trash_in_settings/spec.md)
 - [35] 05-16: [不要な実験用ディレクトリ（scratch/）の削除](features/remove_scratch/plans/remove_scratch_plan.md)
 - [34] 05-15: [論理削除（ソフトデリート）とゴミ箱機能の実装](features/soft_delete/spec.md)
 - [33] 05-14: [ノードタイプタグとステップバッジの表示・非表示設定の実装](features/node_badge_visibility/spec.md)

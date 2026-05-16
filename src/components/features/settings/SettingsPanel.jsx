@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText, Tag, Layers, ListOrdered } from 'lucide-react';
+import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText, Tag, Layers, ListOrdered, Trash2 } from 'lucide-react';
 import { useSettings } from '../../../logic/SettingsContext';
 import './SettingsPanel.css';
 
@@ -12,7 +12,9 @@ const SettingsPanel = ({
   setThemeName, 
   themeMode, 
   setThemeMode,
-  onOpenImport
+  onOpenImport,
+  onOpenTrash,
+  trashedCount
 }) => {
   const { settings, updateSetting } = useSettings();
 
@@ -224,6 +226,41 @@ const SettingsPanel = ({
                     }}
                   >
                     {t('settings.open_import') || 'Open'}
+                  </button>
+                </motion.div>
+
+                <motion.div className="setting-item" variants={itemVariants}>
+                  <div className="setting-info">
+                    <div className="setting-label">
+                      <Trash2 size={18} color={trashedCount > 0 ? 'var(--accent-danger, #f38ba8)' : 'currentColor'} />
+                      <span style={{ color: trashedCount > 0 ? 'var(--accent-danger, #f38ba8)' : 'inherit' }}>
+                        {t('settings.trash') || 'Trash'}
+                      </span>
+                    </div>
+                    <p className="setting-desc">
+                      {t('settings.trash_desc') || 'Restore or permanently delete removed items.'}
+                    </p>
+                  </div>
+                  
+                  <button 
+                    className="import-btn trash-settings-btn" 
+                    onClick={() => {
+                      onClose();
+                      onOpenTrash();
+                    }}
+                    style={{ position: 'relative' }}
+                  >
+                    {t('settings.open_trash') || 'Open'}
+                    {trashedCount > 0 && (
+                      <span className="badge" style={{
+                        position: 'absolute', top: '-8px', right: '-8px',
+                        background: 'var(--accent-danger, #f38ba8)', color: 'white',
+                        borderRadius: '12px', padding: '2px 6px', fontSize: '10px',
+                        fontWeight: 'bold', border: '1.5px solid var(--bg-color)'
+                      }}>
+                        {trashedCount}
+                      </span>
+                    )}
                   </button>
                 </motion.div>
               </motion.section>

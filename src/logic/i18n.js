@@ -93,6 +93,9 @@ export const translations = {
       bulk_import_hint: '形式: JSON または インデント付きテキスト',
       import_button: 'ツリーをインポート',
       open_import: '開く',
+      trash: 'ゴミ箱',
+      trash_desc: '削除された項目を復元または完全に削除します。',
+      open_trash: '開く',
     }
   },
   en: {
@@ -189,6 +192,9 @@ export const translations = {
       bulk_import_hint: 'Formats: JSON or Indented Text',
       import_button: 'Import Tree',
       open_import: 'Open',
+      trash: 'Trash',
+      trash_desc: 'Restore or permanently delete removed items.',
+      open_trash: 'Open',
     }
   }
 };
