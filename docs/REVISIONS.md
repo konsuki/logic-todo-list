@@ -6,6 +6,7 @@
 ## 🚀 未完了 (Incomplete)
 
 ## ✅ 完了済み (Completed)
+- [R17] 05-16: 不要な実験用ディレクトリ（scratch/）の削除 (docs/plans/remove_scratch_plan.md)
 - [R16] 05-15: 論理削除（ソフトデリート）とゴミ箱機能の実装 (specs/soft_delete_spec.md)
 - [R15] 05-14: ノードタイプタグとステップバッジの表示・非表示設定の実装 (@node_badge_visibility_spec.md)
 - [R14] 05-14: リストビューでのフェーズバッジ（実行フェーズ）の表示・非表示設定の実装 (@phase_badge_visibility_spec.md)
