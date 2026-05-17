@@ -1,6 +1,7 @@
 # 修正・機ｗ能追加リクエスト
 
 ## 🚀 未完了 (Incomplete)
+- [43] 05-17: [Tree Node タイトル表示のXSSおよびレイアウト崩れ防止](features/tree_node_title_xss/spec.md)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
 - [42] 05-17: [リストビューに階層構造を示す垂直線（インデントガイド）を表示・リストUIのコンパクト化](features/list_indentation_guides/spec.md)

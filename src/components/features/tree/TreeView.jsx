@@ -356,7 +356,7 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
             event.stopPropagation();
             setEditingNodeId(d.data.id);
           })
-          .html(d.data.title);
+          .text(d.data.title);
       }
     });
 
