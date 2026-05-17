@@ -1,15 +1,19 @@
 .todo-item-container {
   position: relative;
   transition: all var(--transition-speed);
+  display: flex;
+  flex-direction: column;
 }
 
 .todo-item-row {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 6px 0;
-  border-radius: 12px;
-  margin-bottom: 4px;
+  padding: 0;
+  border-radius: 0;
+  margin-bottom: 0;
+  height: 100%;
+  flex: 1;
   border: 1px solid transparent;
   transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -45,16 +49,28 @@
 }
 
 .todo-item-row:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: var(--border-color);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background-color: var(--btn-active-bg);
+  color: var(--btn-active-text);
 }
 
 .is-selected .todo-item-row {
-  background: rgba(185, 100%, 55%, 0.08);
-  border-color: var(--primary-color);
+  background-color: var(--btn-active-bg);
+  color: var(--btn-active-text);
   box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.is-selected .todo-item-row .expand-btn,
+.is-selected .todo-item-row .status-toggle,
+.is-selected .todo-item-row .node-title,
+.is-selected .todo-item-row .node-description-preview,
+.is-selected .todo-item-row .action-btn {
+  color: var(--btn-active-text) !important;
+}
+
+.todo-item-row:hover .indent-guide,
+.is-selected .todo-item-row .indent-guide {
+  border-color: var(--bg-color);
+  opacity: 0.3;
 }
 
 .mece-warning-icon {
@@ -74,9 +90,10 @@
 .todo-item-content {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 10px 16px;
-  min-height: 52px;
+  gap: 8px;
+  padding: 4px 16px;
+  min-height: 50px;
+  height: 50px;
 }
 
 .expand-btn {
@@ -99,9 +116,12 @@
   pointer-events: none;
 }
 
-.status-toggle {
-  color: var(--text-muted);
-  transition: color var(--transition-speed);
+.todo-item-row:hover .expand-btn,
+.todo-item-row:hover .status-toggle,
+.todo-item-row:hover .node-title,
+.todo-item-row:hover .node-description-preview,
+.todo-item-row:hover .action-btn {
+  color: var(--btn-active-text) !important;
 }
 
 .status-toggle:hover {
@@ -276,14 +296,6 @@
   transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.indent-guide {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background-color: var(--border-color);
-  pointer-events: none;
-}
 
 .is-done .node-title {
   color: var(--text-muted);
@@ -306,4 +318,26 @@
 
 .todo-item-row.is-done .node-description-preview {
   text-decoration: line-through;
+}
+.indent-guides-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  pointer-events: none;
+  min-width: max-content;
+}
+
+.indent-guide {
+  width: 24px;
+  min-width: 24px;
+  flex-shrink: 0;
+  height: 100%;
+  border-right: 1px solid var(--border-color);
+  opacity: 0.5;
+}
+
+.indent-guide:last-child {
+  opacity: 0.8;
 }

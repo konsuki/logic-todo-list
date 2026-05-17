@@ -3,6 +3,7 @@
 ## 🚀 未完了 (Incomplete)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
+- [42] 05-17: [リストビューに階層構造を示す垂直線（インデントガイド）を表示・リストUIのコンパクト化](features/list_indentation_guides/spec.md)
 - [41] 05-17: [インスペクター閉時にmain-contentが画面いっぱいに広がるように修正](features/ui_alignment/spec.md)
 - [40] 05-17: [ブランド名をビジューに変更・スマートフォン画像をロゴ/ファビコンに設置](features/logo_favicon/spec.md)
 - [39] 05-16: [ファビコン・ロゴをリデザイン（サンドボックスで候補検討）](features/logo_favicon/spec.md)

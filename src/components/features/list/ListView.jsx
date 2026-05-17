@@ -58,14 +58,27 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
   const isSelected = tree.props.selectedNodeId === data.id;
   const t = tree.props.t || ((k) => k);
 
+  const { paddingLeft, ...restStyle } = style;
+  const level = node.level;
+
   return (
     <div
       className={`todo-item-container ${isSelected ? 'is-selected' : ''} ${isLocked ? 'is-locked' : ''}`}
-      style={style}
+      style={restStyle}
       ref={dragHandle}
       onClick={handleRowClick}
     >
-      <div className={`todo-item-row ${isDone ? 'is-done' : ''}`}>
+      {/* Indentation Guides */}
+      <div className="indent-guides-wrapper" style={{ width: paddingLeft }}>
+        {Array.from({ length: level }).map((_, i) => (
+          <div key={i} className="indent-guide" />
+        ))}
+      </div>
+
+      <div 
+        className={`todo-item-row ${isDone ? 'is-done' : ''}`}
+        style={{ marginLeft: paddingLeft }}
+      >
         <div className="todo-item-content">
           <button
             className={`expand-btn ${node.isLeaf ? 'invisible' : ''}`}
@@ -330,7 +343,7 @@ const ListView = ({
             width={containerSize.width}
             height={containerSize.height}
             indent={24}
-            rowHeight={56}
+            rowHeight={50}
             overscanCount={5}
             allNodes={nodes}
             onSelectNode={onSelectNode}
