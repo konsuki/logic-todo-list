@@ -121,8 +121,9 @@
 .main-content {
   grid-area: main;
   position: relative;
-  overflow: auto;
-  padding: var(--header-height) 40px 60px 40px;
+  overflow: hidden;
+  padding: var(--header-height) 0 0 0;
+  height: 100%;
 }
 
 .inspector-panel {
