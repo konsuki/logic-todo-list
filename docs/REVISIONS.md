@@ -3,6 +3,7 @@
 ## 🚀 未完了 (Incomplete)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
+- [52] 05-18: [演繹的タスク分解のコンテキスト強化（ツリー全体の構造と完了条件の提示）](features/ai_deductive_context/spec.md)
 - [51] 05-18: [旧AI機能（タスク分解・ロジックテスト）の削除](features/delete_old_ai_features/spec.md)
 - [50] 05-18: [フェーズフィルター時の子タスク表示](features/list_phase_filter_children/spec.md)
 - [49] 05-18: [リスト表示切替時のフェーズフィルター保持](features/list_phase_filter/spec.md)
