@@ -70,7 +70,7 @@ const Inspector = ({
 
   const renderDescription = (text) => {
     if (!text) return null;
-    const urlRegex = /(https?:\/\/[^\s\n]+)/g;
+    const urlRegex = /(https?:\/\/[a-zA-Z0-9-._~:/?#\[\]@!$&'()*+,;%=]*[a-zA-Z0-9_~/#%?&=-])/g;
     const parts = text.split(urlRegex);
     
     return parts.map((part, i) => {
@@ -84,7 +84,7 @@ const Inspector = ({
             className="description-link"
             onClick={(e) => e.stopPropagation()}
           >
-            {part} <ExternalLink size={10} style={{ marginLeft: '2px', verticalAlign: 'middle' }} />
+            {part}<ExternalLink size={10} style={{ marginLeft: '2px', verticalAlign: 'middle' }} />
           </a>
         );
       }
