@@ -225,6 +225,15 @@ const ListView = ({
   t
 }) => {
   const [phaseFilter, setPhaseFilter] = useState('ALL');
+  const [openState, setOpenState] = useState(() => {
+    const saved = localStorage.getItem('logido_list_open_state');
+    try {
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      console.error('Failed to parse open state:', e);
+      return {};
+    }
+  });
   const containerRef = useRef(null);
   const [containerSize, setContainerSize] = useState({ width: 800, height: 600 });
 
@@ -398,6 +407,15 @@ const ListView = ({
             data={arboristData}
             onMove={({ dragIds, parentId, index }) => moveNode(dragIds, parentId, index)}
             openByDefault={true}
+            initialOpenState={openState}
+            onToggle={(id) => {
+              setOpenState(prev => {
+                const isCurrentlyOpen = prev[id] !== undefined ? prev[id] : true;
+                const newState = { ...prev, [id]: !isCurrentlyOpen };
+                localStorage.setItem('logido_list_open_state', JSON.stringify(newState));
+                return newState;
+              });
+            }}
             width={containerSize.width}
             height={containerSize.height}
             indent={24}
