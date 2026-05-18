@@ -22,6 +22,7 @@ function App() {
     trashedRootNodes,
     addNode, 
     addNodes,
+    addTreeUnderNode,
     importNodes,
     deleteNode,
     restoreNode,
@@ -246,6 +247,7 @@ function App() {
           nodes={nodes}
           addNode={addNode}
           addNodes={addNodes}
+          addTreeUnderNode={addTreeUnderNode}
           onSelectNode={handleSelectNode}
           updateNode={updateNode}
           onDeleteNode={deleteNode}

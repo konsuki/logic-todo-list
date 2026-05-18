@@ -181,6 +181,83 @@ export const addNodes = (nodes, parentId, type, titles) => {
 };
 
 /**
+ * Creates multiple nodes from a nested tree structure (like AI JSON) under a specific parent.
+ * It recurses through treeDataArray (which contains {title, description, children[]})
+ */
+export const addTreeUnderNode = (nodes, parentId, treeDataArray) => {
+  if (!treeDataArray || treeDataArray.length === 0) return nodes;
+  
+  let currentNodes = { ...nodes };
+  const parentNode = currentNodes[parentId];
+  
+  // Calculate starting order
+  let nextOrder = 0;
+  if (parentNode) {
+    const siblingIds = parentNode.children || [];
+    const maxOrder = siblingIds.reduce((max, sid) => {
+      return Math.max(max, currentNodes[sid]?.order || 0);
+    }, -1);
+    nextOrder = maxOrder + 1;
+  }
+
+  const addRecursive = (pid, pType, nodeData) => {
+    const id = crypto.randomUUID();
+    const type = pType === NODE_TYPES.GOAL ? NODE_TYPES.STRATEGY : NODE_TYPES.ACTION;
+    
+    const newNode = {
+      id,
+      parentId: pid,
+      type,
+      title: nodeData.title || "無題",
+      description: nodeData.description || "",
+      status: NODE_STATUS.TODO,
+      progress: 0,
+      children: [],
+      dependsOn: [],
+      phase: 'PREP',
+      dueDate: null,
+      order: 0, // Will be set by parent mapping
+      metadata: {
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      }
+    };
+    currentNodes[id] = newNode;
+    
+    if (nodeData.children && nodeData.children.length > 0) {
+      const childIds = nodeData.children.map((child, idx) => {
+        const cid = addRecursive(id, type, child);
+        currentNodes[cid].order = idx;
+        return cid;
+      });
+      currentNodes[id].children = childIds;
+      if (currentNodes[id].type === NODE_TYPES.ACTION) {
+        currentNodes[id].type = NODE_TYPES.STRATEGY; // upgrade type if it has children
+      }
+    }
+    return id;
+  };
+
+  const parentType = parentNode ? parentNode.type : NODE_TYPES.GOAL;
+  const newChildIds = treeDataArray.map((childData, idx) => {
+    const cid = addRecursive(parentId, parentType, childData);
+    currentNodes[cid].order = nextOrder + idx;
+    return cid;
+  });
+
+  if (parentNode) {
+    currentNodes[parentId] = {
+      ...parentNode,
+      children: [...(parentNode.children || []), ...newChildIds],
+      type: parentNode.type === NODE_TYPES.ACTION && newChildIds.length > 0 ? NODE_TYPES.STRATEGY : parentNode.type
+    };
+    return updateProgressRecursively(currentNodes, parentId);
+  }
+
+  return currentNodes;
+};
+
+/**
  * Reorders a node relative to its siblings.
  * direction: 'up' | 'down'
  */

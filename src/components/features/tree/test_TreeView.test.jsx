@@ -7,6 +7,19 @@ import TreeView from './TreeView';
 Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, value: 800 });
 Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, value: 600 });
 
+// JSDOM環境ではd3-zoomのtransform処理でエラーが発生するため、zoomのみモックする
+vi.mock('d3', async () => {
+  const originalD3 = await vi.importActual('d3');
+  return {
+    ...originalD3,
+    zoom: () => {
+      const z = originalD3.zoom();
+      z.transform = vi.fn(); // JSDOMでのエラーを回避
+      return z;
+    }
+  };
+});
+
 describe('TreeView', () => {
   it('should render node titles as plain text to prevent XSS (XSS対策のテスト)', () => {
     // 悪意のあるスクリプトやHTMLタグを含むタイトル

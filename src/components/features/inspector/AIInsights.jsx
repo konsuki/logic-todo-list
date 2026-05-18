@@ -4,8 +4,8 @@ import { useAI } from '../../../hooks/useAI';
 import { NODE_TYPES } from '../../../logic/treeLogic';
 import './AIInsights.css';
 
-const AIInsights = ({ node, nodes, addNode, addNodes, lang, t }) => {
-  const { getBreakdownSuggestions, getLogicAudit, isLoading, error } = useAI();
+const AIInsights = ({ node, nodes, addNode, addNodes, addTreeUnderNode, lang, t }) => {
+  const { getBreakdownSuggestions, getLogicAudit, getDeductiveBreakdown, isLoading, error } = useAI();
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestions, setSelectedSuggestions] = useState(new Set());
   const [audit, setAudit] = useState(null);
@@ -22,6 +22,13 @@ const AIInsights = ({ node, nodes, addNode, addNodes, lang, t }) => {
     if (childrenTitles.length === 0) return;
     const result = await getLogicAudit(node.title, childrenTitles, lang);
     setAudit(result);
+  };
+
+  const handleRequestDeductiveBreakdown = async () => {
+    const tasksTree = await getDeductiveBreakdown(node, nodes, lang);
+    if (tasksTree && tasksTree.length > 0) {
+      addTreeUnderNode(node.id, tasksTree);
+    }
   };
 
   const handleAddSelected = () => {
@@ -50,9 +57,21 @@ const AIInsights = ({ node, nodes, addNode, addNodes, lang, t }) => {
           className="ai-btn primary" 
           onClick={handleRequestBreakdown}
           disabled={isLoading}
+          title="MECEアプローチで平易なアイデア出しをします"
         >
           {isLoading ? <Loader2 className="animate-spin" size={16} /> : <Sparkles size={16} />}
           <span>{t('ai.request_breakdown')}</span>
+        </button>
+
+        <button 
+          className="ai-btn primary" 
+          onClick={handleRequestDeductiveBreakdown}
+          disabled={isLoading}
+          style={{ backgroundColor: 'var(--brand-accent)' }}
+          title="演繹的推論に基づき、最終ゴールから逆算してタスクを自動分解します"
+        >
+          {isLoading ? <Loader2 className="animate-spin" size={16} /> : <Brain size={16} />}
+          <span>演繹的タスク分解</span>
         </button>
         
         {node.children.length > 0 && (
