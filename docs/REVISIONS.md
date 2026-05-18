@@ -1,10 +1,9 @@
 # 修正・機ｗ能追加リクエスト
 
 ## 🚀 未完了 (Incomplete)
-- [] react-arboristの機能でタスクを並び替えた時に、タスクのプロパティにある順番の部分も変更できるようにする
-- [] aiのタスク分解とロジックテストの機能削除、演繹的タスク分解機能は残す
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
+- [51] 05-18: [旧AI機能（タスク分解・ロジックテスト）の削除](features/delete_old_ai_features/spec.md)
 - [50] 05-18: [フェーズフィルター時の子タスク表示](features/list_phase_filter_children/spec.md)
 - [49] 05-18: [リスト表示切替時のフェーズフィルター保持](features/list_phase_filter/spec.md)
 - [48] 05-18: [リスト表示切替時の開閉状態保持](features/list_expanded_state/spec.md)
