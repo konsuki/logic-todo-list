@@ -295,6 +295,12 @@ export const reorderNode = (nodes, nodeId, direction) => {
   newNodes[nodeId] = { ...currentNode, order: targetNode.order };
   newNodes[targetNode.id] = { ...targetNode, order: tempOrder };
 
+  // Sync children array order in parent node to match new orders
+  if (parentId && newNodes[parentId]) {
+    const sortedChildIds = [...newNodes[parentId].children].sort((a, b) => (newNodes[a]?.order || 0) - (newNodes[b]?.order || 0));
+    newNodes[parentId] = { ...newNodes[parentId], children: sortedChildIds };
+  }
+
   return newNodes;
 };
 
