@@ -1,6 +1,25 @@
 import { useState, useCallback } from 'react';
 import { sendChatMessage } from '../logic/aiApi';
 
+const formatTreeAsText = (nodes, nodeId, depth = 0) => {
+  const node = nodes[nodeId];
+  if (!node || node.deletedAt) return '';
+  let text = '  '.repeat(depth) + '- ' + node.title;
+  if (node.description) {
+    const cleanDesc = node.description.replace(/\n/g, ' ').trim();
+    if (cleanDesc) {
+      text += ` (説明: ${cleanDesc})`;
+    }
+  }
+  text += '\n';
+  if (node.children && node.children.length > 0) {
+    node.children.forEach(childId => {
+      text += formatTreeAsText(nodes, childId, depth + 1);
+    });
+  }
+  return text;
+};
+
 export const useAI = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -11,15 +30,19 @@ export const useAI = () => {
     setIsLoading(true);
     setError(null);
 
-    // 1. 文脈収集処理（ルートからの経路）
+    // 1. 文脈収集処理（ルートからの経路と全体ツリー）
     const path = [];
     let current = node;
+    let rootId = node.id;
     while (current) {
       path.unshift(current.title);
+      rootId = current.id;
       current = current.parentId ? nodes[current.parentId] : null;
     }
     const contextPath = path.join(' > ');
     const finalGoal = path[0] || '';
+    
+    const treeContextText = formatTreeAsText(nodes, rootId, 0).trim();
 
     // 2. プロンプト作成
     const systemPrompt = `あなたは論理的思考に優れた戦略コンサルタントAIです。
@@ -28,6 +51,7 @@ export const useAI = () => {
 ## 基本定義
 - 目標 Q : これから実現したい状態を表す命題。
 - 真なる規則前提 : 「もし P ならば必ず Q である」という、反例のない絶対的因果関係。
+- 完了条件の前提 : 「親タスクを完了させるためには、その全ての子タスクを実行する必要がある」という絶対的な関係。
 - 検証プロトコル : 未知の外部リソースやAIの主観的選択を「真なる規則」として扱う前に、その属性を客観的に確定させるプロセス。
 
 ## ワークフロー
@@ -58,13 +82,15 @@ export const useAI = () => {
 
     const userMessage = `最終ゴール: 「${finalGoal}」
 現在の文脈（ルートからの経路）: ${contextPath}
-今回達成すべき目標タスク: 「${node.title}」
 
-上記のタスクを達成するための手順を考え、JSONで出力してください。`;
+現在のプロジェクトの全体像（前提となるフロー）:
+${treeContextText}
+
+この前提フローを踏まえた上で、現在選択中の目標タスク「${node.title}」を達成するための手順を考え、その直下の配下に作成すべきタスクをJSONで出力してください。`;
 
     try {
       const fullPrompt = `${systemPrompt}\n\n${userMessage}`;
-      const response = await sendChatMessage(fullPrompt);
+      const response = await sendChatMessage(fullPrompt, 120000, true, 'expert');
       
       // JSONパース（マークダウンブロックを除去する安全装置）
       const jsonStrMatch = response.match(/```json\n([\s\S]*?)\n```/) || response.match(/\{[\s\S]*\}/);

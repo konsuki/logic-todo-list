@@ -2,7 +2,7 @@
 // See vite.config.js for the configuration that maps /api to http://localhost:8000
 const API_BASE_URL = '/api';
 
-export const sendChatMessage = async (message, timeout = 120000) => {
+export const sendChatMessage = async (message, timeout = 120000, newChat = false, modelType = 'default') => {
   try {
     const response = await fetch(`${API_BASE_URL}/chat`, {
       method: 'POST',
@@ -13,6 +13,8 @@ export const sendChatMessage = async (message, timeout = 120000) => {
         message,
         wait_for_response: true,
         timeout,
+        new_chat: newChat,
+        model_type: modelType,
       }),
     });
 
