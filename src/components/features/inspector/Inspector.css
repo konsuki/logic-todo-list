@@ -463,3 +463,42 @@
 .description-link:hover {
   opacity: 0.8;
 }
+
+.inspector-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 12px 0 16px;
+  line-height: 1.2;
+  cursor: pointer;
+  border-bottom: 1px dashed transparent;
+  display: inline-block;
+  max-width: 100%;
+  word-break: break-word;
+  transition: border-bottom-color var(--transition-speed);
+}
+
+.inspector-title:hover {
+  border-bottom-color: var(--text-muted);
+}
+
+.inspector-title-input {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 12px 0 16px;
+  line-height: 1.2;
+  width: 100%;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 6px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  font-family: var(--font-display);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.inspector-title-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}

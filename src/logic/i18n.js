@@ -31,6 +31,7 @@ export const translations = {
       no_tasks_in_phase: 'このフェーズに該当するタスクはありません。',
     },
     inspector: {
+      click_to_edit: 'クリックして編集',
       empty: 'タスクを選択して論理コンテキストを表示',
       why: 'Why? (目的)',
       how: 'How? (実行)',
@@ -130,6 +131,7 @@ export const translations = {
       no_tasks_in_phase: 'No tasks found in this phase.',
     },
     inspector: {
+      click_to_edit: 'Click to edit',
       empty: 'Select a task to view its logic context',
       why: 'Why? (Purpose)',
       how: 'How? (Execution)',

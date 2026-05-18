@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Inspector from './Inspector';
 
@@ -110,5 +110,133 @@ describe('Inspector description link parsing', () => {
     
     expect(linkElement).not.toBeNull();
     expect(linkElement.getAttribute('href')).toBe('https://example.com/search?q=test&page=1');
+  });
+});
+
+describe('Inspector title inline editing', () => {
+  const defaultProps = {
+    selectedNodeId: '1',
+    nodes: {
+      '1': {
+        id: '1',
+        title: 'Original Title',
+        type: 'GOAL',
+        children: [],
+        dependsOn: [],
+        description: '',
+      },
+      '2': {
+        id: '2',
+        title: 'Second Title',
+        type: 'GOAL',
+        children: [],
+        dependsOn: [],
+        description: '',
+      }
+    },
+    addNode: vi.fn(),
+    addNodes: vi.fn(),
+    addTreeUnderNode: vi.fn(),
+    onSelectNode: vi.fn(),
+    updateNode: vi.fn(),
+    onDeleteNode: vi.fn(),
+    addDependency: vi.fn(),
+    removeDependency: vi.fn(),
+    reorderNode: vi.fn(),
+    t: (k) => k,
+    lang: 'ja',
+  };
+
+  it('should render the original title as h2 and switch to input on click', () => {
+    const { getByRole, container } = render(<Inspector {...defaultProps} />);
+    
+    const h2Element = getByRole('heading', { name: 'Original Title' });
+    expect(h2Element).toBeInTheDocument();
+    expect(container.querySelector('.inspector-title-input')).toBeNull();
+
+    // Click to edit
+    fireEvent.click(h2Element);
+
+    // Should render input now
+    const inputElement = container.querySelector('.inspector-title-input');
+    expect(inputElement).not.toBeNull();
+    expect(inputElement.value).toBe('Original Title');
+  });
+
+  it('should update the node title on Enter key', () => {
+    const updateNodeMock = vi.fn();
+    const props = { ...defaultProps, updateNode: updateNodeMock };
+    
+    const { getByRole, container } = render(<Inspector {...props} />);
+    fireEvent.click(getByRole('heading', { name: 'Original Title' }));
+
+    const inputElement = container.querySelector('.inspector-title-input');
+    expect(inputElement).not.toBeNull();
+    fireEvent.change(inputElement, { target: { value: 'Updated Title' } });
+    fireEvent.keyDown(inputElement, { key: 'Enter', code: 'Enter' });
+
+    expect(updateNodeMock).toHaveBeenCalledWith('1', { title: 'Updated Title' });
+    expect(getByRole('heading', { name: 'Original Title' })).toBeInTheDocument();
+  });
+
+  it('should update the node title on blur', () => {
+    const updateNodeMock = vi.fn();
+    const props = { ...defaultProps, updateNode: updateNodeMock };
+    
+    const { getByRole, container } = render(<Inspector {...props} />);
+    fireEvent.click(getByRole('heading', { name: 'Original Title' }));
+
+    const inputElement = container.querySelector('.inspector-title-input');
+    expect(inputElement).not.toBeNull();
+    fireEvent.change(inputElement, { target: { value: 'Updated Title on Blur' } });
+    fireEvent.blur(inputElement);
+
+    expect(updateNodeMock).toHaveBeenCalledWith('1', { title: 'Updated Title on Blur' });
+  });
+
+  it('should cancel edit and restore original title on Escape', () => {
+    const updateNodeMock = vi.fn();
+    const props = { ...defaultProps, updateNode: updateNodeMock };
+    
+    const { getByRole, container } = render(<Inspector {...props} />);
+    fireEvent.click(getByRole('heading', { name: 'Original Title' }));
+
+    const inputElement = container.querySelector('.inspector-title-input');
+    expect(inputElement).not.toBeNull();
+    fireEvent.change(inputElement, { target: { value: 'Discarded Title' } });
+    fireEvent.keyDown(inputElement, { key: 'Escape', code: 'Escape' });
+
+    expect(updateNodeMock).not.toHaveBeenCalled();
+    expect(getByRole('heading', { name: 'Original Title' })).toBeInTheDocument();
+  });
+
+  it('should not call updateNode if the value is empty or only spaces', () => {
+    const updateNodeMock = vi.fn();
+    const props = { ...defaultProps, updateNode: updateNodeMock };
+    
+    const { getByRole, container } = render(<Inspector {...props} />);
+    fireEvent.click(getByRole('heading', { name: 'Original Title' }));
+
+    const inputElement = container.querySelector('.inspector-title-input');
+    expect(inputElement).not.toBeNull();
+    fireEvent.change(inputElement, { target: { value: '   ' } });
+    fireEvent.blur(inputElement);
+
+    expect(updateNodeMock).not.toHaveBeenCalled();
+  });
+
+  it('should reset editing state when switching to another node', () => {
+    const { getByRole, container, rerender } = render(<Inspector {...defaultProps} />);
+    
+    fireEvent.click(getByRole('heading', { name: 'Original Title' }));
+    expect(container.querySelector('.inspector-title-input')).not.toBeNull();
+
+    // Rerender with different selectedNodeId
+    const nextProps = { ...defaultProps, selectedNodeId: '2' };
+    rerender(<Inspector {...nextProps} />);
+
+    // Should reset editing state and display the second node title
+    expect(container.querySelector('.inspector-title-input')).toBeNull();
+    expect(getByRole('heading', { name: 'Second Title' })).toBeInTheDocument();
   });
 });
