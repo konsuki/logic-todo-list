@@ -224,7 +224,14 @@ const ListView = ({
   moveNode,
   t
 }) => {
-  const [phaseFilter, setPhaseFilter] = useState('ALL');
+  const [phaseFilter, setPhaseFilter] = useState(() => {
+    const saved = localStorage.getItem('logido_list_phase_filter');
+    return saved || 'ALL';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('logido_list_phase_filter', phaseFilter);
+  }, [phaseFilter]);
   const [openState, setOpenState] = useState(() => {
     const saved = localStorage.getItem('logido_list_open_state');
     try {
