@@ -1,13 +1,14 @@
 # 修正・機ｗ能追加リクエスト
 
 ## 🚀 未完了 (Incomplete)
-- [x] section-subtitle部分の並び替え機能が機能しているか確かめ、必要あれば修正 ([仕様書](features/node_order/spec.md))
-- react-arboristの機能でタスクを並び替えた時に、タスクのプロパティにある順番の部分も変更できるようにする
-- aiのタスク分解とロジックテストの機能削除
-- [44] 05-17: [テスト環境（Vitest, React Testing Library）の導入とセットアップ](features/test_environment/spec.md)
+- [] react-arboristの機能でタスクを並び替えた時に、タスクのプロパティにある順番の部分も変更できるようにする
+- []aiのタスク分解とロジックテストの機能削除、演繹的タスク分解機能は残す
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
+- [47] 05-18: [リスト表示切替時のスクロール位置保持](features/list_scroll_position/spec.md)
+- [46] 05-18: [並び替え機能の修正と仕様策定](features/node_order/spec.md)
 - [45] 05-17: [演繹的タスク分解（Deductive Breakdown）機能の実装](features/ai_deductive_breakdown/spec.md)
+- [44] 05-17: [テスト環境（Vitest, React Testing Library）の導入とセットアップ](features/test_environment/spec.md)
 - [43] 05-17: [Tree Node タイトル表示のXSSおよびレイアウト崩れ防止](features/tree_node_title_xss/spec.md)
 - [42] 05-17: [リストビューに階層構造を示す垂直線（インデントガイド）を表示・リストUIのコンパクト化](features/list_indentation_guides/spec.md)
 - [41] 05-17: [インスペクター閉時にmain-contentが画面いっぱいに広がるように修正](features/ui_alignment/spec.md)
