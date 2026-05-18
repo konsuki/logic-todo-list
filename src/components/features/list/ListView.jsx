@@ -321,17 +321,20 @@ const ListView = ({
     const filteredNodes = phaseFilter === 'ALL' ? nodes : (() => {
       // Filter logic: keep nodes matching phase and their ancestors
       const visibleSet = new Set();
-      const checkVisibility = (nodeId) => {
+      const checkVisibility = (nodeId, forceVisible = false) => {
         const node = nodes[nodeId];
         if (!node || node.deletedAt) return false; // Skip soft-deleted nodes
         const matchesPhase = node.phase === phaseFilter;
+        const isVisible = forceVisible || matchesPhase;
+        
         let childMatches = false;
         if (node.children) {
           node.children.forEach(childId => {
-            if (checkVisibility(childId)) childMatches = true;
+            if (checkVisibility(childId, isVisible)) childMatches = true;
           });
         }
-        if (matchesPhase || childMatches) {
+        
+        if (isVisible || childMatches) {
           visibleSet.add(nodeId);
           return true;
         }
