@@ -1,6 +1,7 @@
 # 修正・機ｗ能追加リクエスト
 
 ## 🚀 未完了 (Incomplete)
+- [53] 05-18: [説明・メモ部分のURLパース処理の修正](features/description_url_fix/spec.md)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
 - [52] 05-18: [演繹的タスク分解のコンテキスト強化（ツリー全体の構造と完了条件の提示）](features/ai_deductive_context/spec.md)
