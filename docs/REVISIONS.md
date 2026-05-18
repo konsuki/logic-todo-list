@@ -1,7 +1,7 @@
 # 修正・機ｗ能追加リクエスト
 
 ## 🚀 未完了 (Incomplete)
-- section-subtitle部分の並び替え機能が機能しているか確かめ、必要あれば亜修正
+- [x] section-subtitle部分の並び替え機能が機能しているか確かめ、必要あれば修正 ([仕様書](features/node_order/spec.md))
 - react-arboristの機能でタスクを並び替えた時に、タスクのプロパティにある順番の部分も変更できるようにする
 - aiのタスク分解とロジックテストの機能削除
 - [44] 05-17: [テスト環境（Vitest, React Testing Library）の導入とセットアップ](features/test_environment/spec.md)
