@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
 import AIInsights from './AIInsights';
 import './Inspector.css';
@@ -21,6 +21,14 @@ const Inspector = ({
   const node = nodes[selectedNodeId];
   const [searchQuery, setSearchQuery] = useState('');
   const [isEditingDesc, setIsEditingDesc] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editTitle, setEditTitle] = useState(node?.title || '');
+
+  useEffect(() => {
+    setIsEditingTitle(false);
+    setIsEditingDesc(false);
+    setEditTitle(node?.title || '');
+  }, [selectedNodeId, node?.title]);
 
   if (!node) {
     return (
@@ -109,7 +117,46 @@ const Inspector = ({
             <Trash2 size={16} />
           </button>
         </div>
-        <h2>{node.title}</h2>
+        {isEditingTitle ? (
+          <input
+            type="text"
+            className="inspector-title-input"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            onBlur={() => {
+              const trimmed = editTitle.trim();
+              if (trimmed && trimmed !== node.title) {
+                updateNode(node.id, { title: trimmed });
+              } else {
+                setEditTitle(node.title);
+              }
+              setIsEditingTitle(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                const trimmed = editTitle.trim();
+                if (trimmed && trimmed !== node.title) {
+                  updateNode(node.id, { title: trimmed });
+                } else {
+                  setEditTitle(node.title);
+                }
+                setIsEditingTitle(false);
+              } else if (e.key === 'Escape') {
+                setEditTitle(node.title);
+                setIsEditingTitle(false);
+              }
+            }}
+            autoFocus
+          />
+        ) : (
+          <h2 
+            className="inspector-title"
+            onClick={() => setIsEditingTitle(true)}
+            title={t('inspector.click_to_edit') || 'Click to edit'}
+          >
+            {node.title}
+          </h2>
+        )}
         <div className="inspector-progress">
           <div className="progress-label">{t('inspector.progress')}</div>
           <div className="progress-bar-bg">

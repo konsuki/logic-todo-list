@@ -1,6 +1,7 @@
 # 修正・機ｗ能追加リクエスト
 
 ## 🚀 未完了 (Incomplete)
+- [54] 05-18: [インスペクターからのタイトル編集機能の追加](features/inspector_title_edit/spec.md)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
 - [53] 05-18: [説明・メモ部分のURLパース処理の修正](features/description_url_fix/spec.md)
