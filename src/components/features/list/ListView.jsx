@@ -241,6 +241,64 @@ const ListView = ({
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
+  // Scroll position retention
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // スクロール可能な要素を探索するヘルパー関数
+    const findScrollable = (element) => {
+      if (!element) return null;
+      const style = window.getComputedStyle(element);
+      const isScrollable = style.overflowY === 'auto' || style.overflowY === 'scroll';
+      const hasOverflow = element.scrollHeight > element.offsetHeight;
+      
+      if (isScrollable && hasOverflow) {
+        return element;
+      }
+      
+      for (let i = 0; i < element.children.length; i++) {
+        const found = findScrollable(element.children[i]);
+        if (found) return found;
+      }
+      return null;
+    };
+
+    // 1. 復元処理（見つかるまでリトライ）
+    const saved = localStorage.getItem('logido_list_scroll_top');
+    if (saved) {
+      const restore = () => {
+        const scrollableElement = findScrollable(container);
+        if (scrollableElement) {
+          scrollableElement.scrollTop = parseFloat(saved);
+        } else {
+          requestAnimationFrame(restore); // レンダリングを待つ
+        }
+      };
+      requestAnimationFrame(restore);
+    }
+
+    // 2. 保存処理（親要素でキャッチして、発火元から値を取る）
+    let timeoutId;
+    const handleScroll = (e) => {
+      // e.target は実際にスクロールした要素そのもの
+      if (e.target && e.target.scrollTop !== undefined) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          const currentPos = e.target.scrollTop;
+          localStorage.setItem('logido_list_scroll_top', currentPos.toString());
+          console.log('Saved scroll pos:', currentPos);
+        }, 200);
+      }
+    };
+
+    // キャプチャフェーズで監視することで、内部要素が再生成されても漏らさない
+    container.addEventListener('scroll', handleScroll, true);
+    return () => {
+      container.removeEventListener('scroll', handleScroll, true);
+      clearTimeout(timeoutId);
+    };
+  }, []);
 
   // Build arborist tree data
   const arboristData = useMemo(() => {
