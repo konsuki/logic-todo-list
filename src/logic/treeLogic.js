@@ -152,6 +152,7 @@ export const addNodes = (nodes, parentId, type, titles) => {
       type,
       title,
       description,
+      intent: '',
       status: NODE_STATUS.TODO,
       progress: 0,
       children: [],

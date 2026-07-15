@@ -48,6 +48,7 @@
 - `Inspector.jsx` に `isDescModalOpen` state を追加
 - テキストエリアの右上に「拡大」ボタン（`Maximize2` アイコン）を追加
 - `DescriptionModal.jsx` / `DescriptionModal.css` を新規作成（framer-motion、`ReactDOM.createPortal` で `document.body` に直接レンダリングして画面全体を覆う）
+- `DescriptionModal` は `label` / `placeholder` prop を受け取りモーダルタイトルとプレースホルダーを動的に表示（複数テキストエリアからの再利用に対応）
 - モーダル内テキストエリアは `value`（制御コンポーネント）で Inspector の state と双方向同期
 - `onChange` のたびに `updateNode` を呼んでリアルタイム保存
 
