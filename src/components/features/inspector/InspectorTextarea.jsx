@@ -47,7 +47,7 @@ const InspectorTextarea = ({ nodeId, value, onChange, onModalChange, label, plac
           <button
             className="expand-btn"
             onClick={() => setIsModalOpen(true)}
-            title={t('inspector.expand_description') || 'Expand editor'}
+            title={`${label} を拡大`}
           >
             <Maximize2 size={13} />
           </button>
@@ -81,6 +81,8 @@ const InspectorTextarea = ({ nodeId, value, onChange, onModalChange, label, plac
         value={value || ''}
         onChange={onModalChange}
         onClose={() => setIsModalOpen(false)}
+        label={label}
+        placeholder={placeholder}
         t={t}
       />
     </section>

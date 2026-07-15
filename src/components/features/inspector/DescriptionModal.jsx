@@ -20,7 +20,7 @@ const modalVariants = {
   exit: { opacity: 0, scale: 0.9, y: 20 },
 };
 
-const DescriptionModal = ({ isOpen, value, onChange, onClose, t }) => {
+const DescriptionModal = ({ isOpen, value, onChange, onClose, label, placeholder, t }) => {
   return ReactDOM.createPortal(
     <AnimatePresence>
       {isOpen && (
@@ -43,7 +43,7 @@ const DescriptionModal = ({ isOpen, value, onChange, onClose, t }) => {
             <div className="modal-header">
               <div className="header-title">
                 <Maximize2 size={18} className="header-icon" />
-                <h2>{t('inspector.description')}</h2>
+                <h2>{label || t('inspector.description')}</h2>
               </div>
               <button className="close-btn" onClick={onClose}>
                 <X size={24} />
@@ -54,7 +54,7 @@ const DescriptionModal = ({ isOpen, value, onChange, onClose, t }) => {
                 className="description-modal-textarea"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                placeholder={t('inspector.placeholder_desc')}
+                placeholder={placeholder || t('inspector.placeholder_desc')}
                 autoFocus
               />
             </div>

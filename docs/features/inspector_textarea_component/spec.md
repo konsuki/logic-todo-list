@@ -19,7 +19,7 @@
 | `value` | string | 現在の文字列（親から渡す） |
 | `onChange(text)` | function | onBlur 時に呼ばれるコールバック（保存） |
 | `onModalChange(text)` | function | モーダル内リアルタイム変更時のコールバック |
-| `label` | string | セクションタイトル文字列（例: t('inspector.description')） |
+| `label` | string | セクションタイトル文字列（例: t('inspector.description')）。モーダルタイトル・expand ボタン tooltip にも使用される |
 | `placeholder` | string | textarea のプレースホルダー |
 | `t` | function | 翻訳関数（モーダル内の共通文言に使用） |
 
