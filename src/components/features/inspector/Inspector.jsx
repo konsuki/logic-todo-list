@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
+import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, Maximize2 } from 'lucide-react';
 import AIInsights from './AIInsights';
+import DescriptionModal from './DescriptionModal';
 import './Inspector.css';
 
 const Inspector = ({ 
@@ -25,11 +26,13 @@ const Inspector = ({
   const [editTitle, setEditTitle] = useState(node?.title || '');
   const [isWhyOpen, setIsWhyOpen] = useState(true);
   const [isHowOpen, setIsHowOpen] = useState(true);
+  const [isDescModalOpen, setIsDescModalOpen] = useState(false);
 
   useEffect(() => {
     setIsEditingTitle(false);
     setIsEditingDesc(false);
     setEditTitle(node?.title || '');
+    setIsDescModalOpen(false);
   }, [selectedNodeId, node?.title]);
 
   if (!node) {
@@ -68,6 +71,10 @@ const Inspector = ({
 
   const handleDescriptionChange = (e) => {
     updateNode(selectedNodeId, { description: e.target.value });
+  };
+
+  const handleDescModalChange = (text) => {
+    updateNode(node.id, { description: text });
   };
 
   const handlePhaseChange = (e) => {
@@ -177,11 +184,20 @@ const Inspector = ({
       <section className="inspector-section">
         <div className="section-header-with-action">
           <h3 className="section-title">{t('inspector.description')}</h3>
-          {!isEditingDesc && node.description && (
-            <button className="edit-subtle-btn" onClick={() => setIsEditingDesc(true)}>
-              {t('common.edit') || 'Edit'}
+          <div className="description-header-actions">
+            {!isEditingDesc && node.description && (
+              <button className="edit-subtle-btn" onClick={() => setIsEditingDesc(true)}>
+                {t('common.edit') || 'Edit'}
+              </button>
+            )}
+            <button
+              className="expand-btn"
+              onClick={() => setIsDescModalOpen(true)}
+              title={t('inspector.expand_description') || 'Expand editor'}
+            >
+              <Maximize2 size={13} />
             </button>
-          )}
+          </div>
         </div>
 
         {isEditingDesc || !node.description ? (
@@ -396,6 +412,13 @@ const Inspector = ({
         )}
       </section>
 
+      <DescriptionModal
+        isOpen={isDescModalOpen}
+        value={node.description || ''}
+        onChange={handleDescModalChange}
+        onClose={() => setIsDescModalOpen(false)}
+        t={t}
+      />
     </div>
   );
 };
