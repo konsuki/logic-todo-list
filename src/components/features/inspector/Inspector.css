@@ -450,6 +450,60 @@
   background-color: hsla(220, 100%, 100%, 0.05);
 }
 
+/* Reorder mode */
+.inspector-container.reorder-mode {
+  padding-left: 28px;
+}
+
+.reorder-toggle-btn {
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.reorder-toggle-btn:hover {
+  color: var(--primary-color);
+  background-color: hsla(220, 100%, 100%, 0.05);
+}
+
+.reorder-toggle-btn.active {
+  color: var(--primary-color);
+  background-color: hsla(220, 100%, 100%, 0.08);
+}
+
+.sortable-section {
+  position: relative;
+}
+
+.sortable-section.is-dragging {
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+.drag-handle {
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  cursor: grab;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  touch-action: none;
+}
+
+.drag-handle:hover {
+  color: var(--primary-color);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
 .edit-subtle-btn {
   font-size: 11px;
   color: var(--text-muted);
