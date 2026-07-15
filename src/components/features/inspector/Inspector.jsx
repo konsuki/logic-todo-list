@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { Target, ChevronUp, ChevronDown, Info, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
+import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
 import AIInsights from './AIInsights';
 import InspectorTextarea from './InspectorTextarea';
 import SortableSection from './SortableSection';
