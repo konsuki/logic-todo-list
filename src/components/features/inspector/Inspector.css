@@ -429,6 +429,27 @@
   align-items: center;
 }
 
+.description-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.expand-btn {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  padding: 3px 5px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.expand-btn:hover {
+  color: var(--primary-color);
+  background-color: hsla(220, 100%, 100%, 0.05);
+}
+
 .edit-subtle-btn {
   font-size: 11px;
   color: var(--text-muted);
