@@ -22,7 +22,7 @@
 ```
 ① テキストエリア右上の「拡大」ボタン（Maximize2 アイコン）をクリック
         ↓
-② モーダルが開く
+② モーダルが開く（画面全体を覆うオーバーレイ。左のリスト・ツリー表示も暗い背景で隠され、他のタスクのクリックや表示切替はできない。入力に専念できる状態）
    → モーダル内テキストエリアには「現時点の説明欄の内容」がすでに入っている
         ↓
 ③ モーダル内で自由に長文を入力・編集する
@@ -47,7 +47,7 @@
 ### やること
 - `Inspector.jsx` に `isDescModalOpen` state を追加
 - テキストエリアの右上に「拡大」ボタン（`Maximize2` アイコン）を追加
-- `DescriptionModal.jsx` / `DescriptionModal.css` を新規作成（framer-motion、ImportModal と同じパターン）
+- `DescriptionModal.jsx` / `DescriptionModal.css` を新規作成（framer-motion、`ReactDOM.createPortal` で `document.body` に直接レンダリングして画面全体を覆う）
 - モーダル内テキストエリアは `value`（制御コンポーネント）で Inspector の state と双方向同期
 - `onChange` のたびに `updateNode` を呼んでリアルタイム保存
 

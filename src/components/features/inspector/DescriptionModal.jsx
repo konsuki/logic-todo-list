@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Maximize2 } from 'lucide-react';
 import './DescriptionModal.css';
@@ -20,12 +21,12 @@ const modalVariants = {
 };
 
 const DescriptionModal = ({ isOpen, value, onChange, onClose, t }) => {
-  return (
+  return ReactDOM.createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="modal-backdrop-container">
+        <div className="desc-modal-backdrop-container">
           <motion.div
-            className="modal-backdrop"
+            className="desc-modal-backdrop"
             variants={backdropVariants}
             initial="hidden"
             animate="visible"
@@ -60,7 +61,8 @@ const DescriptionModal = ({ isOpen, value, onChange, onClose, t }) => {
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 
