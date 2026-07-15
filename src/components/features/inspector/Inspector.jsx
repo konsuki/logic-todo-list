@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, Maximize2, GripVertical } from 'lucide-react';
+import { Target, ChevronUp, ChevronDown, Info, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
 import AIInsights from './AIInsights';
-import DescriptionModal from './DescriptionModal';
+import InspectorTextarea from './InspectorTextarea';
 import SortableSection from './SortableSection';
 import './Inspector.css';
 
@@ -27,12 +27,10 @@ const Inspector = ({
 }) => {
   const node = nodes[selectedNodeId];
   const [searchQuery, setSearchQuery] = useState('');
-  const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editTitle, setEditTitle] = useState(node?.title || '');
   const [isWhyOpen, setIsWhyOpen] = useState(true);
   const [isHowOpen, setIsHowOpen] = useState(true);
-  const [isDescModalOpen, setIsDescModalOpen] = useState(false);
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [sectionOrder, setSectionOrder] = useState(() => {
     try {
@@ -53,9 +51,7 @@ const Inspector = ({
 
   useEffect(() => {
     setIsEditingTitle(false);
-    setIsEditingDesc(false);
     setEditTitle(node?.title || '');
-    setIsDescModalOpen(false);
   }, [selectedNodeId, node?.title]);
 
   if (!node) {
@@ -91,14 +87,6 @@ const Inspector = ({
 
   const showMeceWarning = (node.type === 'STRATEGY' || node.type === 'GOAL') && children.length === 1;
 
-  const handleDescriptionChange = (e) => {
-    updateNode(selectedNodeId, { description: e.target.value });
-  };
-
-  const handleDescModalChange = (text) => {
-    updateNode(node.id, { description: text });
-  };
-
   const handlePhaseChange = (e) => {
     updateNode(selectedNodeId, { phase: e.target.value });
   };
@@ -119,73 +107,17 @@ const Inspector = ({
     handleSectionReorder(arrayMove(sectionOrder, oldIndex, newIndex));
   };
 
-  const renderDescription = (text) => {
-    if (!text) return null;
-    const urlRegex = /(https?:\/\/[a-zA-Z0-9-._~:/?#\[\]@!$&'()*+,;%=]*[a-zA-Z0-9_~/#%?&=-])/g;
-    const parts = text.split(urlRegex);
-
-    return parts.map((part, i) => {
-      if (part.match(urlRegex)) {
-        return (
-          <a
-            key={i}
-            href={part}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="description-link"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {part}<ExternalLink size={10} style={{ marginLeft: '2px', verticalAlign: 'middle' }} />
-          </a>
-        );
-      }
-      return part;
-    });
-  };
-
   const sectionMap = {
     description: (
-      <section className="inspector-section">
-        <div className="section-header-with-action">
-          <h3 className="section-title">{t('inspector.description')}</h3>
-          <div className="description-header-actions">
-            {!isEditingDesc && node.description && (
-              <button className="edit-subtle-btn" onClick={() => setIsEditingDesc(true)}>
-                {t('common.edit') || 'Edit'}
-              </button>
-            )}
-            <button
-              className="expand-btn"
-              onClick={() => setIsDescModalOpen(true)}
-              title={t('inspector.expand_description') || 'Expand editor'}
-            >
-              <Maximize2 size={13} />
-            </button>
-          </div>
-        </div>
-
-        {isEditingDesc || !node.description ? (
-          <textarea
-            key={node.id}
-            autoFocus={isEditingDesc}
-            className="description-area"
-            placeholder={t('inspector.placeholder_desc')}
-            defaultValue={node.description || ''}
-            onBlur={(e) => {
-              handleDescriptionChange(e);
-              setIsEditingDesc(false);
-            }}
-          />
-        ) : (
-          <div
-            className="description-display"
-            onClick={() => setIsEditingDesc(true)}
-            title="Click to edit"
-          >
-            {renderDescription(node.description)}
-          </div>
-        )}
-      </section>
+      <InspectorTextarea
+        nodeId={selectedNodeId}
+        value={node.description || ''}
+        onChange={(text) => updateNode(selectedNodeId, { description: text })}
+        onModalChange={(text) => updateNode(node.id, { description: text })}
+        label={t('inspector.description')}
+        placeholder={t('inspector.placeholder_desc')}
+        t={t}
+      />
     ),
 
     ai: (
@@ -482,13 +414,6 @@ const Inspector = ({
         </SortableContext>
       </DndContext>
 
-      <DescriptionModal
-        isOpen={isDescModalOpen}
-        value={node.description || ''}
-        onChange={handleDescModalChange}
-        onClose={() => setIsDescModalOpen(false)}
-        t={t}
-      />
     </div>
   );
 };
