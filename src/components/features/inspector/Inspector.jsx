@@ -172,15 +172,48 @@ const Inspector = ({
         </div>
       </header>
 
+      <section className="inspector-section">
+        <div className="section-header-with-action">
+          <h3 className="section-title">{t('inspector.description')}</h3>
+          {!isEditingDesc && node.description && (
+            <button className="edit-subtle-btn" onClick={() => setIsEditingDesc(true)}>
+              {t('common.edit') || 'Edit'}
+            </button>
+          )}
+        </div>
+
+        {isEditingDesc || !node.description ? (
+          <textarea
+            key={node.id}
+            autoFocus={isEditingDesc}
+            className="description-area"
+            placeholder={t('inspector.placeholder_desc')}
+            defaultValue={node.description || ''}
+            onBlur={(e) => {
+              handleDescriptionChange(e);
+              setIsEditingDesc(false);
+            }}
+          />
+        ) : (
+          <div
+            className="description-display"
+            onClick={() => setIsEditingDesc(true)}
+            title="Click to edit"
+          >
+            {renderDescription(node.description)}
+          </div>
+        )}
+      </section>
+
       {/* AI Assistance Section */}
-      <AIInsights 
-        node={node} 
-        nodes={nodes} 
-        addNode={addNode} 
+      <AIInsights
+        node={node}
+        nodes={nodes}
+        addNode={addNode}
         addNodes={addNodes}
         addTreeUnderNode={addTreeUnderNode}
-        lang={lang} 
-        t={t} 
+        lang={lang}
+        t={t}
       />
 
       {/* Schedule & Phase Section */}
@@ -353,38 +386,6 @@ const Inspector = ({
         </div>
       </section>
 
-      <section className="inspector-section">
-        <div className="section-header-with-action">
-          <h3 className="section-title">{t('inspector.description')}</h3>
-          {!isEditingDesc && node.description && (
-            <button className="edit-subtle-btn" onClick={() => setIsEditingDesc(true)}>
-              {t('common.edit') || 'Edit'}
-            </button>
-          )}
-        </div>
-        
-        {isEditingDesc || !node.description ? (
-          <textarea 
-            key={node.id}
-            autoFocus={isEditingDesc}
-            className="description-area"
-            placeholder={t('inspector.placeholder_desc')}
-            defaultValue={node.description || ''}
-            onBlur={(e) => {
-              handleDescriptionChange(e);
-              setIsEditingDesc(false);
-            }}
-          />
-        ) : (
-          <div 
-            className="description-display" 
-            onClick={() => setIsEditingDesc(true)}
-            title="Click to edit"
-          >
-            {renderDescription(node.description)}
-          </div>
-        )}
-      </section>
     </div>
   );
 };

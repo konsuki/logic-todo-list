@@ -1,8 +1,9 @@
-# 修正・機ｗ能追加リクエスト
+# 修正・機能追加リクエスト
 
 ## 🚀 未完了 (Incomplete)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 ## ✅ 完了済み (Completed)
+- [55] 07-15: [インスペクター：説明・メモの位置移動（inspector-header直下へ）](features/inspector_description_reorder/spec.md)
 - [54] 05-18: [インスペクターからのタイトル編集機能の追加](features/inspector_title_edit/spec.md)
 - [53] 05-18: [説明・メモ部分のURLパース処理の修正](features/description_url_fix/spec.md)
 - [52] 05-18: [演繹的タスク分解のコンテキスト強化（ツリー全体の構造と完了条件の提示）](features/ai_deductive_context/spec.md)
