@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, Maximize2 } from 'lucide-react';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, Maximize2, GripVertical } from 'lucide-react';
 import AIInsights from './AIInsights';
 import DescriptionModal from './DescriptionModal';
+import SortableSection from './SortableSection';
 import './Inspector.css';
 
-const Inspector = ({ 
-  selectedNodeId, 
-  nodes, 
-  addNode, 
+const DEFAULT_SECTION_ORDER = ['description', 'ai', 'schedule', 'dependency', 'why', 'how'];
+const STORAGE_KEY = 'logido_section_order';
+
+const Inspector = ({
+  selectedNodeId,
+  nodes,
+  addNode,
   addNodes,
   addTreeUnderNode,
-  onSelectNode, 
-  updateNode, 
+  onSelectNode,
+  updateNode,
   onDeleteNode,
   addDependency,
   removeDependency,
   reorderNode,
-  t, 
-  lang 
+  t,
+  lang
 }) => {
   const node = nodes[selectedNodeId];
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,6 +33,23 @@ const Inspector = ({
   const [isWhyOpen, setIsWhyOpen] = useState(true);
   const [isHowOpen, setIsHowOpen] = useState(true);
   const [isDescModalOpen, setIsDescModalOpen] = useState(false);
+  const [isReorderMode, setIsReorderMode] = useState(false);
+  const [sectionOrder, setSectionOrder] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const valid = parsed.filter(k => DEFAULT_SECTION_ORDER.includes(k));
+        const missing = DEFAULT_SECTION_ORDER.filter(k => !valid.includes(k));
+        return [...valid, ...missing];
+      }
+    } catch (_) {}
+    return DEFAULT_SECTION_ORDER;
+  });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+  );
 
   useEffect(() => {
     setIsEditingTitle(false);
@@ -56,12 +79,11 @@ const Inspector = ({
 
   const pathToRoot = getPathToRoot(selectedNodeId);
   const children = node.children.map(id => nodes[id]).filter(Boolean);
-  
-  // Dependency data
+
   const predecessors = (node.dependsOn || []).map(id => nodes[id]).filter(Boolean);
-  const searchResults = searchQuery.trim() 
-    ? Object.values(nodes).filter(n => 
-        n.id !== node.id && 
+  const searchResults = searchQuery.trim()
+    ? Object.values(nodes).filter(n =>
+        n.id !== node.id &&
         n.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
         !(node.dependsOn || []).includes(n.id)
       ).slice(0, 5)
@@ -85,19 +107,31 @@ const Inspector = ({
     updateNode(selectedNodeId, { dueDate: e.target.value });
   };
 
+  const handleSectionReorder = (newOrder) => {
+    setSectionOrder(newOrder);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newOrder));
+  };
+
+  const handleDragEnd = ({ active, over }) => {
+    if (!over || active.id === over.id) return;
+    const oldIndex = sectionOrder.indexOf(active.id);
+    const newIndex = sectionOrder.indexOf(over.id);
+    handleSectionReorder(arrayMove(sectionOrder, oldIndex, newIndex));
+  };
+
   const renderDescription = (text) => {
     if (!text) return null;
     const urlRegex = /(https?:\/\/[a-zA-Z0-9-._~:/?#\[\]@!$&'()*+,;%=]*[a-zA-Z0-9_~/#%?&=-])/g;
     const parts = text.split(urlRegex);
-    
+
     return parts.map((part, i) => {
       if (part.match(urlRegex)) {
         return (
-          <a 
-            key={i} 
-            href={part} 
-            target="_blank" 
-            rel="noopener noreferrer" 
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
             className="description-link"
             onClick={(e) => e.stopPropagation()}
           >
@@ -109,78 +143,8 @@ const Inspector = ({
     });
   };
 
-  return (
-    <div className="inspector-container">
-      <header className="inspector-header">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <span className={`node-type-tag ${node.type.toLowerCase()}`}>{node.type}</span>
-          <button 
-            className="delete-btn-subtle" 
-            onClick={() => {
-              if (window.confirm(t('common.confirm_delete'))) {
-                onDeleteNode(node.id);
-              }
-            }}
-            title={t('common.delete')}
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-        {isEditingTitle ? (
-          <input
-            type="text"
-            className="inspector-title-input"
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
-            onBlur={() => {
-              const trimmed = editTitle.trim();
-              if (trimmed && trimmed !== node.title) {
-                updateNode(node.id, { title: trimmed });
-              } else {
-                setEditTitle(node.title);
-              }
-              setIsEditingTitle(false);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                const trimmed = editTitle.trim();
-                if (trimmed && trimmed !== node.title) {
-                  updateNode(node.id, { title: trimmed });
-                } else {
-                  setEditTitle(node.title);
-                }
-                setIsEditingTitle(false);
-              } else if (e.key === 'Escape') {
-                setEditTitle(node.title);
-                setIsEditingTitle(false);
-              }
-            }}
-            autoFocus
-          />
-        ) : (
-          <h2 
-            className="inspector-title"
-            onClick={() => setIsEditingTitle(true)}
-            title={t('inspector.click_to_edit') || 'Click to edit'}
-          >
-            {node.title}
-          </h2>
-        )}
-        <div className="inspector-progress">
-          <div className="progress-label">{t('inspector.progress')}</div>
-          <div className="progress-bar-bg">
-            <div 
-              className="progress-bar-fill" 
-              style={{ 
-                width: `${node.progress}%`,
-                backgroundColor: node.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)'
-              }} 
-            />
-          </div>
-          <span className="progress-value">{node.progress}%</span>
-        </div>
-      </header>
-
+  const sectionMap = {
+    description: (
       <section className="inspector-section">
         <div className="section-header-with-action">
           <h3 className="section-title">{t('inspector.description')}</h3>
@@ -222,8 +186,9 @@ const Inspector = ({
           </div>
         )}
       </section>
+    ),
 
-      {/* AI Assistance Section */}
+    ai: (
       <AIInsights
         node={node}
         nodes={nodes}
@@ -233,8 +198,9 @@ const Inspector = ({
         lang={lang}
         t={t}
       />
+    ),
 
-      {/* Schedule & Phase Section */}
+    schedule: (
       <section className="inspector-section">
         <h3 className="section-title">
           <Calendar size={14} /> {t('inspector.schedule')}
@@ -242,8 +208,8 @@ const Inspector = ({
         <div className="schedule-controls">
           <div className="control-group">
             <label>{t('inspector.phase')}</label>
-            <select 
-              value={node.phase || 'PREP'} 
+            <select
+              value={node.phase || 'PREP'}
               onChange={handlePhaseChange}
               className="phase-select"
             >
@@ -254,9 +220,9 @@ const Inspector = ({
           </div>
           <div className="control-group">
             <label>{t('inspector.due_date')}</label>
-            <input 
-              type="date" 
-              value={node.dueDate || ''} 
+            <input
+              type="date"
+              value={node.dueDate || ''}
               onChange={handleDueDateChange}
               className="date-input"
             />
@@ -266,15 +232,15 @@ const Inspector = ({
         <div className="order-controls">
           <label className="section-subtitle">{t('inspector.order_section')}</label>
           <div className="order-buttons">
-            <button 
-              className="order-btn" 
+            <button
+              className="order-btn"
               onClick={() => reorderNode(node.id, 'up')}
               title={t('inspector.move_up')}
             >
               <ArrowUp size={14} /> {t('inspector.move_up')}
             </button>
-            <button 
-              className="order-btn" 
+            <button
+              className="order-btn"
               onClick={() => reorderNode(node.id, 'down')}
               title={t('inspector.move_down')}
             >
@@ -283,8 +249,9 @@ const Inspector = ({
           </div>
         </div>
       </section>
+    ),
 
-      {/* Dependency Management Section */}
+    dependency: (
       <section className="inspector-section">
         <h3 className="section-title">
           <Link size={14} /> {t('inspector.predecessors')}
@@ -304,10 +271,10 @@ const Inspector = ({
               ))
             )}
           </div>
-          
+
           <div className="dependency-search">
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder={t('inspector.search_to_link')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -315,8 +282,8 @@ const Inspector = ({
             {searchResults.length > 0 && (
               <div className="search-results">
                 {searchResults.map(r => (
-                  <div 
-                    key={r.id} 
+                  <div
+                    key={r.id}
                     className="search-result-item"
                     onClick={() => {
                       addDependency(node.id, r.id);
@@ -332,17 +299,9 @@ const Inspector = ({
           </div>
         </div>
       </section>
+    ),
 
-      {showMeceWarning && (
-        <div className="inspector-warning-card">
-          <AlertTriangle size={18} color="var(--warning-color)" />
-          <div>
-            <h4>{t('inspector.logic_gap_title')}</h4>
-            <p>{t('inspector.logic_gap_desc')}</p>
-          </div>
-        </div>
-      )}
-
+    why: (
       <section className="inspector-section">
         <h3 className="section-title section-title--clickable" onClick={() => setIsWhyOpen(v => !v)}>
           {isWhyOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -382,7 +341,9 @@ const Inspector = ({
           </>
         )}
       </section>
+    ),
 
+    how: (
       <section className="inspector-section">
         <h3 className="section-title section-title--clickable" onClick={() => setIsHowOpen(v => !v)}>
           {isHowOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -411,6 +372,115 @@ const Inspector = ({
           </div>
         )}
       </section>
+    ),
+  };
+
+  return (
+    <div className={`inspector-container${isReorderMode ? ' reorder-mode' : ''}`}>
+      <header className="inspector-header">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <span className={`node-type-tag ${node.type.toLowerCase()}`}>{node.type}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <button
+              className={`reorder-toggle-btn${isReorderMode ? ' active' : ''}`}
+              onClick={() => setIsReorderMode(v => !v)}
+              title="セクションを並び替え"
+            >
+              <GripVertical size={16} />
+            </button>
+            <button
+              className="delete-btn-subtle"
+              onClick={() => {
+                if (window.confirm(t('common.confirm_delete'))) {
+                  onDeleteNode(node.id);
+                }
+              }}
+              title={t('common.delete')}
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        </div>
+        {isEditingTitle ? (
+          <input
+            type="text"
+            className="inspector-title-input"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            onBlur={() => {
+              const trimmed = editTitle.trim();
+              if (trimmed && trimmed !== node.title) {
+                updateNode(node.id, { title: trimmed });
+              } else {
+                setEditTitle(node.title);
+              }
+              setIsEditingTitle(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                const trimmed = editTitle.trim();
+                if (trimmed && trimmed !== node.title) {
+                  updateNode(node.id, { title: trimmed });
+                } else {
+                  setEditTitle(node.title);
+                }
+                setIsEditingTitle(false);
+              } else if (e.key === 'Escape') {
+                setEditTitle(node.title);
+                setIsEditingTitle(false);
+              }
+            }}
+            autoFocus
+          />
+        ) : (
+          <h2
+            className="inspector-title"
+            onClick={() => setIsEditingTitle(true)}
+            title={t('inspector.click_to_edit') || 'Click to edit'}
+          >
+            {node.title}
+          </h2>
+        )}
+        <div className="inspector-progress">
+          <div className="progress-label">{t('inspector.progress')}</div>
+          <div className="progress-bar-bg">
+            <div
+              className="progress-bar-fill"
+              style={{
+                width: `${node.progress}%`,
+                backgroundColor: node.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)'
+              }}
+            />
+          </div>
+          <span className="progress-value">{node.progress}%</span>
+        </div>
+      </header>
+
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
+          {sectionOrder.map(key => {
+            if (key === 'how' && showMeceWarning) {
+              return (
+                <SortableSection key={key} id={key} isReorderMode={isReorderMode}>
+                  <div className="inspector-warning-card">
+                    <AlertTriangle size={18} color="var(--warning-color)" />
+                    <div>
+                      <h4>{t('inspector.logic_gap_title')}</h4>
+                      <p>{t('inspector.logic_gap_desc')}</p>
+                    </div>
+                  </div>
+                  {sectionMap[key]}
+                </SortableSection>
+              );
+            }
+            return (
+              <SortableSection key={key} id={key} isReorderMode={isReorderMode}>
+                {sectionMap[key]}
+              </SortableSection>
+            );
+          })}
+        </SortableContext>
+      </DndContext>
 
       <DescriptionModal
         isOpen={isDescModalOpen}

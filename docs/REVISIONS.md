@@ -5,6 +5,7 @@
 - [56] 07-15: インスペクター「Edit」ボタンのi18nキー `common.edit` が未解決で文字列そのまま表示される問題の修正
 
 ## ✅ 完了済み (Completed)
+- [59] 07-15: [インスペクター直下兄弟要素の並び替えDnD（ハンドル付きトグルモード・localStorage永続化）](features/inspector_section_dnd/spec.md)
 - [58] 07-15: [テキストエリア モーダル拡張入力（拡大ボタンでモーダル展開・リアルタイム同期）](features/description_modal_expand/spec.md)
 - [57] 07-15: [インスペクター：Why?/How? アコーディオン化（見出しクリックで開閉）](features/inspector_why_how_accordion/spec.md)
 - [55] 07-15: [インスペクター：説明・メモの位置移動（inspector-header直下へ）](features/inspector_description_reorder/spec.md)
