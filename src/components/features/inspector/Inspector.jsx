@@ -23,6 +23,8 @@ const Inspector = ({
   const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editTitle, setEditTitle] = useState(node?.title || '');
+  const [isWhyOpen, setIsWhyOpen] = useState(true);
+  const [isHowOpen, setIsHowOpen] = useState(true);
 
   useEffect(() => {
     setIsEditingTitle(false);
@@ -326,64 +328,72 @@ const Inspector = ({
       )}
 
       <section className="inspector-section">
-        <h3 className="section-title">
-          <ChevronUp size={14} /> {t('inspector.why')}
+        <h3 className="section-title section-title--clickable" onClick={() => setIsWhyOpen(v => !v)}>
+          {isWhyOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          {t('inspector.why')}
         </h3>
-        <div className="why-path">
-          {pathToRoot.length === 0 ? (
-            <div className="path-item root">
-              <Target size={14} />
-              <span>{t('inspector.root_goal')}</span>
-            </div>
-          ) : (
-            pathToRoot.map((n, i) => (
-              <div 
-                key={n.id} 
-                className="path-item linkable" 
-                onClick={() => onSelectNode(n.id)}
-              >
-                <div className="path-dot" />
-                <span className="path-title">{n.title}</span>
-                <ExternalLink size={12} className="link-icon" />
+        {isWhyOpen && (
+          <>
+            <div className="why-path">
+              {pathToRoot.length === 0 ? (
+                <div className="path-item root">
+                  <Target size={14} />
+                  <span>{t('inspector.root_goal')}</span>
+                </div>
+              ) : (
+                pathToRoot.map((n, i) => (
+                  <div
+                    key={n.id}
+                    className="path-item linkable"
+                    onClick={() => onSelectNode(n.id)}
+                  >
+                    <div className="path-dot" />
+                    <span className="path-title">{n.title}</span>
+                    <ExternalLink size={12} className="link-icon" />
+                  </div>
+                ))
+              )}
+              <div className="path-item active">
+                <div className="path-dot active" />
+                <span className="path-title current">{node.title}</span>
               </div>
-            ))
-          )}
-          <div className="path-item active">
-            <div className="path-dot active" />
-            <span className="path-title current">{node.title}</span>
-          </div>
-        </div>
-        <p className="logic-guide">
-          {pathToRoot.length > 0 
-            ? t('inspector.achieve_context', { parent: pathToRoot[pathToRoot.length - 1].title })
-            : t('inspector.focus_objective')}
-        </p>
+            </div>
+            <p className="logic-guide">
+              {pathToRoot.length > 0
+                ? t('inspector.achieve_context', { parent: pathToRoot[pathToRoot.length - 1].title })
+                : t('inspector.focus_objective')}
+            </p>
+          </>
+        )}
       </section>
 
       <section className="inspector-section">
-        <h3 className="section-title">
-          <ChevronDown size={14} /> {t('inspector.how')}
+        <h3 className="section-title section-title--clickable" onClick={() => setIsHowOpen(v => !v)}>
+          {isHowOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          {t('inspector.how')}
         </h3>
-        <div className="how-list">
-          {children.length === 0 ? (
-            <div className="empty-how">
-              <p>{t('inspector.no_subtasks')}</p>
-              <p className="hint">{t('inspector.breakdown_hint')}</p>
-            </div>
-          ) : (
-            children.map(child => (
-              <div 
-                key={child.id} 
-                className="how-item"
-                onClick={() => onSelectNode(child.id)}
-              >
-                <span className={`status-dot ${child.status.toLowerCase()}`} />
-                <span className="how-title">{child.title}</span>
-                <span className="how-percent">{child.progress}%</span>
+        {isHowOpen && (
+          <div className="how-list">
+            {children.length === 0 ? (
+              <div className="empty-how">
+                <p>{t('inspector.no_subtasks')}</p>
+                <p className="hint">{t('inspector.breakdown_hint')}</p>
               </div>
-            ))
-          )}
-        </div>
+            ) : (
+              children.map(child => (
+                <div
+                  key={child.id}
+                  className="how-item"
+                  onClick={() => onSelectNode(child.id)}
+                >
+                  <span className={`status-dot ${child.status.toLowerCase()}`} />
+                  <span className="how-title">{child.title}</span>
+                  <span className="how-percent">{child.progress}%</span>
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </section>
 
     </div>

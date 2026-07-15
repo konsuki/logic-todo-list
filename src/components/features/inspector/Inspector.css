@@ -109,6 +109,16 @@
   letter-spacing: 1px;
 }
 
+.section-title--clickable {
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.15s;
+}
+
+.section-title--clickable:hover {
+  opacity: 0.75;
+}
+
 /* Why Path Styles */
 .why-path {
   display: flex;
