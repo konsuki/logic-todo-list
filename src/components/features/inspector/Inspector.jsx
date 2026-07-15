@@ -7,7 +7,7 @@ import InspectorTextarea from './InspectorTextarea';
 import SortableSection from './SortableSection';
 import './Inspector.css';
 
-const DEFAULT_SECTION_ORDER = ['description', 'ai', 'schedule', 'dependency', 'why', 'how'];
+const DEFAULT_SECTION_ORDER = ['description', 'intent', 'ai', 'schedule', 'dependency', 'why', 'how'];
 const STORAGE_KEY = 'logido_section_order';
 
 const Inspector = ({
@@ -116,6 +116,18 @@ const Inspector = ({
         onModalChange={(text) => updateNode(node.id, { description: text })}
         label={t('inspector.description')}
         placeholder={t('inspector.placeholder_desc')}
+        t={t}
+      />
+    ),
+
+    intent: (
+      <InspectorTextarea
+        nodeId={selectedNodeId}
+        value={node.intent || ''}
+        onChange={(text) => updateNode(selectedNodeId, { intent: text })}
+        onModalChange={(text) => updateNode(node.id, { intent: text })}
+        label={t('inspector.intent')}
+        placeholder={t('inspector.placeholder_intent')}
         t={t}
       />
     ),
