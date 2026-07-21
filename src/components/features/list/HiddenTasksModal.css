@@ -1,0 +1,231 @@
+.hidden-modal-backdrop-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.hidden-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+.hidden-tasks-modal {
+  position: relative;
+  width: min(500px, 90vw);
+  max-height: min(600px, 80vh);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Shared modal-header styles with DescriptionModal */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header .header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-header .header-title h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-main);
+}
+
+.modal-header .header-icon {
+  color: var(--text-muted);
+}
+
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.close-btn:hover {
+  background: var(--border-color);
+  color: var(--text-main);
+}
+
+.hidden-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 2em;
+  background: var(--border-color);
+  color: var(--text-main);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Body */
+.hidden-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+}
+
+/* Empty state */
+.hidden-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 32px;
+  text-align: center;
+  color: var(--text-muted);
+}
+.hidden-empty svg {
+  color: var(--border-color);
+  margin-bottom: 8px;
+}
+.hidden-empty p {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-main);
+}
+
+/* List */
+.hidden-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hidden-item {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.hidden-item:hover {
+  border-color: var(--text-muted);
+}
+
+.hidden-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hidden-item-type-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 2em;
+  align-self: flex-start;
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
+}
+.hidden-item-type-badge[data-type="GOAL"] {
+  border-color: rgba(65, 132, 228, 0.4);
+  color: var(--primary-color);
+}
+.hidden-item-type-badge[data-type="STRATEGY"] {
+  border-color: rgba(163, 113, 247, 0.4);
+  color: #a371f7;
+}
+.hidden-item-type-badge[data-type="ACTION"] {
+  border-color: rgba(63, 185, 80, 0.4);
+  color: var(--success-color);
+}
+
+.hidden-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.hidden-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.hidden-item-children {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Actions */
+.hidden-item-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.hidden-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-main);
+  transition: background-color 0.1s, border-color 0.1s;
+}
+
+.hidden-btn:hover {
+  background: var(--border-color);
+  border-color: var(--text-muted);
+}
+
+.hidden-btn.restore {
+  color: var(--primary-color);
+}
+.hidden-btn.restore:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #ffffff;
+}

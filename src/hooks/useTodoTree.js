@@ -41,6 +41,14 @@ export const useTodoTree = () => {
     setNodes(prev => treeLogic.permanentDeleteNode(prev, nodeId));
   }, []);
 
+  const handleHideNode = useCallback((nodeId) => {
+    setNodes(prev => treeLogic.hideNode(prev, nodeId));
+  }, []);
+
+  const handleUnhideNode = useCallback((nodeId) => {
+    setNodes(prev => treeLogic.unhideNode(prev, nodeId));
+  }, []);
+
   const handleToggleStatus = useCallback((nodeId) => {
     setNodes(prev => treeLogic.toggleNodeStatus(prev, nodeId));
   }, []);
@@ -185,16 +193,25 @@ export const useTodoTree = () => {
     setNodes(prev => treeLogic.importTreeToNodes(prev, importedData));
   }, []);
 
-  // Active root nodes (exclude soft-deleted)
-  const rootNodes = Object.values(nodes).filter(node => !node.parentId && !node.deletedAt);
+  // Active root nodes (exclude soft-deleted and hidden)
+  const rootNodes = Object.values(nodes).filter(node => !node.parentId && !node.deletedAt && !node.hidden);
 
   // Soft-deleted root nodes → shown in the trash view
   const trashedRootNodes = Object.values(nodes).filter(node => !node.parentId && !!node.deletedAt);
+
+  // Hidden root nodes → shown in the hidden tasks modal
+  // A "hidden root" is a hidden node whose parent is NOT hidden (i.e. the entry point of hiding)
+  const hiddenRootNodes = Object.values(nodes).filter(node =>
+    !node.deletedAt &&
+    !!node.hidden &&
+    (!node.parentId || !nodes[node.parentId]?.hidden)
+  );
 
   return {
     nodes,
     rootNodes,
     trashedRootNodes,
+    hiddenRootNodes,
     addNode: handleAddNode,
     addNodes: handleAddNodes,
     addTreeUnderNode: handleAddTreeUnderNode,
@@ -202,6 +219,8 @@ export const useTodoTree = () => {
     deleteNode: handleDeleteNode,
     restoreNode: handleRestoreNode,
     permanentDeleteNode: handlePermanentDeleteNode,
+    hideNode: handleHideNode,
+    unhideNode: handleUnhideNode,
     toggleStatus: handleToggleStatus,
     updateNode: handleUpdateNode,
     addDependency: handleAddDependency,

@@ -1,16 +1,17 @@
 import React, { useState, useMemo } from 'react';
-import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock, Clock } from 'lucide-react';
+import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock, Clock, EyeOff } from 'lucide-react';
 import * as treeLogic from '../../../logic/treeLogic';
 import { useSettings } from '../../../logic/SettingsContext';
 import './TodoItem.css';
 
-const TodoItem = ({ 
-  node, 
-  allNodes, 
-  onAddChild, 
-  onDelete, 
-  onToggle, 
-  onUpdate, 
+const TodoItem = ({
+  node,
+  allNodes,
+  onAddChild,
+  onDelete,
+  onHide,
+  onToggle,
+  onUpdate,
   selectedNodeId,
   onSelectNode,
   expandedNodeIds,
@@ -177,24 +178,34 @@ const TodoItem = ({
           </div>
 
           <div className="node-actions">
-            <button 
-              className="action-btn" 
+            <button
+              className="action-btn"
               onClick={(e) => {
                 e.stopPropagation();
                 onAddChild(node.id);
-              }} 
+              }}
               title={t('list.add_child')}
             >
               <Plus size={16} />
             </button>
-            <button 
-              className="action-btn delete" 
+            <button
+              className="action-btn hide"
+              onClick={(e) => {
+                e.stopPropagation();
+                onHide?.(node.id);
+              }}
+              title={t('common.hide_task')}
+            >
+              <EyeOff size={16} />
+            </button>
+            <button
+              className="action-btn delete"
               onClick={(e) => {
                 e.stopPropagation();
                 if (window.confirm(t('common.confirm_delete'))) {
                   onDelete(node.id);
                 }
-              }} 
+              }}
               title={t('common.delete')}
             >
               <Trash2 size={16} />

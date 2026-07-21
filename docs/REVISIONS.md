@@ -5,6 +5,7 @@
 - [56] 07-15: インスペクター「Edit」ボタンのi18nキー `common.edit` が未解決で文字列そのまま表示される問題の修正
 
 ## ✅ 完了済み (Completed)
+- [62] 07-21: [タスクをリストから一時的に非表示にできるようにする（削除はしない）](features/hide_task/spec.md)
 - [61] 07-15: [詳細意図専用テキストエリアの新設（intent フィールド追加・InspectorTextarea 再利用）](features/inspector_intent_textarea/spec.md)
 - [60] 07-15: [インスペクター専用テキストエリアのコンポーネント化（InspectorTextarea）](features/inspector_textarea_component/spec.md)
 - [59] 07-15: [インスペクター直下兄弟要素の並び替えDnD（ハンドル付きトグルモード・localStorage永続化）](features/inspector_section_dnd/spec.md)

@@ -11,23 +11,27 @@ import Inspector from './components/features/inspector/Inspector';
 import SettingsPanel from './components/features/settings/SettingsPanel';
 import ImportModal from './components/features/import/ImportModal';
 import TrashView from './components/features/trash/TrashView';
+import HiddenTasksModal from './components/features/list/HiddenTasksModal';
 import DesignSandbox from './components/sandbox/DesignSandbox';
 import { themes } from './constants/themes';
 import './App.css';
 
 function App() {
-  const { 
-    nodes, 
+  const {
+    nodes,
     rootNodes,
     trashedRootNodes,
-    addNode, 
+    hiddenRootNodes,
+    addNode,
     addNodes,
     addTreeUnderNode,
     importNodes,
     deleteNode,
     restoreNode,
     permanentDeleteNode,
-    toggleStatus, 
+    hideNode,
+    unhideNode,
+    toggleStatus,
     updateNode, 
     addDependency, 
     removeDependency,
@@ -41,6 +45,7 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isTrashOpen, setIsTrashOpen] = useState(false);
+  const [isHiddenTasksOpen, setIsHiddenTasksOpen] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [editingNodeId, setEditingNodeId] = useState(null);
   const [completedGoals, setCompletedGoals] = useState(new Set());
@@ -216,6 +221,7 @@ function App() {
             rootNodes={rootNodes}
             addNode={addNode}
             deleteNode={deleteNode}
+            hideNode={hideNode}
             toggleStatus={toggleStatus}
             updateNode={updateNode}
             selectedNodeId={selectedNodeId}
@@ -223,6 +229,8 @@ function App() {
             expandedNodeIds={expandedNodeIds}
             toggleExpand={toggleExpand}
             moveNode={moveNode}
+            hiddenRootNodes={hiddenRootNodes}
+            onOpenHiddenTasks={() => setIsHiddenTasksOpen(true)}
             t={t}
           />
         ) : (
@@ -286,6 +294,15 @@ function App() {
         nodes={nodes}
         onRestore={restoreNode}
         onPermanentDelete={permanentDeleteNode}
+        t={t}
+      />
+
+      <HiddenTasksModal
+        isOpen={isHiddenTasksOpen}
+        onClose={() => setIsHiddenTasksOpen(false)}
+        hiddenRootNodes={hiddenRootNodes}
+        nodes={nodes}
+        onUnhide={unhideNode}
         t={t}
       />
     </div>

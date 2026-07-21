@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Tree } from 'react-arborist';
-import { Target, Plus, Filter, ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle } from 'lucide-react';
+import { Target, Plus, Filter, ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff } from 'lucide-react';
 import { NODE_TYPES } from '../../../logic/treeLogic';
 import * as treeLogic from '../../../logic/treeLogic';
 import { useSettings } from '../../../logic/SettingsContext';
@@ -182,6 +182,16 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
               <Plus size={16} />
             </button>
             <button
+              className="action-btn hide"
+              onClick={(e) => {
+                e.stopPropagation();
+                tree.props.onHideNode?.(data.id);
+              }}
+              title={t('common.hide_task')}
+            >
+              <EyeOff size={16} />
+            </button>
+            <button
               className="action-btn delete"
               onClick={(e) => {
                 e.stopPropagation();
@@ -210,18 +220,21 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
   );
 };
 
-const ListView = ({ 
-  nodes, 
-  rootNodes, 
-  addNode, 
-  deleteNode, 
-  toggleStatus, 
+const ListView = ({
+  nodes,
+  rootNodes,
+  addNode,
+  deleteNode,
+  hideNode,
+  toggleStatus,
   updateNode,
   selectedNodeId,
   onSelectNode,
   expandedNodeIds,
   toggleExpand,
   moveNode,
+  hiddenRootNodes,
+  onOpenHiddenTasks,
   t
 }) => {
   const [phaseFilter, setPhaseFilter] = useState(() => {
@@ -395,15 +408,27 @@ const ListView = ({
             ))}
           </div>
         </div>
-        <button 
-          className="add-goal-btn"
-          onClick={() => {
-            const title = prompt(t('list.enter_goal'));
-            if (title) addNode(null, NODE_TYPES.GOAL, title);
-          }}
-        >
-          <Plus size={16} /> {t('list.new_goal')}
-        </button>
+        <div className="header-right">
+          {hiddenRootNodes && hiddenRootNodes.length > 0 && (
+            <button
+              className="hidden-tasks-btn"
+              onClick={onOpenHiddenTasks}
+              title={t('list.hidden_tasks')}
+            >
+              <EyeOff size={16} />
+              <span>{t('list.hidden_tasks_count', { count: hiddenRootNodes.length })}</span>
+            </button>
+          )}
+          <button
+            className="add-goal-btn"
+            onClick={() => {
+              const title = prompt(t('list.enter_goal'));
+              if (title) addNode(null, NODE_TYPES.GOAL, title);
+            }}
+          >
+            <Plus size={16} /> {t('list.new_goal')}
+          </button>
+        </div>
       </div>
 
       <div className="list-view-content" ref={containerRef}>
@@ -437,6 +462,7 @@ const ListView = ({
             onToggleStatus={toggleStatus}
             onUpdateNode={updateNode}
             onDeleteNode={deleteNode}
+            onHideNode={hideNode}
             onAddChild={(parentId) => {
               const title = prompt(t('list.enter_task'));
               if (title) addNode(parentId, NODE_TYPES.ACTION, title);

@@ -24,8 +24,8 @@ export const calculateNodeProgress = (nodes, nodeId) => {
   const node = nodes[nodeId];
   if (!node) return 0;
 
-  // Active children only (exclude soft-deleted)
-  const activeChildren = (node.children || []).filter(id => !nodes[id]?.deletedAt);
+  // Active children only (exclude soft-deleted and hidden)
+  const activeChildren = (node.children || []).filter(id => !nodes[id]?.deletedAt && !nodes[id]?.hidden);
 
   // Leaf node (Action) - Simplified binary progress for MVP
   if (activeChildren.length === 0) {
@@ -387,6 +387,62 @@ export const softDeleteNode = (nodes, nodeId) => {
 };
 
 /**
+ * [Hide] Marks a node and all its descendants as hidden by setting `hidden: true`.
+ * Hidden nodes are excluded from list/tree displays but not moved to trash.
+ * Unlike soft-delete, this is a lightweight toggle — no confirmation needed.
+ */
+export const hideNode = (nodes, nodeId) => {
+  let newNodes = { ...nodes };
+  const nodeToHide = newNodes[nodeId];
+  if (!nodeToHide) return nodes;
+
+  const markHidden = (id) => {
+    const node = newNodes[id];
+    if (!node) return;
+    newNodes[id] = { ...node, hidden: true };
+    (node.children || []).forEach(childId => markHidden(childId));
+  };
+
+  markHidden(nodeId);
+
+  // Recalculate progress for the parent (active children changed)
+  const parentId = nodeToHide.parentId;
+  if (parentId && newNodes[parentId]) {
+    return updateProgressRecursively(newNodes, parentId);
+  }
+
+  return newNodes;
+};
+
+/**
+ * [Unhide] Removes the `hidden` flag from a node and all its descendants.
+ * Restores the entire sub-tree back to visible state.
+ */
+export const unhideNode = (nodes, nodeId) => {
+  let newNodes = { ...nodes };
+  const nodeToUnhide = newNodes[nodeId];
+  if (!nodeToUnhide) return nodes;
+
+  const markUnhidden = (id) => {
+    const node = newNodes[id];
+    if (!node) return;
+    const { hidden, ...rest } = node;
+    newNodes[id] = rest;
+    (node.children || []).forEach(childId => markUnhidden(childId));
+  };
+
+  markUnhidden(nodeId);
+
+  // Recalculate progress for the parent
+  const parentId = nodeToUnhide.parentId;
+  if (parentId && newNodes[parentId]) {
+    return updateProgressRecursively(newNodes, parentId);
+  }
+
+  return newNodes;
+};
+
+/**
  * [Restore] Removes the `deletedAt` flag from a node and all its descendants.
  * Restores the entire sub-tree from the trash.
  */
@@ -510,13 +566,13 @@ export const getFlattenedFlow = (nodes, rootNodes) => {
   const traverse = (nodeId, depth = 0) => {
     if (!nodeId || visited.has(nodeId)) return;
     const node = nodes[nodeId];
-    if (!node || node.deletedAt) return; // Skip soft-deleted nodes
+    if (!node || node.deletedAt || node.hidden) return; // Skip soft-deleted and hidden nodes
 
     visited.add(nodeId);
 
     if (node.children && node.children.length > 0) {
       const sortedChildren = [...node.children]
-        .filter(id => !nodes[id]?.deletedAt) // Exclude soft-deleted children
+        .filter(id => !nodes[id]?.deletedAt && !nodes[id]?.hidden) // Exclude soft-deleted and hidden children
         .sort((a, b) => {
           const nodeA = nodes[a];
           const nodeB = nodes[b];
@@ -551,14 +607,14 @@ export const getVisibleNodesList = (nodes, rootNodes, expandedNodeIds) => {
   
   const traverse = (nodeId) => {
     const node = nodes[nodeId];
-    if (!node || node.deletedAt) return; // Skip soft-deleted nodes
+    if (!node || node.deletedAt || node.hidden) return; // Skip soft-deleted and hidden nodes
 
     result.push(node);
 
     // Only traverse children if this node is expanded
     if (expandedNodeIds.has(nodeId) && node.children && node.children.length > 0) {
       const sortedChildren = [...node.children]
-        .filter(id => !nodes[id]?.deletedAt) // Exclude soft-deleted children
+        .filter(id => !nodes[id]?.deletedAt && !nodes[id]?.hidden) // Exclude soft-deleted and hidden children
         .sort((a, b) => (nodes[a]?.order || 0) - (nodes[b]?.order || 0));
       sortedChildren.forEach(childId => traverse(childId));
     }
@@ -579,9 +635,9 @@ export const buildArboristTree = (nodes, rootNodes) => {
     const node = nodes[nodeId];
     if (!node) return null;
 
-    // Exclude soft-deleted children from the tree view
+    // Exclude soft-deleted and hidden children from the tree view
     const activeChildIds = (node.children || [])
-      .filter(id => !nodes[id]?.deletedAt)
+      .filter(id => !nodes[id]?.deletedAt && !nodes[id]?.hidden)
       .sort((a, b) => (nodes[a]?.order || 0) - (nodes[b]?.order || 0));
 
     const children = activeChildIds.length > 0

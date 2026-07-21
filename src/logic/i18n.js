@@ -9,6 +9,8 @@ export const translations = {
       wait_for_predecessor: '先行タスクの完了を待っています',
       overdue: '期限切れ',
       due_soon: '期限間近',
+      hide_task: '非表示にする',
+      unhide_task: '表示に戻す',
     },
     phases: {
       PREP: '準備期',
@@ -29,6 +31,9 @@ export const translations = {
       enter_task: 'タスク名を入力してください:',
       add_child: '子タスクを追加',
       no_tasks_in_phase: 'このフェーズに該当するタスクはありません。',
+      hidden_tasks: '非表示タスク',
+      hidden_tasks_count: '非表示タスク ([count])',
+      no_hidden_tasks: '非表示のタスクはありません。',
     },
     inspector: {
       click_to_edit: 'クリックして編集',
@@ -111,6 +116,8 @@ export const translations = {
       wait_for_predecessor: 'Waiting for predecessor to complete',
       overdue: 'Overdue',
       due_soon: 'Due Soon',
+      hide_task: 'Hide',
+      unhide_task: 'Show',
     },
     phases: {
       PREP: 'Prep',
@@ -131,6 +138,9 @@ export const translations = {
       enter_task: 'Enter task name:',
       add_child: 'Add Child',
       no_tasks_in_phase: 'No tasks found in this phase.',
+      hidden_tasks: 'Hidden Tasks',
+      hidden_tasks_count: 'Hidden Tasks ([count])',
+      no_hidden_tasks: 'No hidden tasks.',
     },
     inspector: {
       click_to_edit: 'Click to edit',
