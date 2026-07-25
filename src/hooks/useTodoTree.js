@@ -15,6 +15,15 @@ export const useTodoTree = () => {
   // Persist to LocalStorage whenever nodes change
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes));
+
+    // DEV only: export tree data to filesystem for MCP server consumption
+    if (import.meta.env.DEV) {
+      fetch('/__bizyu_export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nodes),
+      }).catch(err => console.error('[bizyu-export] Export failed:', err));
+    }
   }, [nodes]);
 
   const handleAddNode = useCallback((parentId, type, title, predefinedId) => {

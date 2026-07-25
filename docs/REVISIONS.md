@@ -2,6 +2,7 @@
 
 ## 🚀 未完了 (Incomplete)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
+- [63] 07-25: [MCP 連携用データエクスポート API（Vite ミドルウェア経由）](features/bizyu_export_api/spec.md)
 - [56] 07-15: インスペクター「Edit」ボタンのi18nキー `common.edit` が未解決で文字列そのまま表示される問題の修正
 
 ## ✅ 完了済み (Completed)
