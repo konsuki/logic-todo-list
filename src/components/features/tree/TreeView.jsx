@@ -24,12 +24,12 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
     if (rootNodes.length === 0) return null;
     const buildHierarchy = (nodeId) => {
       const node = nodes[nodeId];
-      if (!node || node.deletedAt) return null; // Skip soft-deleted nodes
+      if (!node || node.deletedAt || node.hidden) return null; // Skip soft-deleted and hidden nodes
       return {
         ...node,
         name: node.title,
         children: node.children
-          ? node.children.filter(id => !nodes[id]?.deletedAt).map(id => buildHierarchy(id)).filter(Boolean)
+          ? node.children.filter(id => !nodes[id]?.deletedAt && !nodes[id]?.hidden).map(id => buildHierarchy(id)).filter(Boolean)
           : []
       };
     };
@@ -159,10 +159,10 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       allParents.forEach(parentNode => {
         const getDescendantIds = (id) => {
           const node = nodes[id];
-          if (!node || node.deletedAt) return []; // Skip soft-deleted nodes
+          if (!node || node.deletedAt || node.hidden) return []; // Skip soft-deleted and hidden nodes
           if (!node.children || node.children.length === 0) return [id];
           return node.children
-            .filter(cid => !nodes[cid]?.deletedAt)
+            .filter(cid => !nodes[cid]?.deletedAt && !nodes[cid]?.hidden)
             .flatMap(cid => getDescendantIds(cid));
         };
         const leafIds = getDescendantIds(parentNode.id);

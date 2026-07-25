@@ -37,6 +37,10 @@
 ### 3. フィルタリング
 - `treeLogic.js` の既存の表示系関数で、`deletedAt` と同様に `hidden` ノードを除外する
 - 影響を受ける関数: `buildArboristTree`, `getVisibleNodesList`, `getFlattenedFlow`, `calculateNodeProgress`
+- 加えて、各ビューコンポーネント側のフィルタリングロジックでも `hidden` ノードを除外する必要がある:
+  - **ListView.jsx**: `filteredRoots`（ルートノード抽出時）、`checkVisibility`（フェーズフィルタ時）
+  - **TreeView.jsx**: `buildHierarchy`（ツリー構築時）、`getDescendantIds`（子孫走査時）
+  - ※ `useTodoTree.js` の `rootNodes` は既に `hidden` フィルタ済みだが、上記コンポーネント内の追加フィルタリングロジックがこれを見落とすと非表示にならない
 
 ### 4. 親子関係
 - 親ノードを非表示にすると、子孫すべてに再帰的に `hidden: true` が付与される
