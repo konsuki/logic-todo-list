@@ -1,0 +1,12 @@
+Version:             2.1.220
+Session name:        Claude CodeへのGoogle AI検索履歴のディレクトリ構成相談
+Session ID:          94a3044d-a1d9-46db-84cb-6ec736fc7dc9
+cwd:                 /Users/konnsuki/Desktop/Programs/logic-todo-list
+Auth token:          ANTHROPIC_AUTH_TOKEN
+API key:             ANTHROPIC_API_KEY
+Anthropic base URL:  https://127.0.0.1:8317
+
+Model:               haiku (pool-deepseek-v4-pro)
+IDE:                 Connected to Visual Studio Code extension
+MCP servers:         3 connected · /mcp
+Setting sources:     User settings, Shared project settings, Project local settings
