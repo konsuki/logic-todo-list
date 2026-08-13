@@ -22,6 +22,7 @@ const Inspector = ({
   addDependency,
   removeDependency,
   reorderNode,
+  setRelation,
   t,
   lang
 }) => {
@@ -294,26 +295,53 @@ const Inspector = ({
           {t('inspector.how')}
         </h3>
         {isHowOpen && (
-          <div className="how-list">
-            {children.length === 0 ? (
-              <div className="empty-how">
-                <p>{t('inspector.no_subtasks')}</p>
-                <p className="hint">{t('inspector.breakdown_hint')}</p>
-              </div>
-            ) : (
-              children.map(child => (
-                <div
-                  key={child.id}
-                  className="how-item"
-                  onClick={() => onSelectNode(child.id)}
-                >
-                  <span className={`status-dot ${child.status.toLowerCase()}`} />
-                  <span className="how-title">{child.title}</span>
-                  <span className="how-percent">{child.progress}%</span>
+          <>
+            {children.length >= 2 && (
+              <div className="relation-toggle">
+                <span className="relation-label">{t('inspector.relation_label')}</span>
+                <div className="relation-toggle-group">
+                  <button
+                    className={`relation-btn ${node.relation !== 'or' ? 'active' : ''}`}
+                    onClick={() => setRelation(node.id, 'and')}
+                  >
+                    {t('inspector.relation_and')}
+                  </button>
+                  <button
+                    className={`relation-btn ${node.relation === 'or' ? 'active' : ''}`}
+                    onClick={() => setRelation(node.id, 'or')}
+                  >
+                    {t('inspector.relation_or')}
+                  </button>
                 </div>
-              ))
+              </div>
             )}
-          </div>
+            <div className="how-list">
+              {children.length === 0 ? (
+                <div className="empty-how">
+                  <p>{t('inspector.no_subtasks')}</p>
+                  <p className="hint">{t('inspector.breakdown_hint')}</p>
+                </div>
+              ) : (
+                children.map((child, index) => (
+                  <React.Fragment key={child.id}>
+                    {node.relation === 'or' && index > 0 && (
+                      <div className="alternative-divider">
+                        <span>{t('inspector.alternative_option')}</span>
+                      </div>
+                    )}
+                    <div
+                      className="how-item"
+                      onClick={() => onSelectNode(child.id)}
+                    >
+                      <span className={`status-dot ${child.status.toLowerCase()}`} />
+                      <span className="how-title">{child.title}</span>
+                      <span className="how-percent">{child.progress}%</span>
+                    </div>
+                  </React.Fragment>
+                ))
+              )}
+            </div>
+          </>
         )}
       </section>
     ),

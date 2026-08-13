@@ -39,7 +39,9 @@
 
 ### 4.1 状態の伝播 (Status Propagation)
 - **Top-down**: 親ノードを「DONE」にすると、配下の子ノード全てに「一括完了」の確認ダイアログを表示（または自動完了）。
-- **Bottom-up**: 全ての子ノードが「DONE」になった場合、親ノードのステータスを自動的に「DONE」に更新、または完了を促す通知を行う。
+- **Bottom-up**: 子ノードの状態に応じて親ノードの progress / status を自動更新する。進捗計算はノードの `relation` に応じて以下の 2 通りに分かれる（詳細は `features/or_branch_representation/spec.md` 参照）。
+  - **AND 関係**（`relation` 未指定または `'and'`）: 全アクティブ子の progress の平均。全子 DONE で親も DONE。
+  - **OR 関係**（`relation === 'or'`）: 各代替手段グループの進捗（グループ内平均）の最大値。いずれか 1 グループの全子 DONE で親も DONE。
 
 ### 4.2 MECEサポート機能
 - **分解促進UI**: 子ノードが1つしかない場合、「他に要素はありませんか？」というヒントを表示し、漏れ（MECEのE）を意識させる。

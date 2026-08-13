@@ -61,6 +61,10 @@ export const translations = {
       order_section: '実行順序 (ステップ)',
       move_up: '一つ上へ',
       move_down: '一つ下へ',
+      relation_label: '子タスクの関係',
+      relation_and: 'すべて必須 (AND)',
+      relation_or: 'いずれかで十分 (OR)',
+      alternative_option: '代替手段',
     },
     tree: {
       hint: 'ドラッグで移動 / スクロールでズーム',
@@ -168,6 +172,10 @@ export const translations = {
       order_section: 'Execution Order (Steps)',
       move_up: 'Move Up',
       move_down: 'Move Down',
+      relation_label: 'Child relationship',
+      relation_and: 'All required (AND)',
+      relation_or: 'Any suffices (OR)',
+      alternative_option: 'Alternative',
     },
     tree: {
       hint: 'Drag to Pan / Scroll to Zoom',

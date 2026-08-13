@@ -66,10 +66,31 @@ export const useTodoTree = () => {
     setNodes(prev => {
       const node = prev[nodeId];
       if (!node) return prev;
-      
+
       return {
         ...prev,
         [nodeId]: { ...node, ...updates, updatedAt: Date.now() }
+      };
+    });
+  }, []);
+
+  const handleSetRelation = useCallback((nodeId, relation) => {
+    setNodes(prev => {
+      const node = prev[nodeId];
+      if (!node) return prev;
+
+      const updates = { relation, updatedAt: Date.now() };
+      if (relation === 'and') {
+        // Switching back to AND resets groups (no longer meaningful)
+        updates.groups = [];
+      } else if (relation === 'or' && !Array.isArray(node.groups)) {
+        // Default OR: every child is an independent single-child group
+        updates.groups = [];
+      }
+
+      return {
+        ...prev,
+        [nodeId]: { ...node, ...updates }
       };
     });
   }, []);
@@ -232,6 +253,7 @@ export const useTodoTree = () => {
     unhideNode: handleUnhideNode,
     toggleStatus: handleToggleStatus,
     updateNode: handleUpdateNode,
+    setRelation: handleSetRelation,
     addDependency: handleAddDependency,
     removeDependency: handleRemoveDependency,
     reorderNode: handleReorderNode,

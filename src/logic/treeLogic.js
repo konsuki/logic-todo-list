@@ -16,9 +16,42 @@ export const NODE_STATUS = {
 };
 
 /**
+ * Normalizes a node's `groups` into a list of child-ID groups, so that every
+ * active child belongs to exactly one group. Used only for OR-relation nodes.
+ *
+ * - If `groups` is defined, each entry is treated as one group.
+ * - Any active child not covered by `groups` becomes a single-child group.
+ * - If `groups` is empty/undefined, every active child becomes a single-child group.
+ */
+export const normalizeOrGroups = (node, activeChildIds) => {
+  const groups = Array.isArray(node.groups) && node.groups.length > 0 ? node.groups : [];
+  const covered = new Set();
+  const result = [];
+
+  groups.forEach(group => {
+    const activeMembers = (group || []).filter(id => activeChildIds.includes(id));
+    if (activeMembers.length > 0) {
+      result.push(activeMembers);
+      activeMembers.forEach(id => covered.add(id));
+    }
+  });
+
+  // Any active child not covered by an explicit group becomes its own group.
+  activeChildIds.forEach(id => {
+    if (!covered.has(id)) {
+      result.push([id]);
+    }
+  });
+
+  return result;
+};
+
+/**
  * Calculates progress for a single node based on its children.
  * If leaf (Action), progress is 0 or 100 based on status.
- * If branch, progress is the average of children's progress.
+ * If branch with AND relation, progress is the average of children's progress.
+ * If branch with OR relation, progress is the max of each group's average progress
+ * (best-group strategy), where a group is an alternative way to achieve the node.
  */
 export const calculateNodeProgress = (nodes, nodeId) => {
   const node = nodes[nodeId];
@@ -32,7 +65,17 @@ export const calculateNodeProgress = (nodes, nodeId) => {
     return node.status === NODE_STATUS.DONE ? 100 : 0;
   }
 
-  // Branch/Root node - Average of active children
+  // OR relation: progress is the max group progress (best-group strategy)
+  if (node.relation === 'or') {
+    const groups = normalizeOrGroups(node, activeChildren);
+    const groupProgresses = groups.map(group => {
+      const total = group.reduce((acc, childId) => acc + (nodes[childId]?.progress || 0), 0);
+      return Math.round(total / group.length);
+    });
+    return groupProgresses.length > 0 ? Math.max(...groupProgresses) : 0;
+  }
+
+  // Branch/Root node (AND relation) - Average of active children
   const totalProgress = activeChildren.reduce((acc, childId) => {
     return acc + (nodes[childId]?.progress || 0);
   }, 0);
