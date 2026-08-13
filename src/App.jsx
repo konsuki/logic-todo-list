@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { LayoutGrid, List, Info, Zap, Globe, Settings } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTodoTree } from './hooks/useTodoTree';
 import { useI18n } from './hooks/useI18n';
 import { useShortcuts } from './hooks/useShortcuts';
