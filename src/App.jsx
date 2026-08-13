@@ -38,7 +38,11 @@ function App() {
     reorderNode,
     outdentNode,
     moveNode,
-    setRelation
+    setRelation,
+    addGroup,
+    removeGroup,
+    assignChildToGroup,
+    updateGroup
   } = useTodoTree();
   const { t, lang, setLang } = useI18n();
   const [view, setView] = useState('list');
@@ -264,6 +268,10 @@ function App() {
           removeDependency={removeDependency}
           reorderNode={reorderNode}
           setRelation={setRelation}
+          addGroup={addGroup}
+          removeGroup={removeGroup}
+          assignChildToGroup={assignChildToGroup}
+          updateGroup={updateGroup}
           t={t}
           lang={lang}
         />

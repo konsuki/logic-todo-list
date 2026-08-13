@@ -95,6 +95,22 @@ export const useTodoTree = () => {
     });
   }, []);
 
+  const handleAddGroup = useCallback((nodeId) => {
+    setNodes(prev => treeLogic.addGroup(prev, nodeId));
+  }, []);
+
+  const handleRemoveGroup = useCallback((nodeId, groupId) => {
+    setNodes(prev => treeLogic.removeGroup(prev, nodeId, groupId));
+  }, []);
+
+  const handleAssignChildToGroup = useCallback((nodeId, childId, groupId) => {
+    setNodes(prev => treeLogic.assignChildToGroup(prev, nodeId, childId, groupId));
+  }, []);
+
+  const handleUpdateGroup = useCallback((nodeId, groupId, updates) => {
+    setNodes(prev => treeLogic.updateGroup(prev, nodeId, groupId, updates));
+  }, []);
+
   const handleAddDependency = useCallback((nodeId, predecessorId) => {
     setNodes(prev => {
       const node = prev[nodeId];
@@ -254,6 +270,10 @@ export const useTodoTree = () => {
     toggleStatus: handleToggleStatus,
     updateNode: handleUpdateNode,
     setRelation: handleSetRelation,
+    addGroup: handleAddGroup,
+    removeGroup: handleRemoveGroup,
+    assignChildToGroup: handleAssignChildToGroup,
+    updateGroup: handleUpdateGroup,
     addDependency: handleAddDependency,
     removeDependency: handleRemoveDependency,
     reorderNode: handleReorderNode,
