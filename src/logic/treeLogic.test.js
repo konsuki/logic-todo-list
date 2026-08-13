@@ -70,6 +70,111 @@ describe('treeLogic.buildArboristTree', () => {
   });
 });
 
+describe('treeLogic.normalizeGroups', () => {
+  it('should normalize legacy string[] form into object form', () => {
+    const groups = [['B', 'C'], ['D', 'E', 'F']];
+    const result = treeLogic.normalizeGroups(groups);
+    expect(result).toHaveLength(2);
+    expect(result[0].children).toEqual(['B', 'C']);
+    expect(result[1].children).toEqual(['D', 'E', 'F']);
+    expect(result[0]).toHaveProperty('id');
+    expect(result[0]).toHaveProperty('color');
+  });
+
+  it('should pass through object form unchanged (with defaults filled)', () => {
+    const groups = [{ id: 'g1', name: '予算重視', color: '#4F8CFF', children: ['B', 'C'] }];
+    const result = treeLogic.normalizeGroups(groups);
+    expect(result[0].id).toBe('g1');
+    expect(result[0].name).toBe('予算重視');
+    expect(result[0].color).toBe('#4F8CFF');
+    expect(result[0].children).toEqual(['B', 'C']);
+  });
+
+  it('should return empty array for undefined groups', () => {
+    expect(treeLogic.normalizeGroups(undefined)).toEqual([]);
+  });
+});
+
+describe('treeLogic OR group operations', () => {
+  it('addGroup should append a group with name, color, and empty children', () => {
+    const nodes = {
+      'A': { id: 'A', relation: 'or', groups: [], children: ['B', 'C'] }
+    };
+    const result = treeLogic.addGroup(nodes, 'A');
+    expect(result.A.groups).toHaveLength(1);
+    expect(result.A.groups[0].name).toBe('グループ1');
+    expect(result.A.groups[0].children).toEqual([]);
+    expect(result.A.groups[0]).toHaveProperty('color');
+  });
+
+  it('removeGroup should remove the group and leave its children unassigned', () => {
+    const nodes = {
+      'A': { id: 'A', relation: 'or', groups: [{ id: 'g1', name: 'G1', color: '#000', children: ['B'] }], children: ['B', 'C'] }
+    };
+    const result = treeLogic.removeGroup(nodes, 'A', 'g1');
+    expect(result.A.groups).toHaveLength(0);
+  });
+
+  it('assignChildToGroup should enforce mutual exclusion across groups', () => {
+    const nodes = {
+      'A': {
+        id: 'A', relation: 'or',
+        groups: [
+          { id: 'g1', name: 'G1', color: '#000', children: ['B'] },
+          { id: 'g2', name: 'G2', color: '#000', children: [] }
+        ],
+        children: ['B', 'C']
+      }
+    };
+    // Move B from g1 to g2
+    const result = treeLogic.assignChildToGroup(nodes, 'A', 'B', 'g2');
+    const g1 = result.A.groups.find(g => g.id === 'g1');
+    const g2 = result.A.groups.find(g => g.id === 'g2');
+    expect(g1.children).not.toContain('B');
+    expect(g2.children).toContain('B');
+  });
+
+  it('assignChildToGroup with null should unassign the child', () => {
+    const nodes = {
+      'A': {
+        id: 'A', relation: 'or',
+        groups: [{ id: 'g1', name: 'G1', color: '#000', children: ['B'] }],
+        children: ['B']
+      }
+    };
+    const result = treeLogic.assignChildToGroup(nodes, 'A', 'B', null);
+    expect(result.A.groups[0].children).not.toContain('B');
+  });
+
+  it('updateGroup should update name/color', () => {
+    const nodes = {
+      'A': { id: 'A', relation: 'or', groups: [{ id: 'g1', name: 'G1', color: '#000', children: [] }], children: [] }
+    };
+    const result = treeLogic.updateGroup(nodes, 'A', 'g1', { name: '予算重視' });
+    expect(result.A.groups[0].name).toBe('予算重視');
+  });
+
+  it('calculateNodeProgress should handle multi-child object-form groups', () => {
+    const nodes = {
+      'A': {
+        id: 'A', relation: 'or',
+        groups: [
+          { id: 'g1', name: 'G1', color: '#000', children: ['B', 'C'] },
+          { id: 'g2', name: 'G2', color: '#000', children: ['D', 'E', 'F'] }
+        ],
+        children: ['B', 'C', 'D', 'E', 'F'], status: 'TODO', progress: 0
+      },
+      'B': { id: 'B', parentId: 'A', status: 'DONE', progress: 100 },
+      'C': { id: 'C', parentId: 'A', status: 'DONE', progress: 100 },
+      'D': { id: 'D', parentId: 'A', status: 'TODO', progress: 0 },
+      'E': { id: 'E', parentId: 'A', status: 'TODO', progress: 0 },
+      'F': { id: 'F', parentId: 'A', status: 'TODO', progress: 0 },
+    };
+    // group1 (B+C) = 100, group2 (D+E+F) = 0 → max 100
+    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+  });
+});
+
 describe('treeLogic.calculateNodeProgress (OR relation)', () => {
   it('should be 100 when any single group is fully done', () => {
     const nodes = {

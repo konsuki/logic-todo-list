@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
+import * as treeLogic from '../../../logic/treeLogic';
 import AIInsights from './AIInsights';
 import InspectorTextarea from './InspectorTextarea';
 import SortableSection from './SortableSection';
@@ -23,6 +24,10 @@ const Inspector = ({
   removeDependency,
   reorderNode,
   setRelation,
+  addGroup,
+  removeGroup,
+  assignChildToGroup,
+  updateGroup,
   t,
   lang
 }) => {
@@ -33,6 +38,9 @@ const Inspector = ({
   const [isWhyOpen, setIsWhyOpen] = useState(true);
   const [isHowOpen, setIsHowOpen] = useState(true);
   const [isReorderMode, setIsReorderMode] = useState(false);
+  const [collapsedGroups, setCollapsedGroups] = useState(new Set());
+  const [editingGroupId, setEditingGroupId] = useState(null);
+  const [editingGroupName, setEditingGroupName] = useState('');
   const [sectionOrder, setSectionOrder] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -76,6 +84,33 @@ const Inspector = ({
 
   const pathToRoot = getPathToRoot(selectedNodeId);
   const children = node.children.map(id => nodes[id]).filter(Boolean);
+
+  // OR group editing: normalized group objects (object + legacy form compatible)
+  const normalizedGroups = node.relation === 'or'
+    ? treeLogic.normalizeGroups(node.groups)
+    : [];
+  const groupIdOfChild = (childId) => {
+    const group = normalizedGroups.find(g => g.children.includes(childId));
+    return group ? group.id : null;
+  };
+
+  const toggleGroupCollapse = (groupId) => {
+    setCollapsedGroups(prev => {
+      const next = new Set(prev);
+      if (next.has(groupId)) next.delete(groupId);
+      else next.add(groupId);
+      return next;
+    });
+  };
+
+  const commitGroupName = (groupId) => {
+    const trimmed = editingGroupName.trim();
+    if (trimmed && editingGroupId === groupId) {
+      updateGroup(node.id, groupId, { name: trimmed });
+    }
+    setEditingGroupId(null);
+    setEditingGroupName('');
+  };
 
   const predecessors = (node.dependsOn || []).map(id => nodes[id]).filter(Boolean);
   const searchResults = searchQuery.trim()
@@ -315,21 +350,105 @@ const Inspector = ({
                 </div>
               </div>
             )}
-            <div className="how-list">
-              {children.length === 0 ? (
-                <div className="empty-how">
-                  <p>{t('inspector.no_subtasks')}</p>
-                  <p className="hint">{t('inspector.breakdown_hint')}</p>
-                </div>
-              ) : (
-                children.map((child, index) => (
-                  <React.Fragment key={child.id}>
-                    {node.relation === 'or' && index > 0 && (
-                      <div className="alternative-divider">
-                        <span>{t('inspector.alternative_option')}</span>
+
+            {node.relation === 'or' && children.length >= 2 && (
+              <div className="or-group-editor">
+                <button className="add-group-btn" onClick={() => addGroup(node.id)}>
+                  <Plus size={14} /> {t('inspector.add_group')}
+                </button>
+
+                {normalizedGroups.map(group => {
+                  const isCollapsed = collapsedGroups.has(group.id);
+                  const groupProgress = treeLogic.calculateGroupProgress(nodes, group);
+                  const isEditingName = editingGroupId === group.id;
+                  return (
+                    <div key={group.id} className="group-card" style={{ borderLeftColor: group.color }}>
+                      <div className="group-card-header">
+                        <span className="group-color-dot" style={{ backgroundColor: group.color }} />
+                        {isEditingName ? (
+                          <input
+                            className="group-name-input"
+                            value={editingGroupName}
+                            autoFocus
+                            onChange={(e) => setEditingGroupName(e.target.value)}
+                            onBlur={() => commitGroupName(group.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') commitGroupName(group.id);
+                              else if (e.key === 'Escape') {
+                                setEditingGroupId(null);
+                                setEditingGroupName('');
+                              }
+                            }}
+                          />
+                        ) : (
+                          <span
+                            className="group-name"
+                            onClick={() => {
+                              setEditingGroupId(group.id);
+                              setEditingGroupName(group.name || '');
+                            }}
+                            title={t('inspector.click_to_edit')}
+                          >
+                            {group.name || `グループ${normalizedGroups.indexOf(group) + 1}`}
+                          </span>
+                        )}
+                        <span className="group-progress">{t('inspector.group_progress')}: {groupProgress}%</span>
+                        <button className="group-collapse-btn" onClick={() => toggleGroupCollapse(group.id)}>
+                          {isCollapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+                        </button>
+                        <button className="group-remove-btn" onClick={() => removeGroup(node.id, group.id)}>
+                          <X size={14} />
+                        </button>
                       </div>
-                    )}
+
+                      {!isCollapsed && (
+                        <div className="group-assign-list">
+                          {children.length === 0 ? (
+                            <p className="empty-text">{t('inspector.no_subtasks')}</p>
+                          ) : (
+                            children.map(child => (
+                              <div key={child.id} className="group-assign-item">
+                                <span className="how-title">{child.title}</span>
+                                <select
+                                  className="group-assign-select"
+                                  value={groupIdOfChild(child.id) || ''}
+                                  onChange={(e) =>
+                                    assignChildToGroup(node.id, child.id, e.target.value || null)
+                                  }
+                                >
+                                  <option value="">{t('inspector.no_group')}</option>
+                                  {normalizedGroups.map(g => (
+                                    <option key={g.id} value={g.id}>
+                                      {g.name || `グループ${normalizedGroups.indexOf(g) + 1}`}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {normalizedGroups.length === 0 && (
+                  <p className="hint">{t('inspector.add_group')} → {t('inspector.alternative_option')}</p>
+                )}
+              </div>
+            )}
+
+            {(node.relation !== 'or' || children.length < 2) && (
+              <div className="how-list">
+                {children.length === 0 ? (
+                  <div className="empty-how">
+                    <p>{t('inspector.no_subtasks')}</p>
+                    <p className="hint">{t('inspector.breakdown_hint')}</p>
+                  </div>
+                ) : (
+                  children.map(child => (
                     <div
+                      key={child.id}
                       className="how-item"
                       onClick={() => onSelectNode(child.id)}
                     >
@@ -337,10 +456,10 @@ const Inspector = ({
                       <span className="how-title">{child.title}</span>
                       <span className="how-percent">{child.progress}%</span>
                     </div>
-                  </React.Fragment>
-                ))
-              )}
-            </div>
+                  ))
+                )}
+              </div>
+            )}
           </>
         )}
       </section>

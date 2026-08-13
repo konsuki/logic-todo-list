@@ -5,6 +5,7 @@
 - [56] 07-15: インスペクター「Edit」ボタンのi18nキー `common.edit` が未解決で文字列そのまま表示される問題の修正
 
 ## ✅ 完了済み (Completed)
+- [66] 08-13: [OR分岐の「複数子ずつのグループ分け」をUIで編集できるようにする](features/or_branch_representation/spec.md)
 - [65] 08-13: [同一目標を達成するための代替手段（OR型分岐）をツリーで表現できるようにする](features/or_branch_representation/spec.md)
 - [64] 07-25: タスクの非表示ボタン（EyeOff）を押しても非表示にならなくなった問題の修正 — ListView.jsx の filteredRoots と checkVisibility、TreeView.jsx の buildHierarchy と getDescendantIds に `hidden` フィルタが欠落していた
 - [63] 07-25: [MCP 連携用データエクスポート API（Vite ミドルウェア経由）](features/bizyu_export_api/spec.md)
