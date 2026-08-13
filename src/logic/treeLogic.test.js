@@ -62,10 +62,73 @@ describe('treeLogic.buildArboristTree', () => {
       'child2': { id: 'child2', parentId: 'parent', order: 0, title: 'Child 2' }
     };
     const rootNodes = [nodes['parent']];
-    
+
     const tree = treeLogic.buildArboristTree(nodes, rootNodes);
-    
+
     expect(tree[0].children[0].id).toBe('child2');
     expect(tree[0].children[1].id).toBe('child1');
+  });
+});
+
+describe('treeLogic.calculateNodeProgress (OR relation)', () => {
+  it('should be 100 when any single group is fully done', () => {
+    const nodes = {
+      'A': { id: 'A', relation: 'or', groups: [['B', 'C'], ['D']], children: ['B', 'C', 'D'], status: 'TODO', progress: 0 },
+      'B': { id: 'B', parentId: 'A', status: 'DONE', progress: 100 },
+      'C': { id: 'C', parentId: 'A', status: 'DONE', progress: 100 },
+      'D': { id: 'D', parentId: 'A', status: 'TODO', progress: 0 },
+    };
+    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+  });
+
+  it('should use the max group progress when partially done', () => {
+    const nodes = {
+      'A': { id: 'A', relation: 'or', groups: [['B', 'C'], ['D']], children: ['B', 'C', 'D'], status: 'TODO', progress: 0 },
+      'B': { id: 'B', parentId: 'A', status: 'DONE', progress: 100 },
+      'C': { id: 'C', parentId: 'A', status: 'TODO', progress: 0 },
+      'D': { id: 'D', parentId: 'A', status: 'TODO', progress: 0 },
+    };
+    // group [B,C] = 50, group [D] = 0 → max 50
+    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(50);
+  });
+
+  it('should treat empty groups as each child being a single-child group', () => {
+    const nodes = {
+      'A': { id: 'A', relation: 'or', groups: [], children: ['B', 'C'], status: 'TODO', progress: 0 },
+      'B': { id: 'B', parentId: 'A', status: 'DONE', progress: 100 },
+      'C': { id: 'C', parentId: 'A', status: 'TODO', progress: 0 },
+    };
+    // each child is its own group: [B]=100, [C]=0 → max 100
+    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+  });
+
+  it('should treat uncovered children as single-child groups', () => {
+    const nodes = {
+      'A': { id: 'A', relation: 'or', groups: [['B', 'C']], children: ['B', 'C', 'D'], status: 'TODO', progress: 0 },
+      'B': { id: 'B', parentId: 'A', status: 'TODO', progress: 0 },
+      'C': { id: 'C', parentId: 'A', status: 'TODO', progress: 0 },
+      'D': { id: 'D', parentId: 'A', status: 'DONE', progress: 100 },
+    };
+    // group [B,C]=0, uncovered [D]=100 → max 100
+    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+  });
+
+  it('should keep AND relation as average of active children', () => {
+    const nodes = {
+      'A': { id: 'A', children: ['B', 'C'], status: 'TODO', progress: 0 },
+      'B': { id: 'B', parentId: 'A', status: 'DONE', progress: 100 },
+      'C': { id: 'C', parentId: 'A', status: 'TODO', progress: 0 },
+    };
+    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(50);
+  });
+
+  it('should exclude hidden/deleted children from OR group progress', () => {
+    const nodes = {
+      'A': { id: 'A', relation: 'or', groups: [['B', 'C']], children: ['B', 'C'], status: 'TODO', progress: 0 },
+      'B': { id: 'B', parentId: 'A', status: 'DONE', progress: 100 },
+      'C': { id: 'C', parentId: 'A', status: 'DONE', progress: 100, hidden: true },
+    };
+    // C is hidden → group [B] only → 100
+    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
   });
 });

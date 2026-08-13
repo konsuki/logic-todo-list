@@ -244,7 +244,7 @@ AI エージェントがビジューのツリーデータを正しく解釈す�
 
 1. **ノードタイプの意味**: GOAL（最終目標）→ STRATEGY（戦略）→ ACTION（具体行動）の三段階。上位ほど抽象的、下位ほど具体的。
 2. **自動型昇格**: ACTION に子が追加されると自動的に STRATEGY になる。
-3. **進捗計算**: 親の progress はアクティブな子ノードの progress の平均値。手動設定不可。
+3. **進捗計算**: 親の progress はノードの `relation` に依存する。AND（既定）はアクティブな子ノードの progress の平均値、OR（`relation === 'or'`）は各代替手段グループ（`groups`）の進捗の最大値。いずれも手動設定不可。
 4. **ステータス自動更新**: progress=100 → DONE, 0<progress<100 → IN_PROGRESS, progress=0 → TODO。
 5. **アクティブノード**: `hidden` または `deletedAt` が設定されたノードは進捗計算と表示から除外される。
 6. **依存ロック**: `dependsOn` のいずれかが DONE でない場合、そのノードはロックされ完了操作ができない。
