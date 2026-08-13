@@ -54,7 +54,9 @@ function App() {
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [editingNodeId, setEditingNodeId] = useState(null);
   const [completedGoals, setCompletedGoals] = useState(new Set());
-  const [expandedNodeIds, setExpandedNodeIds] = useState(new Set());
+  // Auto-expand all nodes on initial load (nodes are loaded synchronously from
+  // localStorage via useTodoTree before this state is initialized).
+  const [expandedNodeIds, setExpandedNodeIds] = useState(() => new Set(Object.keys(nodes)));
 
   // Theme Management
   const [themeName, setThemeName] = useState(() => localStorage.getItem('themeName') || 'classic');
@@ -74,13 +76,6 @@ function App() {
     // Add theme class to body for specific CSS overrides
     document.body.className = `theme-${themeName}`;
   }, [themeName, themeMode]);
-
-  // Auto-expand new nodes or roots
-  useEffect(() => {
-    if (Object.keys(nodes).length > 0 && expandedNodeIds.size === 0) {
-      setExpandedNodeIds(new Set(Object.keys(nodes)));
-    }
-  }, [nodes]);
 
   const toggleExpand = (nodeId) => {
     setExpandedNodeIds(prev => {
