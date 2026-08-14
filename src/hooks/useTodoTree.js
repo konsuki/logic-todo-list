@@ -1,7 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import * as treeLogic from '../logic/treeLogic';
 
 const STORAGE_KEY = 'logido_tree_data';
+
+/**
+ * ノード群の最新 updatedAt を返す（起動時優先読み込みの比較に使用）。
+ * metadata を持たないノードは 0 扱い。
+ */
+const getLatestUpdatedAt = (nodes) => {
+  if (!nodes || typeof nodes !== 'object') return 0;
+  return Object.values(nodes).reduce((max, node) => {
+    const ts = node?.metadata?.updatedAt || 0;
+    return ts > max ? ts : max;
+  }, 0);
+};
 
 /**
  * Custom hook to manage the Todo Tree state and persistence.
@@ -12,12 +24,82 @@ export const useTodoTree = () => {
     return saved ? JSON.parse(saved) : {};
   });
 
-  // Persist to LocalStorage whenever nodes change
+  // 起動時優先読み込みの完了フラグ（MCP 書き込みを反映する前にユーザー操作で上書きされるのを防ぐ）
+  const initialLoadDone = useRef(false);
+
+  // DEV 時のみ: 起動時に tree_data.json（MCP 書き込みの結果）と localStorage を比較し、
+  // ファイルの方が新しければファイルを優先して初期 state に反映する。
+  useEffect(() => {
+    if (!import.meta.env.DEV) {
+      initialLoadDone.current = true;
+      return;
+    }
+
+    let cancelled = false;
+
+    const exportToFile = (data) => {
+      fetch('/__bizyu_export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      }).catch((err) => console.error('[bizyu-export] Export failed:', err));
+    };
+
+    fetch('/__bizyu_export', { method: 'GET' })
+      .then((res) => {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then((fileData) => {
+        if (cancelled) return;
+
+        const localData = (() => {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (!saved) return {};
+          try { return JSON.parse(saved); } catch { return {}; }
+        })();
+
+        // ファイルが無効（null や配列）なら localStorage が正。ファイルを生成して MCP が読める状態にする。
+        if (!fileData || typeof fileData !== 'object' || Array.isArray(fileData)) {
+          initialLoadDone.current = true;
+          exportToFile(localData);
+          return;
+        }
+
+        const fileUpdated = getLatestUpdatedAt(fileData);
+        const localUpdated = getLatestUpdatedAt(localData);
+
+        if (fileUpdated > localUpdated) {
+          // ファイル（MCP 書き込み）が新しい → ファイル内容を採用。
+          // setNodes により後続の export エフェクトが発火し、localStorage とファイルを同期する。
+          initialLoadDone.current = true;
+          setNodes(fileData);
+        } else {
+          // localStorage が正 → そのまま維持し、ファイルを localStorage で再同期する。
+          initialLoadDone.current = true;
+          if (fileUpdated < localUpdated) {
+            exportToFile(localData);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error('[bizyu-export] 起動時読み込み失敗:', err);
+        initialLoadDone.current = true;
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Persist to LocalStorage whenever nodes change.
+  // 初回マウント時は起動時優先読み込み（上記）が完了するまで POST を抑制し、
+  // MCP が書き込んだファイルを古い localStorage で上書きする競合を防ぐ。
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes));
 
     // DEV only: export tree data to filesystem for MCP server consumption
-    if (import.meta.env.DEV) {
+    if (import.meta.env.DEV && initialLoadDone.current) {
       fetch('/__bizyu_export', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
