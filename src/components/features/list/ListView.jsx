@@ -41,6 +41,15 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
     return index !== -1 ? index + 1 : null;
   }, [node, tree]);
 
+  // ショートカット（Enter/Tab）で追加された新タスクは、editingNodeId が
+  // その id と一致するため、自動でタイトル編集モードに入る。
+  useEffect(() => {
+    if (tree.props.editingNodeId === data.id) {
+      setEditTitle(data.title);
+      setIsEditing(true);
+    }
+  }, [tree.props.editingNodeId, data.id, data.title]);
+
   const handleTitleSubmit = (e) => {
     // 編集 input 内のキーイベントを react-arborist コンテナへ伝播させない。
     // これがないと、カーソル移動キー（←→↑↓）や Backspace / Space などが
@@ -50,6 +59,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
     }
     if (e.key === 'Enter' || e.type === 'blur') {
       setIsEditing(false);
+      tree.props.setEditingNodeId?.(null);
       if (editTitle.trim() !== data.title) {
         tree.props.onUpdateNode?.(data.id, { title: editTitle });
       }
@@ -241,6 +251,8 @@ const ListView = ({
   moveNode,
   hiddenRootNodes,
   onOpenHiddenTasks,
+  editingNodeId,
+  setEditingNodeId,
   t
 }) => {
   const [phaseFilter, setPhaseFilter] = useState(() => {
@@ -465,6 +477,8 @@ const ListView = ({
             allNodes={nodes}
             onSelectNode={onSelectNode}
             selectedNodeId={selectedNodeId}
+            editingNodeId={editingNodeId}
+            setEditingNodeId={setEditingNodeId}
             onToggleStatus={toggleStatus}
             onUpdateNode={updateNode}
             onDeleteNode={deleteNode}

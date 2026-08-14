@@ -231,6 +231,8 @@ function App() {
             moveNode={moveNode}
             hiddenRootNodes={hiddenRootNodes}
             onOpenHiddenTasks={() => setIsHiddenTasksOpen(true)}
+            editingNodeId={editingNodeId}
+            setEditingNodeId={setEditingNodeId}
             t={t}
           />
         ) : (

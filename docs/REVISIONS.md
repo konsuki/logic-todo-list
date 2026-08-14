@@ -5,6 +5,7 @@
 - [56] 07-15: インスペクター「Edit」ボタンのi18nキー `common.edit` が未解決で文字列そのまま表示される問題の修正
 
 ## ✅ 完了済み (Completed)
+- [69] 08-14: [ショートカットでのタスク追加後に自動でタイトル入力に入るようにする（リスト表示）](features/shortcut_add_auto_edit/spec.md)
 - [68] 08-14: [インスペクターのタイトル編集後にリスト側で編集すると変更が失われる問題の修正](features/inspector_title_edit_overwrite/spec.md)
 - [67] 08-14: [リスト表示のタイトル編集時にショートカットキーが誤発火する問題の修正](features/title_edit_shortcut_conflict/spec.md)
 - [66] 08-13: [OR分岐の「複数子ずつのグループ分け」をUIで編集できるようにする](features/or_branch_representation/spec.md)
