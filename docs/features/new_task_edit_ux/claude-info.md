@@ -1,0 +1,11 @@
+# Claude Code 会話セッション情報
+
+この spec（New Task 追加時の編集 UX 改善）を書いた会話の保存ファイルを、あとから特定するための記録。
+
+- **セッションID**: `884ceae5-c3ff-479c-994b-b75640a493b0`
+- **セッション履歴ディレクトリ**: `/Users/konnsuki/.claude/projects/-Users-konnsuki-Desktop-Programs-logic-todo-list/`
+- **セッション履歴ファイル**: `884ceae5-c3ff-479c-994b-b75640a493b0.jsonl`
+
+## 特定方法（記録時の手順）
+1. システムプロンプトの Memory セクションに記載された memory ディレクトリの親ディレクトリを、セッション履歴ディレクトリとして特定。
+2. 上記ディレクトリで `ls -lat` を実行し、更新時刻が最新の `.jsonl` ファイルの拡張子を除いたファイル名を、その会話のセッションIDとして特定。

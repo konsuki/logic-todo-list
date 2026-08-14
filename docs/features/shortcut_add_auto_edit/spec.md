@@ -37,7 +37,7 @@ ListView に `editingNodeId` / `setEditingNodeId` を渡し、`ArboristNode` が
 | Enter（兄弟追加）直後 | 新ノードが選択＆編集モードになる |
 | Tab（子追加）直後 | 新ノードが選択＆編集モードになる（親は展開済み） |
 | 追加後に別ノードをクリック | `editingNodeId` をクリアし、通常の選択動作に戻る |
-| 編集中に Escape でキャンセル | リスト側は現状 Escape 未対応のため本スコープでは**対象外**（既存の Enter / blur 確定のみ維持） |
+| 編集中に Escape でキャンセル | 本スコープでは対象外（後続タスク `new_task_edit_ux` で対応） |
 | 空文字のまま確定 | 既存ロジックどおり（空なら更新しない） |
 | TreeView | 既に機能しているため変更しない |
 | 未使用の `TodoItem.jsx` | 対象外 |
@@ -47,7 +47,7 @@ ListView に `editingNodeId` / `setEditingNodeId` を渡し、`ArboristNode` が
 ## 優先順位
 - **必須**: リスト表示で Enter / Tab 追加直後に自動編集モードに入る。
 - **軽微（同時に対応）**: `editingNodeId` のクリア処理（確定時・別選択時）を整合的にする。
-- **対象外**: リスト側の Escape キャンセル対応、TreeView 側の変更。
+- **対象外**: TreeView 側の変更。リスト側の Escape キャンセル対応は後続タスク `new_task_edit_ux` で対応。
 
 ---
 

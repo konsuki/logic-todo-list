@@ -16,6 +16,8 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
   const { settings } = useSettings();
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(data.title);
+  const [isAutoEdit, setIsAutoEdit] = useState(false);
+  const inputRef = useRef(null);
 
   const isDone = data.status === 'DONE';
   const isLocked = (data.dependsOn || []).some(depId => {
@@ -47,8 +49,17 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
     if (tree.props.editingNodeId === data.id) {
       setEditTitle(data.title);
       setIsEditing(true);
+      setIsAutoEdit(true);
     }
   }, [tree.props.editingNodeId, data.id, data.title]);
+
+  // 追加直後の自動編集時のみ、input のテキストを全選択して、
+  // そのまま文字入力で "New Task" を置換できるようにする。
+  useEffect(() => {
+    if (isEditing && isAutoEdit) {
+      inputRef.current?.select();
+    }
+  }, [isEditing, isAutoEdit]);
 
   const handleTitleSubmit = (e) => {
     // 編集 input 内のキーイベントを react-arborist コンテナへ伝播させない。
@@ -57,11 +68,26 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
     if (e.type === 'keydown') {
       e.stopPropagation();
     }
-    if (e.key === 'Enter' || e.type === 'blur') {
+
+    // Escape: 変更せずに編集を終了（タイトルは "New Task" のまま維持、選択は解除しない）
+    if (e.key === 'Escape') {
+      setEditTitle(data.title);
       setIsEditing(false);
+      setIsAutoEdit(false);
       tree.props.setEditingNodeId?.(null);
-      if (editTitle.trim() !== data.title) {
-        tree.props.onUpdateNode?.(data.id, { title: editTitle });
+      return;
+    }
+
+    if (e.key === 'Enter' || e.type === 'blur') {
+      const trimmed = editTitle.trim();
+      setIsEditing(false);
+      setIsAutoEdit(false);
+      tree.props.setEditingNodeId?.(null);
+      if (trimmed && trimmed !== data.title) {
+        tree.props.onUpdateNode?.(data.id, { title: trimmed });
+      } else if (!trimmed) {
+        // 空文字のまま確定しても "New Task" を消さない
+        setEditTitle(data.title);
       }
     }
   };
@@ -135,6 +161,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
             {isEditing ? (
               <input
                 autoFocus
+                ref={inputRef}
                 className="title-input"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
@@ -143,7 +170,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
                 onClick={(e) => e.stopPropagation()}
               />
             ) : (
-              <span className="node-title" onClick={() => { setEditTitle(data.title); setIsEditing(true); }}>
+              <span className="node-title" onClick={() => { setEditTitle(data.title); setIsAutoEdit(false); setIsEditing(true); }}>
                 {data.title}
               </span>
             )}
