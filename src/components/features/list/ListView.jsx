@@ -42,6 +42,12 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
   }, [node, tree]);
 
   const handleTitleSubmit = (e) => {
+    // 編集 input 内のキーイベントを react-arborist コンテナへ伝播させない。
+    // これがないと、カーソル移動キー（←→↑↓）や Backspace / Space などが
+    // ライブラリ内蔵のキーボードナビゲーションとして誤発火してしまう。
+    if (e.type === 'keydown') {
+      e.stopPropagation();
+    }
     if (e.key === 'Enter' || e.type === 'blur') {
       setIsEditing(false);
       if (editTitle.trim() !== data.title) {
