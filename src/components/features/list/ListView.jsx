@@ -133,7 +133,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
                 onClick={(e) => e.stopPropagation()}
               />
             ) : (
-              <span className="node-title" onClick={() => setIsEditing(true)}>
+              <span className="node-title" onClick={() => { setEditTitle(data.title); setIsEditing(true); }}>
                 {data.title}
               </span>
             )}
