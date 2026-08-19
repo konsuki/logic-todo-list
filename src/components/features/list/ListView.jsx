@@ -498,7 +498,7 @@ const ListView = ({
       return filtered;
     })();
 
-    const filteredRoots = Object.values(filteredNodes).filter(n => !n.parentId && !n.deletedAt && !n.hidden);
+    const filteredRoots = Object.values(filteredNodes).filter(n => !n.parentId && !n.deletedAt && !n.hidden && n.type !== NODE_TYPES.FOLDER);
     return treeLogic.buildArboristTree(filteredNodes, filteredRoots);
   }, [nodes, rootNodes, phaseFilter, displayMode, t]);
 
