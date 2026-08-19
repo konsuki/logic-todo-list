@@ -321,17 +321,39 @@ export const useTodoTree = () => {
     setNodes(prev => treeLogic.importTreeToNodes(prev, importedData));
   }, []);
 
-  // Active root nodes (exclude soft-deleted and hidden)
-  const rootNodes = Object.values(nodes).filter(node => !node.parentId && !node.deletedAt && !node.hidden);
+  const handleAddFolder = useCallback((parentFolderId, title) => {
+    setNodes(prev => treeLogic.addFolder(prev, parentFolderId, title));
+  }, []);
+
+  const handleDeleteFolder = useCallback((folderId) => {
+    setNodes(prev => treeLogic.deleteFolder(prev, folderId));
+  }, []);
+
+  const handleAssignTaskToFolder = useCallback((taskId, folderId) => {
+    setNodes(prev => treeLogic.assignTaskToFolder(prev, taskId, folderId));
+  }, []);
+
+  // Active root nodes (exclude soft-deleted, hidden, and folders)
+  const rootNodes = Object.values(nodes).filter(node =>
+    !node.parentId && !node.deletedAt && !node.hidden && node.type !== treeLogic.NODE_TYPES.FOLDER
+  );
+
+  // Folder nodes (independent of the causal tree)
+  const folders = Object.values(nodes).filter(node =>
+    node.type === treeLogic.NODE_TYPES.FOLDER && !node.deletedAt && !node.hidden
+  );
 
   // Soft-deleted root nodes → shown in the trash view
-  const trashedRootNodes = Object.values(nodes).filter(node => !node.parentId && !!node.deletedAt);
+  const trashedRootNodes = Object.values(nodes).filter(node =>
+    !node.parentId && !!node.deletedAt && node.type !== treeLogic.NODE_TYPES.FOLDER
+  );
 
   // Hidden root nodes → shown in the hidden tasks modal
   // A "hidden root" is a hidden node whose parent is NOT hidden (i.e. the entry point of hiding)
   const hiddenRootNodes = Object.values(nodes).filter(node =>
     !node.deletedAt &&
     !!node.hidden &&
+    node.type !== treeLogic.NODE_TYPES.FOLDER &&
     (!node.parentId || !nodes[node.parentId]?.hidden)
   );
 
@@ -340,6 +362,7 @@ export const useTodoTree = () => {
     rootNodes,
     trashedRootNodes,
     hiddenRootNodes,
+    folders,
     addNode: handleAddNode,
     addNodes: handleAddNodes,
     addTreeUnderNode: handleAddTreeUnderNode,
@@ -361,6 +384,9 @@ export const useTodoTree = () => {
     reorderNode: handleReorderNode,
     outdentNode: handleOutdentNode,
     moveNode: handleMoveNode,
+    addFolder: handleAddFolder,
+    deleteFolder: handleDeleteFolder,
+    assignTaskToFolder: handleAssignTaskToFolder,
     isNodeLocked: (nodeId) => treeLogic.isNodeLocked(nodes, nodeId)
   };
 };

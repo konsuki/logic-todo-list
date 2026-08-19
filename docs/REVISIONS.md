@@ -3,8 +3,10 @@
 ## 🚀 未完了 (Incomplete)
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
 - [56] 07-15: インスペクター「Edit」ボタンのi18nキー `common.edit` が未解決で文字列そのまま表示される問題の修正
+- [73] 08-19: フォルダ表示の将来拡張（検索ボックス / DnD並び替え / フォルダリネーム・並び替え）
 
 ## ✅ 完了済み (Completed)
+- [72] 08-19: [フォルダ表示（検索・見つけやすさ特化ビュー）の実装](features/folder_view/spec.md)
 - [71] 08-14: MCP 書き込み反映のための起動時優先読み込み（`GET /__bizyu_export` 追加＋`useTodoTree.js` で localStorage と `tree_data.json` を比較し新しい方を採用）。詳細仕様は [bizyu-mcp-server/docs/features/write-tools/spec.md](../../bizyu-mcp-server/docs/features/write-tools/spec.md) を参照
 - [70] 08-14: [New Task追加時の編集UX改善（全選択・Escキャンセル・Enter連続追加）](features/new_task_edit_ux/spec.md)
 - [69] 08-14: [ショートカットでのタスク追加後に自動でタイトル入力に入るようにする（リスト表示）](features/shortcut_add_auto_edit/spec.md)

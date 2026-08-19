@@ -39,6 +39,68 @@
   width: fit-content;
 }
 
+.display-mode-toggle {
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  background-color: hsla(220, 100%, 100%, 0.03);
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.display-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.display-mode-btn:hover {
+  color: var(--text-main);
+  background-color: hsla(220, 100%, 100%, 0.05);
+}
+
+.display-mode-btn.active {
+  background-color: var(--surface-color);
+  color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.folder-row .todo-item-content {
+  gap: 8px;
+}
+
+.folder-icon {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.folder-title {
+  font-weight: 600;
+}
+
+.folder-row--virtual .folder-icon {
+  color: var(--text-muted);
+}
+
+.folder-row--virtual .folder-title {
+  color: var(--text-muted);
+}
+
+.folder-count-badge {
+  margin-left: 6px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: hsla(220, 100%, 100%, 0.06);
+  border-radius: 10px;
+}
+
 .phase-filter-btn {
   padding: 6px 12px;
   border-radius: 7px;

@@ -237,3 +237,85 @@ describe('treeLogic.calculateNodeProgress (OR relation)', () => {
     expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
   });
 });
+
+describe('treeLogic folder functions', () => {
+  it('addFolder creates a FOLDER node with parentId null and folderId', () => {
+    const nodes = treeLogic.addFolder({}, null, 'My Folder');
+    const folder = Object.values(nodes)[0];
+    expect(folder.type).toBe('FOLDER');
+    expect(folder.parentId).toBeNull();
+    expect(folder.folderId).toBeNull();
+    expect(folder.title).toBe('My Folder');
+  });
+
+  it('addFolder supports nesting under a parent folder', () => {
+    const parentId = 'parent-folder';
+    const nodes = treeLogic.addFolder({ [parentId]: { id: parentId, type: 'FOLDER' } }, parentId, 'Child Folder');
+    const child = Object.values(nodes).find(n => n.title === 'Child Folder');
+    expect(child.folderId).toBe(parentId);
+  });
+
+  it('assignTaskToFolder sets folderId on a task', () => {
+    const nodes = { 'task': { id: 'task', type: 'ACTION', title: 'Task', folderId: null } };
+    const result = treeLogic.assignTaskToFolder(nodes, 'task', 'folder-1');
+    expect(result['task'].folderId).toBe('folder-1');
+  });
+
+  it('assignTaskToFolder with null reverts to unclassified', () => {
+    const nodes = { 'task': { id: 'task', type: 'ACTION', title: 'Task', folderId: 'folder-1' } };
+    const result = treeLogic.assignTaskToFolder(nodes, 'task', null);
+    expect(result['task'].folderId).toBeNull();
+  });
+
+  it('assignTaskToFolder ignores folders', () => {
+    const nodes = { 'folder': { id: 'folder', type: 'FOLDER', title: 'Folder', folderId: null } };
+    const result = treeLogic.assignTaskToFolder(nodes, 'folder', 'some-other');
+    expect(result).toEqual(nodes);
+  });
+
+  it('deleteFolder removes folder and reverts its tasks to unclassified', () => {
+    const nodes = {
+      'folder': { id: 'folder', type: 'FOLDER', title: 'Folder', folderId: null },
+      'task': { id: 'task', type: 'ACTION', title: 'Task', folderId: 'folder' },
+      'other': { id: 'other', type: 'ACTION', title: 'Other', folderId: null },
+    };
+    const result = treeLogic.deleteFolder(nodes, 'folder');
+    expect(result['folder']).toBeUndefined();
+    expect(result['task'].folderId).toBeNull();
+    expect(result['other']).toBeDefined();
+  });
+
+  it('deleteFolder removes descendant folders', () => {
+    const nodes = {
+      'parent': { id: 'parent', type: 'FOLDER', title: 'Parent', folderId: null },
+      'child': { id: 'child', type: 'FOLDER', title: 'Child', folderId: 'parent' },
+    };
+    const result = treeLogic.deleteFolder(nodes, 'parent');
+    expect(result['parent']).toBeUndefined();
+    expect(result['child']).toBeUndefined();
+  });
+
+  it('buildFolderTree groups tasks under folders and unclassified', () => {
+    const nodes = {
+      'folder': { id: 'folder', type: 'FOLDER', title: 'Folder A', folderId: null },
+      'task1': { id: 'task1', type: 'ACTION', title: 'Task 1', folderId: 'folder', order: 0 },
+      'task2': { id: 'task2', type: 'ACTION', title: 'Task 2', folderId: null, order: 0 },
+    };
+    const tree = treeLogic.buildFolderTree(nodes, 'Uncategorized');
+    const folderNode = tree.find(n => n.id === 'folder');
+    expect(folderNode.children.length).toBe(1);
+    expect(folderNode.children[0].id).toBe('task1');
+
+    const unclassified = tree.find(n => n.id === '__unclassified__');
+    expect(unclassified.children.length).toBe(1);
+    expect(unclassified.children[0].id).toBe('task2');
+  });
+
+  it('progress calculation ignores folderId', () => {
+    const nodes = {
+      'A': { id: 'A', children: ['B'], status: 'TODO', progress: 0 },
+      'B': { id: 'B', parentId: 'A', status: 'DONE', progress: 100, folderId: 'some-folder' },
+    };
+    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+  });
+});

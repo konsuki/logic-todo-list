@@ -42,7 +42,11 @@ function App() {
     addGroup,
     removeGroup,
     assignChildToGroup,
-    updateGroup
+    updateGroup,
+    folders,
+    addFolder,
+    deleteFolder,
+    assignTaskToFolder
   } = useTodoTree();
   const { t, lang, setLang } = useI18n();
   const [view, setView] = useState('list');
@@ -233,10 +237,14 @@ function App() {
             onOpenHiddenTasks={() => setIsHiddenTasksOpen(true)}
             editingNodeId={editingNodeId}
             setEditingNodeId={setEditingNodeId}
+            folders={folders}
+            addFolder={addFolder}
+            deleteFolder={deleteFolder}
+            assignTaskToFolder={assignTaskToFolder}
             t={t}
           />
         ) : (
-          <TreeView 
+          <TreeView
             nodes={nodes}
             rootNodes={rootNodes}
             updateNode={updateNode}
@@ -269,6 +277,10 @@ function App() {
           removeGroup={removeGroup}
           assignChildToGroup={assignChildToGroup}
           updateGroup={updateGroup}
+          folders={folders}
+          addFolder={addFolder}
+          deleteFolder={deleteFolder}
+          assignTaskToFolder={assignTaskToFolder}
           t={t}
           lang={lang}
         />

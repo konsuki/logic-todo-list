@@ -18,6 +18,7 @@ export const SettingsProvider = ({ children }) => {
       showPhaseBadges: true,
       showNodeTypeTags: true,
       showStepBadges: true,
+      useFolderView: true,
       theme: 'theme-classic',
     };
   });

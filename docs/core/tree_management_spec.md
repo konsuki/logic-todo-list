@@ -10,11 +10,12 @@
 {
   "id": "uuid",
   "parentId": "uuid | null",
-  "type": "GOAL | STRATEGY | ACTION",
+  "type": "GOAL | STRATEGY | ACTION | FOLDER",
   "title": "string",
   "description": "text",
   "status": "TODO | IN_PROGRESS | DONE",
   "progress": 0, // 0-100 (子ノードの進捗から自動計算)
+  "folderId": "uuid | null", // 所属フォルダ（因果ツリーとは独立）
   "metadata": {
     "isMeceChecked": boolean,
     "createdAt": "timestamp",
@@ -30,6 +31,7 @@
 - **GOAL (Root)**: ツリーの頂点。1つのプロジェクトに原則1つ。「何を達成したいか」を記述。
 - **STRATEGY (Branch)**: 中間層。「どのように達成するか」という論理的な柱。
 - **ACTION (Leaf)**: 最下層。これ以上分解できない具体的な行動。
+- **FOLDER**: 因果ツリーには現れない整理用ノード。`parentId` は常に `null` で、`folderId` によりフォルダ同士の親子関係を持つ。進捗計算に影響しない。詳細は [folder_view](../../features/folder_view/spec.md) を参照。
 
 ### 3.2 階層のルール
 - 階層の深さに制限はないが、UI上は推奨深度（例：5階層）を提示する。
