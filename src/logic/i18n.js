@@ -39,6 +39,7 @@ export const translations = {
       uncategorized: '未整理',
       new_folder: '新規フォルダ',
       enter_folder: 'フォルダ名を入力してください:',
+      add_subfolder: '子フォルダを追加',
     },
     inspector: {
       click_to_edit: 'クリックして編集',
@@ -165,6 +166,7 @@ export const translations = {
       uncategorized: 'Uncategorized',
       new_folder: 'New Folder',
       enter_folder: 'Enter folder name:',
+      add_subfolder: 'Add Subfolder',
     },
     inspector: {
       click_to_edit: 'Click to edit',

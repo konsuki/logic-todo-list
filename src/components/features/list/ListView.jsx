@@ -145,18 +145,31 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
 
           <div className="node-actions">
             {!isVirtual && (
-              <button
-                className="action-btn delete"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (window.confirm(t('common.confirm_delete'))) {
-                    tree.props.onDeleteFolder?.(data.id);
-                  }
-                }}
-                title={t('common.delete')}
-              >
-                <Trash2 size={16} />
-              </button>
+              <>
+                <button
+                  className="action-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const title = prompt(t('list.enter_folder'));
+                    if (title) tree.props.onAddSubfolder?.(data.id, title);
+                  }}
+                  title={t('list.add_subfolder')}
+                >
+                  <FolderPlus size={16} />
+                </button>
+                <button
+                  className="action-btn delete"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window.confirm(t('common.confirm_delete'))) {
+                      tree.props.onDeleteFolder?.(data.id);
+                    }
+                  }}
+                  title={t('common.delete')}
+                >
+                  <Trash2 size={16} />
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -616,6 +629,7 @@ const ListView = ({
             onDeleteNode={deleteNode}
             onHideNode={hideNode}
             onDeleteFolder={deleteFolder}
+            onAddSubfolder={(parentFolderId, title) => addFolder(parentFolderId, title)}
             onAddChild={(parentId) => {
               const title = prompt(t('list.enter_task'));
               if (title) addNode(parentId, NODE_TYPES.ACTION, title);
