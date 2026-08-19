@@ -70,8 +70,22 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
+/* フォルダ行はプログレスバーを持たないため、タイトル行とアクション群を
+   横並び（row）にして一般的な行レイアウトにする。 */
+.folder-row .todo-item-row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .folder-row .todo-item-content {
   gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.folder-row .node-actions {
+  padding-right: 16px;
 }
 
 .folder-icon {

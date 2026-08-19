@@ -6,6 +6,7 @@
 - [73] 08-19: フォルダ表示の将来拡張（検索ボックス / DnD並び替え / フォルダリネーム・並び替え）
 
 ## ✅ 完了済み (Completed)
+- [74] 08-19: フォルダ行のタイトルとアクションが縦並びになるレイアウト崩れの修正（`todo-item-row` を横並びに）
 - [72] 08-19: [フォルダ表示（検索・見つけやすさ特化ビュー）の実装](features/folder_view/spec.md)
 - [71] 08-14: MCP 書き込み反映のための起動時優先読み込み（`GET /__bizyu_export` 追加＋`useTodoTree.js` で localStorage と `tree_data.json` を比較し新しい方を採用）。詳細仕様は [bizyu-mcp-server/docs/features/write-tools/spec.md](../../bizyu-mcp-server/docs/features/write-tools/spec.md) を参照
 - [70] 08-14: [New Task追加時の編集UX改善（全選択・Escキャンセル・Enter連続追加）](features/new_task_edit_ux/spec.md)
