@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText, Tag, Layers, ListOrdered, Trash2 } from 'lucide-react';
+import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText, Tag, Layers, ListOrdered, Trash2, Folder } from 'lucide-react';
 import { useSettings } from '../../../logic/SettingsContext';
 import './SettingsPanel.css';
 
@@ -202,6 +202,27 @@ const SettingsPanel = ({
                       type="checkbox" 
                       checked={settings.showStepBadges} 
                       onChange={(e) => updateSetting('showStepBadges', e.target.checked)}
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                </motion.div>
+
+                <motion.div className="setting-item" variants={itemVariants}>
+                  <div className="setting-info">
+                    <div className="setting-label">
+                      <Folder size={18} />
+                      <span>{t('settings.use_folder_view') || 'Use Folder View'}</span>
+                    </div>
+                    <p className="setting-desc">
+                      {t('settings.use_folder_view_desc') || 'Organize tasks into folders independent of causality.'}
+                    </p>
+                  </div>
+
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={settings.useFolderView !== false}
+                      onChange={(e) => updateSetting('useFolderView', e.target.checked)}
                     />
                     <span className="slider round"></span>
                   </label>

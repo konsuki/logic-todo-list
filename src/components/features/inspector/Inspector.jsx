@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
+import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, GripVertical, Folder, FolderPlus } from 'lucide-react';
 import * as treeLogic from '../../../logic/treeLogic';
+import { useSettings } from '../../../logic/SettingsContext';
 import AIInsights from './AIInsights';
 import InspectorTextarea from './InspectorTextarea';
 import SortableSection from './SortableSection';
 import './Inspector.css';
 
-const DEFAULT_SECTION_ORDER = ['description', 'intent', 'ai', 'schedule', 'dependency', 'why', 'how'];
+const DEFAULT_SECTION_ORDER = ['description', 'intent', 'folder', 'ai', 'schedule', 'dependency', 'why', 'how'];
 const STORAGE_KEY = 'logido_section_order';
 
 const Inspector = ({
@@ -28,10 +29,15 @@ const Inspector = ({
   removeGroup,
   assignChildToGroup,
   updateGroup,
+  folders,
+  addFolder,
+  deleteFolder,
+  assignTaskToFolder,
   t,
   lang
 }) => {
   const node = nodes[selectedNodeId];
+  const { settings } = useSettings();
   const [searchQuery, setSearchQuery] = useState('');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editTitle, setEditTitle] = useState(node?.title || '');
@@ -166,6 +172,40 @@ const Inspector = ({
         placeholder={t('inspector.placeholder_intent')}
         t={t}
       />
+    ),
+
+    folder: (
+      node.type === 'FOLDER' || settings.useFolderView === false ? null : (
+        <section className="inspector-section">
+          <h3 className="section-title">
+            <Folder size={14} /> {t('inspector.folder')}
+          </h3>
+          <div className="folder-assign-controls">
+            <select
+              className="folder-select"
+              value={node.folderId || ''}
+              onChange={(e) => assignTaskToFolder(node.id, e.target.value || null)}
+            >
+              <option value="">{t('inspector.no_folder')}</option>
+              {(folders || []).map(f => (
+                <option key={f.id} value={f.id}>{f.title}</option>
+              ))}
+            </select>
+            <button
+              className="add-folder-btn"
+              onClick={() => {
+                const title = prompt(t('list.enter_folder'));
+                if (title) {
+                  addFolder(null, title);
+                }
+              }}
+              title={t('list.new_folder')}
+            >
+              <FolderPlus size={14} />
+            </button>
+          </div>
+        </section>
+      )
     ),
 
     ai: (
@@ -550,6 +590,7 @@ const Inspector = ({
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
           {sectionOrder.map(key => {
+            if (sectionMap[key] == null) return null;
             if (key === 'how' && showMeceWarning) {
               return (
                 <SortableSection key={key} id={key} isReorderMode={isReorderMode}>

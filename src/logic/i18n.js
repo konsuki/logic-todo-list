@@ -34,6 +34,12 @@ export const translations = {
       hidden_tasks: '非表示タスク',
       hidden_tasks_count: '非表示タスク ([count])',
       no_hidden_tasks: '非表示のタスクはありません。',
+      logic_tree_mode: '論理ツリー',
+      folder_mode: 'フォルダ',
+      uncategorized: '未整理',
+      new_folder: '新規フォルダ',
+      enter_folder: 'フォルダ名を入力してください:',
+      add_subfolder: '子フォルダを追加',
     },
     inspector: {
       click_to_edit: 'クリックして編集',
@@ -71,6 +77,8 @@ export const translations = {
       assign_to_group: '所属グループ',
       no_group: 'なし',
       remove_group: 'グループを削除',
+      folder: 'フォルダ',
+      no_folder: '未整理',
     },
     tree: {
       hint: 'ドラッグで移動 / スクロールでズーム',
@@ -114,6 +122,8 @@ export const translations = {
       trash: 'ゴミ箱',
       trash_desc: '削除された項目を復元または完全に削除します。',
       open_trash: '開く',
+      use_folder_view: 'フォルダ機能を使う',
+      use_folder_view_desc: '因果とは独立したフォルダでタスクを整理できるようにします。',
     }
   },
   en: {
@@ -151,6 +161,12 @@ export const translations = {
       hidden_tasks: 'Hidden Tasks',
       hidden_tasks_count: 'Hidden Tasks ([count])',
       no_hidden_tasks: 'No hidden tasks.',
+      logic_tree_mode: 'Logic Tree',
+      folder_mode: 'Folder',
+      uncategorized: 'Uncategorized',
+      new_folder: 'New Folder',
+      enter_folder: 'Enter folder name:',
+      add_subfolder: 'Add Subfolder',
     },
     inspector: {
       click_to_edit: 'Click to edit',
@@ -188,6 +204,8 @@ export const translations = {
       assign_to_group: 'Group',
       no_group: 'None',
       remove_group: 'Remove group',
+      folder: 'Folder',
+      no_folder: 'Uncategorized',
     },
     tree: {
       hint: 'Drag to Pan / Scroll to Zoom',
@@ -231,6 +249,8 @@ export const translations = {
       trash: 'Trash',
       trash_desc: 'Restore or permanently delete removed items.',
       open_trash: 'Open',
+      use_folder_view: 'Use Folder View',
+      use_folder_view_desc: 'Organize tasks into folders independent of causality.',
     }
   }
 };

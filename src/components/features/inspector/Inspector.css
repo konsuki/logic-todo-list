@@ -776,3 +776,42 @@
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px var(--primary-glow);
 }
+
+.folder-assign-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.folder-select {
+  flex: 1;
+  padding: 8px 10px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-main);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.folder-select:focus {
+  border-color: var(--primary-color);
+}
+
+.add-folder-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.add-folder-btn:hover {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Inspector from './Inspector';
+import { SettingsProvider } from '../../../logic/SettingsContext';
 
 describe('Inspector description link parsing', () => {
   const defaultProps = {
@@ -40,7 +41,7 @@ describe('Inspector description link parsing', () => {
       }
     };
 
-    const { container } = render(<Inspector {...props} />);
+    const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
     const linkElement = container.querySelector('a.description-link');
     
     expect(linkElement).not.toBeNull();
@@ -63,7 +64,7 @@ describe('Inspector description link parsing', () => {
       }
     };
 
-    const { container } = render(<Inspector {...props} />);
+    const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
     const linkElement = container.querySelector('a.description-link');
     
     expect(linkElement).not.toBeNull();
@@ -84,7 +85,7 @@ describe('Inspector description link parsing', () => {
       }
     };
 
-    const { container } = render(<Inspector {...props} />);
+    const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
     const linkElement = container.querySelector('a.description-link');
     
     expect(linkElement).not.toBeNull();
@@ -105,7 +106,7 @@ describe('Inspector description link parsing', () => {
       }
     };
 
-    const { container } = render(<Inspector {...props} />);
+    const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
     const linkElement = container.querySelector('a.description-link');
     
     expect(linkElement).not.toBeNull();
@@ -148,7 +149,7 @@ describe('Inspector title inline editing', () => {
   };
 
   it('should render the original title as h2 and switch to input on click', () => {
-    const { getByRole, container } = render(<Inspector {...defaultProps} />);
+    const { getByRole, container } = render(<SettingsProvider><Inspector {...defaultProps} /></SettingsProvider>);
     
     const h2Element = getByRole('heading', { name: 'Original Title' });
     expect(h2Element).toBeInTheDocument();
@@ -167,7 +168,7 @@ describe('Inspector title inline editing', () => {
     const updateNodeMock = vi.fn();
     const props = { ...defaultProps, updateNode: updateNodeMock };
     
-    const { getByRole, container } = render(<Inspector {...props} />);
+    const { getByRole, container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
 
     const inputElement = container.querySelector('.inspector-title-input');
@@ -183,7 +184,7 @@ describe('Inspector title inline editing', () => {
     const updateNodeMock = vi.fn();
     const props = { ...defaultProps, updateNode: updateNodeMock };
     
-    const { getByRole, container } = render(<Inspector {...props} />);
+    const { getByRole, container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
 
     const inputElement = container.querySelector('.inspector-title-input');
@@ -198,7 +199,7 @@ describe('Inspector title inline editing', () => {
     const updateNodeMock = vi.fn();
     const props = { ...defaultProps, updateNode: updateNodeMock };
     
-    const { getByRole, container } = render(<Inspector {...props} />);
+    const { getByRole, container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
 
     const inputElement = container.querySelector('.inspector-title-input');
@@ -214,7 +215,7 @@ describe('Inspector title inline editing', () => {
     const updateNodeMock = vi.fn();
     const props = { ...defaultProps, updateNode: updateNodeMock };
     
-    const { getByRole, container } = render(<Inspector {...props} />);
+    const { getByRole, container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
 
     const inputElement = container.querySelector('.inspector-title-input');
@@ -226,14 +227,14 @@ describe('Inspector title inline editing', () => {
   });
 
   it('should reset editing state when switching to another node', () => {
-    const { getByRole, container, rerender } = render(<Inspector {...defaultProps} />);
+    const { getByRole, container, rerender } = render(<SettingsProvider><Inspector {...defaultProps} /></SettingsProvider>);
     
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
     expect(container.querySelector('.inspector-title-input')).not.toBeNull();
 
     // Rerender with different selectedNodeId
     const nextProps = { ...defaultProps, selectedNodeId: '2' };
-    rerender(<Inspector {...nextProps} />);
+    rerender(<SettingsProvider><Inspector {...nextProps} /></SettingsProvider>);
 
     // Should reset editing state and display the second node title
     expect(container.querySelector('.inspector-title-input')).toBeNull();

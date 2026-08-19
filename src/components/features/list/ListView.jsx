@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Tree } from 'react-arborist';
-import { Target, Plus, Filter, ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff } from 'lucide-react';
+import { Target, Plus, Filter, ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff, Folder, FolderPlus } from 'lucide-react';
 import { NODE_TYPES } from '../../../logic/treeLogic';
 import * as treeLogic from '../../../logic/treeLogic';
 import { useSettings } from '../../../logic/SettingsContext';
@@ -20,6 +20,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
   const inputRef = useRef(null);
 
   const isDone = data.status === 'DONE';
+  const isFolder = data.type === 'FOLDER';
   const isLocked = (data.dependsOn || []).some(depId => {
     const dep = tree.props.allNodes?.[depId];
     return !dep || dep.status !== 'DONE';
@@ -94,6 +95,11 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
 
   const handleRowClick = (e) => {
     if (e.target.closest('button') || e.target.closest('input')) return;
+    // Folders are not selectable in the inspector; clicking toggles expand instead.
+    if (isFolder) {
+      node.toggle();
+      return;
+    }
     tree.props.onSelectNode?.(data.id);
   };
 
@@ -102,6 +108,74 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
 
   const { paddingLeft, ...restStyle } = style;
   const level = node.level;
+
+  // Folder rows: directory-style display (no status toggle / progress).
+  if (isFolder) {
+    const isVirtual = data.isVirtual;
+    return (
+      <div
+        className={`todo-item-container folder-row ${isVirtual ? 'folder-row--virtual' : ''}`}
+        style={restStyle}
+        ref={dragHandle}
+        onClick={handleRowClick}
+      >
+        <div className="indent-guides-wrapper" style={{ width: paddingLeft }}>
+          {Array.from({ length: level }).map((_, i) => (
+            <div key={i} className="indent-guide" />
+          ))}
+        </div>
+
+        <div className="todo-item-row" style={{ marginLeft: paddingLeft }}>
+          <div className="todo-item-content">
+            <button
+              className={`expand-btn ${node.isLeaf ? 'invisible' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                node.toggle();
+              }}
+            >
+              {node.isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            </button>
+            <Folder size={16} className="folder-icon" />
+            <span className="node-title folder-title">{data.name}</span>
+            {isVirtual && (
+              <span className="folder-count-badge">{node.children?.length ?? 0}</span>
+            )}
+          </div>
+
+          <div className="node-actions">
+            {!isVirtual && (
+              <>
+                <button
+                  className="action-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const title = prompt(t('list.enter_folder'));
+                    if (title) tree.props.onAddSubfolder?.(data.id, title);
+                  }}
+                  title={t('list.add_subfolder')}
+                >
+                  <FolderPlus size={16} />
+                </button>
+                <button
+                  className="action-btn delete"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window.confirm(t('common.confirm_delete'))) {
+                      tree.props.onDeleteFolder?.(data.id);
+                    }
+                  }}
+                  title={t('common.delete')}
+                >
+                  <Trash2 size={16} />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -280,8 +354,14 @@ const ListView = ({
   onOpenHiddenTasks,
   editingNodeId,
   setEditingNodeId,
+  folders,
+  addFolder,
+  deleteFolder,
+  assignTaskToFolder,
   t
 }) => {
+  const { settings } = useSettings();
+  const [displayMode, setDisplayMode] = useState('logic'); // 'logic' | 'folder'
   const [phaseFilter, setPhaseFilter] = useState(() => {
     const saved = localStorage.getItem('logido_list_phase_filter');
     return saved || 'ALL';
@@ -376,6 +456,11 @@ const ListView = ({
 
   // Build arborist tree data
   const arboristData = useMemo(() => {
+    // Folder mode: build a hierarchy from folderId, independent of causal parentId.
+    if (displayMode === 'folder') {
+      return treeLogic.buildFolderTree(nodes, t('list.uncategorized'));
+    }
+
     const filteredNodes = phaseFilter === 'ALL' ? nodes : (() => {
       // Filter logic: keep nodes matching phase and their ancestors
       const visibleSet = new Set();
@@ -413,9 +498,9 @@ const ListView = ({
       return filtered;
     })();
 
-    const filteredRoots = Object.values(filteredNodes).filter(n => !n.parentId && !n.deletedAt && !n.hidden);
+    const filteredRoots = Object.values(filteredNodes).filter(n => !n.parentId && !n.deletedAt && !n.hidden && n.type !== NODE_TYPES.FOLDER);
     return treeLogic.buildArboristTree(filteredNodes, filteredRoots);
-  }, [nodes, rootNodes, phaseFilter]);
+  }, [nodes, rootNodes, phaseFilter, displayMode, t]);
 
   if (rootNodes.length === 0) {
     return (
@@ -441,19 +526,49 @@ const ListView = ({
       <div className="list-view-header">
         <div className="header-left">
           <h1>{t('list.title')}</h1>
-          <div className="phase-filter-bar">
-            {['ALL', 'PREP', 'EXEC', 'REVIEW'].map(p => (
-              <button 
-                key={p}
-                className={`phase-filter-btn ${phaseFilter === p ? 'active' : ''}`}
-                onClick={() => setPhaseFilter(p)}
+          {settings.useFolderView !== false && (
+            <div className="display-mode-toggle">
+              <button
+                className={`display-mode-btn ${displayMode === 'logic' ? 'active' : ''}`}
+                onClick={() => setDisplayMode('logic')}
               >
-                {t(`phases.${p}`)}
+                {t('list.logic_tree_mode')}
               </button>
-            ))}
-          </div>
+              <button
+                className={`display-mode-btn ${displayMode === 'folder' ? 'active' : ''}`}
+                onClick={() => setDisplayMode('folder')}
+              >
+                <Folder size={14} style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
+                {t('list.folder_mode')}
+              </button>
+            </div>
+          )}
+          {displayMode === 'logic' && (
+            <div className="phase-filter-bar">
+              {['ALL', 'PREP', 'EXEC', 'REVIEW'].map(p => (
+                <button
+                  key={p}
+                  className={`phase-filter-btn ${phaseFilter === p ? 'active' : ''}`}
+                  onClick={() => setPhaseFilter(p)}
+                >
+                  {t(`phases.${p}`)}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="header-right">
+          {displayMode === 'folder' && (
+            <button
+              className="add-goal-btn"
+              onClick={() => {
+                const title = prompt(t('list.enter_folder'));
+                if (title) addFolder(null, title);
+              }}
+            >
+              <FolderPlus size={16} /> {t('list.new_folder')}
+            </button>
+          )}
           {hiddenRootNodes && hiddenRootNodes.length > 0 && (
             <button
               className="hidden-tasks-btn"
@@ -485,7 +600,10 @@ const ListView = ({
         ) : (
           <Tree
             data={arboristData}
-            onMove={({ dragIds, parentId, index }) => moveNode(dragIds, parentId, index)}
+            onMove={displayMode === 'logic'
+              ? ({ dragIds, parentId, index }) => moveNode(dragIds, parentId, index)
+              : null}
+            disableDrag={displayMode === 'folder'}
             openByDefault={true}
             initialOpenState={openState}
             onToggle={(id) => {
@@ -510,6 +628,8 @@ const ListView = ({
             onUpdateNode={updateNode}
             onDeleteNode={deleteNode}
             onHideNode={hideNode}
+            onDeleteFolder={deleteFolder}
+            onAddSubfolder={(parentFolderId, title) => addFolder(parentFolderId, title)}
             onAddChild={(parentId) => {
               const title = prompt(t('list.enter_task'));
               if (title) addNode(parentId, NODE_TYPES.ACTION, title);
