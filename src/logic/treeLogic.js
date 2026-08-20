@@ -1067,3 +1067,36 @@ export const buildFolderTree = (nodes, unclassifiedLabel = 'Uncategorized') => {
 
   return unclassifiedRoot ? [...rootFolders, unclassifiedRoot] : rootFolders;
 };
+
+/**
+ * [Search] Returns nodes whose title matches `query` (case-insensitive substring).
+ * The `mode` option restricts which node types are searched:
+ *   - 'logic'  → tasks only (GOAL/STRATEGY/ACTION), folders excluded.
+ *   - 'folder' → folders + tasks, excluding the virtual "unclassified" root.
+ * Soft-deleted and hidden nodes are always excluded.
+ *
+ * Returns an array of `{ id, title, type }` for the UI candidate list.
+ * An empty/whitespace `query` returns `[]`.
+ */
+export const searchNodes = (nodes, query, { mode = 'logic' } = {}) => {
+  const trimmed = (query || '').trim();
+  if (!trimmed) return [];
+
+  // Escape regex special chars so the query is treated as a literal string.
+  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const matcher = new RegExp(escaped, 'i');
+
+  return Object.values(nodes).filter((node) => {
+    if (!node || node.deletedAt || node.hidden) return false;
+    if (node.id === '__unclassified__') return false;
+
+    const isFolder = node.type === NODE_TYPES.FOLDER;
+    if (mode === 'logic' && isFolder) return false;
+
+    return matcher.test(node.title || '');
+  }).map((node) => ({
+    id: node.id,
+    title: node.title,
+    type: node.type
+  }));
+};

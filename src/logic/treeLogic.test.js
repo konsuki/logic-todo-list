@@ -319,3 +319,62 @@ describe('treeLogic folder functions', () => {
     expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
   });
 });
+
+describe('treeLogic.searchNodes', () => {
+  const nodes = {
+    'goal': { id: 'goal', type: 'GOAL', title: 'Learn React' },
+    'strat': { id: 'strat', type: 'STRATEGY', title: 'React Hooks' },
+    'action': { id: 'action', type: 'ACTION', title: 'Practice React useEffect' },
+    'folder': { id: 'folder', type: 'FOLDER', title: 'React Learning' },
+    'hidden': { id: 'hidden', type: 'ACTION', title: 'React Hidden', hidden: true },
+    'deleted': { id: 'deleted', type: 'ACTION', title: 'React Deleted', deletedAt: 123 },
+    'virtual': { id: '__unclassified__', type: 'FOLDER', title: 'Uncategorized', isVirtual: true },
+  };
+
+  it('returns [] for empty/whitespace query', () => {
+    expect(treeLogic.searchNodes(nodes, '', { mode: 'logic' })).toEqual([]);
+    expect(treeLogic.searchNodes(nodes, '   ', { mode: 'folder' })).toEqual([]);
+  });
+
+  it('matches task titles case-insensitively in logic mode', () => {
+    const result = treeLogic.searchNodes(nodes, 'react', { mode: 'logic' });
+    const ids = result.map(r => r.id).sort();
+    expect(ids).toEqual(['action', 'goal', 'strat']);
+  });
+
+  it('excludes folders in logic mode', () => {
+    const result = treeLogic.searchNodes(nodes, 'react', { mode: 'logic' });
+    expect(result.some(r => r.id === 'folder')).toBe(false);
+  });
+
+  it('includes folder names and task titles in folder mode', () => {
+    const result = treeLogic.searchNodes(nodes, 'react', { mode: 'folder' });
+    const ids = result.map(r => r.id).sort();
+    expect(ids).toEqual(['action', 'folder', 'goal', 'strat']);
+  });
+
+  it('excludes hidden and deleted nodes', () => {
+    const result = treeLogic.searchNodes(nodes, 'react', { mode: 'folder' });
+    expect(result.some(r => r.id === 'hidden')).toBe(false);
+    expect(result.some(r => r.id === 'deleted')).toBe(false);
+  });
+
+  it('excludes the virtual unclassified root in folder mode', () => {
+    const result = treeLogic.searchNodes(nodes, 'uncategorized', { mode: 'folder' });
+    expect(result.some(r => r.id === '__unclassified__')).toBe(false);
+  });
+
+  it('treats regex special chars as literal strings', () => {
+    const specialNodes = {
+      'a': { id: 'a', type: 'ACTION', title: 'Fix (bug) and .edge' },
+    };
+    const result = treeLogic.searchNodes(specialNodes, '(bug)', { mode: 'logic' });
+    expect(result.length).toBe(1);
+    expect(result[0].id).toBe('a');
+  });
+
+  it('returns { id, title, type } objects', () => {
+    const result = treeLogic.searchNodes(nodes, 'learn', { mode: 'logic' });
+    expect(result[0]).toEqual({ id: 'goal', title: 'Learn React', type: 'GOAL' });
+  });
+});
