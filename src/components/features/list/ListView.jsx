@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Tree } from 'react-arborist';
-import { Target, Plus, Filter, ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff, Folder, FolderPlus } from 'lucide-react';
+import { Target, Plus, Filter, ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff, Folder, FolderPlus, Search } from 'lucide-react';
 import { NODE_TYPES } from '../../../logic/treeLogic';
 import * as treeLogic from '../../../logic/treeLogic';
 import { useSettings } from '../../../logic/SettingsContext';
@@ -362,6 +362,9 @@ const ListView = ({
 }) => {
   const { settings } = useSettings();
   const [displayMode, setDisplayMode] = useState('logic'); // 'logic' | 'folder'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const treeRef = useRef(null);
   const [phaseFilter, setPhaseFilter] = useState(() => {
     const saved = localStorage.getItem('logido_list_phase_filter');
     return saved || 'ALL';
@@ -502,6 +505,20 @@ const ListView = ({
     return treeLogic.buildArboristTree(filteredNodes, filteredRoots);
   }, [nodes, rootNodes, phaseFilter, displayMode, t]);
 
+  // Search candidates (jump-type), scoped to the currently displayed mode.
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    return treeLogic.searchNodes(nodes, searchQuery, { mode: displayMode });
+  }, [nodes, searchQuery, displayMode]);
+
+  const handleSearchSelect = useCallback((nodeId) => {
+    treeRef.current?.openParents(nodeId);
+    treeRef.current?.scrollTo(nodeId, 'center');
+    onSelectNode(nodeId);
+    setSearchOpen(false);
+    setSearchQuery('');
+  }, [onSelectNode]);
+
   if (rootNodes.length === 0) {
     return (
       <div className="empty-state">
@@ -558,6 +575,39 @@ const ListView = ({
           )}
         </div>
         <div className="header-right">
+          <div className="search-box">
+            <Search size={14} className="search-icon" />
+            <input
+              type="text"
+              value={searchQuery}
+              placeholder={t('list.search_placeholder')}
+              onChange={(e) => { setSearchQuery(e.target.value); setSearchOpen(true); }}
+              onFocus={() => setSearchOpen(true)}
+              onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
+            />
+            {searchOpen && searchQuery.trim() && (
+              <div className="search-results">
+                {searchResults.length === 0 ? (
+                  <div className="search-result-empty">{t('list.search_no_results')}</div>
+                ) : (
+                  searchResults.map((r) => (
+                    <div
+                      key={r.id}
+                      className="search-result-item"
+                      onMouseDown={(e) => { e.preventDefault(); handleSearchSelect(r.id); }}
+                    >
+                      {r.type === 'FOLDER' ? (
+                        <Folder size={14} className="folder-icon" />
+                      ) : (
+                        <span className={`node-type-tag ${r.type.toLowerCase()}`}>{r.type}</span>
+                      )}
+                      <span className="search-result-title">{r.title}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
           {displayMode === 'folder' && (
             <button
               className="add-goal-btn"
@@ -599,6 +649,7 @@ const ListView = ({
           </div>
         ) : (
           <Tree
+            ref={treeRef}
             data={arboristData}
             onMove={displayMode === 'logic'
               ? ({ dragIds, parentId, index }) => moveNode(dragIds, parentId, index)

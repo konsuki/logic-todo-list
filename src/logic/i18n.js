@@ -40,6 +40,8 @@ export const translations = {
       new_folder: '新規フォルダ',
       enter_folder: 'フォルダ名を入力してください:',
       add_subfolder: '子フォルダを追加',
+      search_placeholder: '検索...',
+      search_no_results: '見つかりませんでした',
     },
     inspector: {
       click_to_edit: 'クリックして編集',
@@ -167,6 +169,8 @@ export const translations = {
       new_folder: 'New Folder',
       enter_folder: 'Enter folder name:',
       add_subfolder: 'Add Subfolder',
+      search_placeholder: 'Search...',
+      search_no_results: 'No results found',
     },
     inspector: {
       click_to_edit: 'Click to edit',
