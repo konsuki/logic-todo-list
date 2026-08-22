@@ -9,7 +9,7 @@ import InspectorTextarea from './InspectorTextarea';
 import SortableSection from './SortableSection';
 import './Inspector.css';
 
-const DEFAULT_SECTION_ORDER = ['description', 'intent', 'folder', 'ai', 'schedule', 'dependency', 'why', 'how'];
+const DEFAULT_SECTION_ORDER = ['description', 'intent', 'procedure', 'folder', 'ai', 'schedule', 'dependency', 'why', 'how'];
 const STORAGE_KEY = 'logido_section_order';
 
 const Inspector = ({
@@ -170,6 +170,18 @@ const Inspector = ({
         onModalChange={(text) => updateNode(node.id, { intent: text })}
         label={t('inspector.intent')}
         placeholder={t('inspector.placeholder_intent')}
+        t={t}
+      />
+    ),
+
+    procedure: (
+      <InspectorTextarea
+        nodeId={selectedNodeId}
+        value={node.procedure || ''}
+        onChange={(text) => updateNode(selectedNodeId, { procedure: text })}
+        onModalChange={(text) => updateNode(node.id, { procedure: text })}
+        label={t('inspector.procedure')}
+        placeholder={t('inspector.placeholder_procedure')}
         t={t}
       />
     ),

@@ -7,6 +7,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [79] 08-22: [インスペクターに実行手順テキストエリアを追加](features/inspector_procedure_textarea/spec.md)
 - [78] 08-20: [検索フィールドをアイコントグルで折りたたみ表示にする](features/folder_view/spec.md)
 - [73] 08-19: [フォルダ表示（＋論理ツリー）に検索ボックス（ジャンプ型）を追加](features/folder_view/spec.md)
 - [75] 08-19: 論理ツリー表示にフォルダノードが混入する問題の修正（`filteredRoots` に `type !== FOLDER` を追加）
