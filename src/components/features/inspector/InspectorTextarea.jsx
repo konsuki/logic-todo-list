@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, Maximize2 } from 'lucide-react';
+import { ExternalLink, Maximize2, Info } from 'lucide-react';
 import DescriptionModal from './DescriptionModal';
 
 const renderText = (text) => {
@@ -25,7 +25,7 @@ const renderText = (text) => {
   });
 };
 
-const InspectorTextarea = ({ nodeId, value, onChange, onModalChange, label, placeholder, t }) => {
+const InspectorTextarea = ({ nodeId, value, onChange, onModalChange, label, placeholder, helpText, t }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -37,7 +37,14 @@ const InspectorTextarea = ({ nodeId, value, onChange, onModalChange, label, plac
   return (
     <section className="inspector-section">
       <div className="section-header-with-action">
-        <h3 className="section-title">{label}</h3>
+        <h3 className="section-title">
+          {label}
+          {helpText && (
+            <span className="help-icon" data-tooltip={helpText} tabIndex={0} aria-label={helpText}>
+              <Info size={13} />
+            </span>
+          )}
+        </h3>
         <div className="description-header-actions">
           {!isEditing && value && (
             <button className="edit-subtle-btn" onClick={() => setIsEditing(true)}>

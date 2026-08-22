@@ -7,6 +7,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [80] 08-22: [インスペクターの「実行手順」「実行順序」に説明アイコン（ヘルプツールチップ）を追加](features/inspector_section_help_icons/spec.md)
 - [79] 08-22: [インスペクターに実行手順テキストエリアを追加](features/inspector_procedure_textarea/spec.md)
 - [78] 08-20: [検索フィールドをアイコントグルで折りたたみ表示にする](features/folder_view/spec.md)
 - [73] 08-19: [フォルダ表示（＋論理ツリー）に検索ボックス（ジャンプ型）を追加](features/folder_view/spec.md)
