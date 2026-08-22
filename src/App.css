@@ -1,17 +1,23 @@
 .app-container {
   display: grid;
-  grid-template-areas: "main side";
-  grid-template-rows: 1fr;
+  grid-template-areas:
+    "header header"
+    "main   side";
+  grid-template-rows: var(--header-height) 1fr;
   grid-template-columns: 1fr var(--sidebar-width);
+  gap: 16px;
+  padding: 16px;
   height: 100vh;
   width: 100vw;
   background-color: var(--bg-color);
   transition: grid-template-columns 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  box-sizing: border-box;
 }
 
 .app-container.inspector-collapsed {
   grid-template-columns: 1fr 0;
+  column-gap: 0;
 }
 
 .header-actions {
@@ -44,18 +50,15 @@
 }
 
 .app-header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--header-height);
+  grid-area: header;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 40px;
-  background-color: transparent;
-  border-bottom: none;
-  z-index: 100;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .logo {
@@ -122,16 +125,20 @@
   grid-area: main;
   position: relative;
   overflow: hidden;
-  padding: var(--header-height) 0 0 0;
   height: 100%;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .inspector-panel {
   grid-area: side;
-  background-color: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  border-left: 1px solid var(--glass-border);
-  padding: calc(var(--header-height) + 20px) 24px 32px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 20px 24px 32px;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -139,14 +146,13 @@
   gap: 32px;
   transition: padding 0.45s cubic-bezier(0.4, 0, 0.2, 1),
               opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.2);
 }
 
 .inspector-panel.collapsed {
   padding: 0;
   opacity: 0;
   pointer-events: none;
-  border-left: none;
+  border: none;
 }
 
 .section-title {

@@ -18,7 +18,7 @@ const DesignSandbox = () => {
       flexDirection: 'column',
       justifyContent: 'center', 
       alignItems: 'center', 
-      minHeight: '100vh',
+      minHeight: '100%',
       background: isLight 
         ? 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%)' 
         : '#0B0E14', 

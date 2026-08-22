@@ -527,7 +527,6 @@ const ListView = ({
     <div className="list-view-container">
       <div className="list-view-header">
         <div className="header-left">
-          <h1>{t('list.title')}</h1>
           {settings.useFolderView !== false && (
             <div className="display-mode-toggle">
               <button

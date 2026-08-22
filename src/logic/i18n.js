@@ -23,7 +23,6 @@ export const translations = {
       list_view: 'リスト表示',
     },
     list: {
-      title: 'プロジェクトと論理ツリー',
       new_goal: '新規目標',
       create_first_goal: '最初の目標を定義しましょう',
       welcome: 'LogiDoへようこそ',
@@ -156,7 +155,6 @@ export const translations = {
       list_view: 'List View',
     },
     list: {
-      title: 'Projects & Logic Trees',
       new_goal: 'New Goal',
       create_first_goal: 'Start by defining your main goal.',
       welcome: 'Welcome to LogiDo',
