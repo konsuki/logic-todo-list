@@ -108,9 +108,29 @@ describe('Inspector description link parsing', () => {
 
     const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
     const linkElement = container.querySelector('a.description-link');
-    
+
     expect(linkElement).not.toBeNull();
     expect(linkElement.getAttribute('href')).toBe('https://example.com/search?q=test&page=1');
+  });
+
+  it('should parse obsidian:// scheme links as clickable links', () => {
+    const obsidianUrl = 'obsidian://open?vault=%E6%97%A5%E5%B8%B8%E3%81%A7%E4%BD%BF%E3%81%88%E3%82%8B%E7%9F%A5%E8%AD%98&file=%E3%82%84%E3%82%8B%E3%81%93%E3%81%A8%2F%E3%83%9D%E3%83%BC%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%AA%E3%82%AA%2F%E8%A9%95%E4%BE%A1%E3%81%95%E3%82%8C%E3%82%8B%E3%83%9D%E3%83%BC%E3%83%88%E3%83%95%E3%82%A9%E3%83%AA%E3%82%AA1';
+    const props = {
+      ...defaultProps,
+      nodes: {
+        '1': {
+          ...defaultProps.nodes['1'],
+          description: `[Obsidian で開く](${obsidianUrl})`,
+        }
+      }
+    };
+
+    const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
+    const linkElement = container.querySelector('a.description-link');
+
+    expect(linkElement).not.toBeNull();
+    expect(linkElement.getAttribute('href')).toBe(obsidianUrl);
+    expect(linkElement.textContent).toContain(obsidianUrl);
   });
 });
 
