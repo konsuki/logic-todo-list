@@ -7,6 +7,7 @@ import { useSettings } from '../../../logic/SettingsContext';
 import AIInsights from './AIInsights';
 import InspectorTextarea from './InspectorTextarea';
 import SortableSection from './SortableSection';
+import HelpIcon from './HelpIcon';
 import './Inspector.css';
 
 const DEFAULT_SECTION_ORDER = ['description', 'intent', 'procedure', 'folder', 'ai', 'schedule', 'dependency', 'why', 'how'];
@@ -265,9 +266,7 @@ const Inspector = ({
         <div className="order-controls">
           <div className="section-subtitle-row">
             <label className="section-subtitle">{t('inspector.order_section')}</label>
-            <span className="help-icon" data-tooltip={t('inspector.order_section_help')} tabIndex={0} aria-label={t('inspector.order_section_help')}>
-              <Info size={13} />
-            </span>
+            <HelpIcon text={t('inspector.order_section_help')} />
           </div>
           <div className="order-buttons">
             <button
