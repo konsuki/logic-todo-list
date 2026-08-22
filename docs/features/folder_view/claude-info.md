@@ -11,3 +11,9 @@
 - **セッションID**: `ae97e6bf-c0cb-4295-bce3-14f695a50732`
 - **セッション履歴ディレクトリ**: `/Users/konnsuki/.claude/projects/-Users-konnsuki-Desktop-Programs-logic-todo-list/`
 - **セッション履歴ファイル名**: `ae97e6bf-c0cb-4295-bce3-14f695a50732.jsonl`
+
+## 検索フィールド折りたたみ（3.5 アイコントグル型）仕様更新時
+
+- **セッションID**: `ae97e6bf-c0cb-4295-bce3-14f695a50732`
+- **セッション履歴ディレクトリ**: `/Users/konnsuki/.claude/projects/-Users-konnsuki-Desktop-Programs-logic-todo-list/`
+- **セッション履歴ファイル名**: `ae97e6bf-c0cb-4295-bce3-14f695a50732.jsonl`

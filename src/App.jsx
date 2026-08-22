@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { LayoutGrid, List, Info, Zap, Globe, Settings } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion } from 'framer-motion';
@@ -13,6 +13,7 @@ import ImportModal from './components/features/import/ImportModal';
 import TrashView from './components/features/trash/TrashView';
 import HiddenTasksModal from './components/features/list/HiddenTasksModal';
 import DesignSandbox from './components/sandbox/DesignSandbox';
+import SearchBar from './components/features/search/SearchBar';
 import { themes } from './constants/themes';
 import './App.css';
 
@@ -58,6 +59,8 @@ function App() {
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [editingNodeId, setEditingNodeId] = useState(null);
   const [completedGoals, setCompletedGoals] = useState(new Set());
+  const [displayMode, setDisplayMode] = useState('logic'); // 'logic' | 'folder'
+  const treeRef = useRef(null);
   // Auto-expand all nodes on initial load (nodes are loaded synchronously from
   // localStorage via useTodoTree before this state is initialized).
   const [expandedNodeIds, setExpandedNodeIds] = useState(() => new Set(Object.keys(nodes)));
@@ -200,7 +203,16 @@ function App() {
               <Zap size={20} color={view === 'preview' ? 'var(--primary-color)' : 'var(--text-muted)'} />
             </button>
           )}
-          <button 
+          {view === 'list' && (
+            <SearchBar
+              nodes={nodes}
+              displayMode={displayMode}
+              treeRef={treeRef}
+              onSelectNode={handleSelectNode}
+              t={t}
+            />
+          )}
+          <button
             className="icon-btn"
             onClick={() => setIsSettingsOpen(true)}
             title="Settings"
@@ -241,6 +253,9 @@ function App() {
             addFolder={addFolder}
             deleteFolder={deleteFolder}
             assignTaskToFolder={assignTaskToFolder}
+            displayMode={displayMode}
+            setDisplayMode={setDisplayMode}
+            treeRef={treeRef}
             t={t}
           />
         ) : (
