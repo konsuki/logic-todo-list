@@ -3,6 +3,10 @@
   flex-direction: column;
   gap: 32px;
   animation: fadeInRight 0.3s ease-out;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
 }
 
 @keyframes fadeInRight {
