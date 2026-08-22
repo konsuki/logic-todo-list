@@ -8,6 +8,8 @@
 - [81] 08-22: [カード型フローティングパネルレイアウト（ヘッダー・メイン・インスペクターをカード化）](features/card_panel_layout/spec.md)
 
 ## ✅ 完了済み (Completed)
+- [82] 08-23: [子タスクの関係（AND/OR）切替とグループ編集の MCP ツール追加（MCP 側）](../../bizyu-mcp-server/docs/features/or_relation_mcp_tools/spec.md)
+  → 本機能の UI/ロジック仕様（SSOT）は [features/or_branch_representation/spec.md](features/or_branch_representation/spec.md) にあり。このエントリは MCP 側での対応を記録する参照用。
 - [80] 08-22: [インスペクターの「実行手順」「実行順序」に説明アイコン（ヘルプツールチップ）を追加](features/inspector_section_help_icons/spec.md)
 - [79] 08-22: [インスペクターに実行手順テキストエリアを追加](features/inspector_procedure_textarea/spec.md)
 - [78] 08-20: [検索フィールドをアイコントグルで折りたたみ表示にする](features/folder_view/spec.md)
