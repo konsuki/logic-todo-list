@@ -182,6 +182,7 @@ const Inspector = ({
         onModalChange={(text) => updateNode(node.id, { procedure: text })}
         label={t('inspector.procedure')}
         placeholder={t('inspector.placeholder_procedure')}
+        helpText={t('inspector.procedure_help')}
         t={t}
       />
     ),
@@ -262,7 +263,12 @@ const Inspector = ({
         </div>
 
         <div className="order-controls">
-          <label className="section-subtitle">{t('inspector.order_section')}</label>
+          <div className="section-subtitle-row">
+            <label className="section-subtitle">{t('inspector.order_section')}</label>
+            <span className="help-icon" data-tooltip={t('inspector.order_section_help')} tabIndex={0} aria-label={t('inspector.order_section_help')}>
+              <Info size={13} />
+            </span>
+          </div>
           <div className="order-buttons">
             <button
               className="order-btn"
