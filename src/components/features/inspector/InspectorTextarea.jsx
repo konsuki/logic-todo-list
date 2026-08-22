@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, Maximize2, Info } from 'lucide-react';
+import { ExternalLink, Maximize2 } from 'lucide-react';
 import DescriptionModal from './DescriptionModal';
+import HelpIcon from './HelpIcon';
 
 const renderText = (text) => {
   if (!text) return null;
@@ -39,11 +40,7 @@ const InspectorTextarea = ({ nodeId, value, onChange, onModalChange, label, plac
       <div className="section-header-with-action">
         <h3 className="section-title">
           {label}
-          {helpText && (
-            <span className="help-icon" data-tooltip={helpText} tabIndex={0} aria-label={helpText}>
-              <Info size={13} />
-            </span>
-          )}
+          {helpText && <HelpIcon text={helpText} />}
         </h3>
         <div className="description-header-actions">
           {!isEditing && value && (
