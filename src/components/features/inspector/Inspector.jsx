@@ -53,7 +53,9 @@ const Inspector = ({
         const missing = DEFAULT_SECTION_ORDER.filter(k => !valid.includes(k));
         return [...valid, ...missing];
       }
-    } catch {}
+    } catch {
+      // localStorage の sectionOrder が壊れていた場合はデフォルト順序へフォールバック
+    }
     return DEFAULT_SECTION_ORDER;
   });
 

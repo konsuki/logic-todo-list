@@ -5,7 +5,7 @@ import HelpIcon from './HelpIcon';
 
 const renderText = (text) => {
   if (!text) return null;
-  const urlRegex = /((?:https?|obsidian):\/\/[a-zA-Z0-9-._~:/?#\[\]@!$&'()*+,;%=]*[a-zA-Z0-9_~/#%?&=-])/g;
+  const urlRegex = /((?:https?|obsidian):\/\/[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;%=]*[a-zA-Z0-9_~/#%?&=-])/g;
   const parts = text.split(urlRegex);
   return parts.map((part, i) => {
     if (part.match(urlRegex)) {
