@@ -7,6 +7,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [85] 08-26: [react-refresh/only-export-components 対応（SettingsContext.jsx の分離）](refactors/lint-react-refresh-settings/spec.md)
 - [84] 08-26: [no-useless-assignment の解消（useShortcuts.js の nextIndex、TodoItem.jsx の siblings）](refactors/lint-no-useless-assignment/spec.md)
 - [83] 08-26: [未使用 import・未使用変数の削除（no-unused-vars 解消）](refactors/lint-unused-vars-cleanup/spec.md)
 - [82] 08-23: [子タスクの関係（AND/OR）切替とグループ編集の MCP ツール追加（MCP 側）](../../bizyu-mcp-server/docs/features/or_relation_mcp_tools/spec.md)

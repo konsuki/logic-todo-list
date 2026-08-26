@@ -1,14 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-
-const SettingsContext = createContext();
-
-export const useSettings = () => {
-  const context = useContext(SettingsContext);
-  if (!context) {
-    throw new Error('useSettings must be used within a SettingsProvider');
-  }
-  return context;
-};
+import { useState, useEffect } from 'react';
+import { SettingsContext } from './settings';
 
 export const SettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState(() => {
