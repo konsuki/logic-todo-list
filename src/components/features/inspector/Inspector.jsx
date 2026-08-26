@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, GripVertical, Folder, FolderPlus } from 'lucide-react';
@@ -62,11 +62,6 @@ const Inspector = ({
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
-
-  useEffect(() => {
-    setIsEditingTitle(false);
-    setEditTitle(node?.title || '');
-  }, [selectedNodeId, node?.title]);
 
   if (!node) {
     return (
@@ -151,6 +146,7 @@ const Inspector = ({
   const sectionMap = {
     description: (
       <InspectorTextarea
+        key={selectedNodeId}
         nodeId={selectedNodeId}
         value={node.description || ''}
         onChange={(text) => updateNode(selectedNodeId, { description: text })}
@@ -163,6 +159,7 @@ const Inspector = ({
 
     intent: (
       <InspectorTextarea
+        key={selectedNodeId}
         nodeId={selectedNodeId}
         value={node.intent || ''}
         onChange={(text) => updateNode(selectedNodeId, { intent: text })}
@@ -175,6 +172,7 @@ const Inspector = ({
 
     procedure: (
       <InspectorTextarea
+        key={selectedNodeId}
         nodeId={selectedNodeId}
         value={node.procedure || ''}
         onChange={(text) => updateNode(selectedNodeId, { procedure: text })}
@@ -578,7 +576,10 @@ const Inspector = ({
         ) : (
           <h2
             className="inspector-title"
-            onClick={() => setIsEditingTitle(true)}
+            onClick={() => {
+              setEditTitle(node.title);
+              setIsEditingTitle(true);
+            }}
             title={t('inspector.click_to_edit') || 'Click to edit'}
           >
             {node.title}

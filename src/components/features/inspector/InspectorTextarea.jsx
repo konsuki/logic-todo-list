@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ExternalLink, Maximize2 } from 'lucide-react';
 import DescriptionModal from './DescriptionModal';
 import HelpIcon from './HelpIcon';
@@ -29,11 +29,6 @@ const renderText = (text) => {
 const InspectorTextarea = ({ nodeId, value, onChange, onModalChange, label, placeholder, helpText, t }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    setIsEditing(false);
-    setIsModalOpen(false);
-  }, [nodeId]);
 
   return (
     <section className="inspector-section">

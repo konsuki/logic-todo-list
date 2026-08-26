@@ -275,7 +275,8 @@ function App() {
       </main>
 
       <aside className={`inspector-panel ${!isInspectorOpen ? 'collapsed' : ''}`}>
-        <Inspector 
+        <Inspector
+          key={selectedNodeId}
           selectedNodeId={selectedNodeId}
           nodes={nodes}
           addNode={addNode}

@@ -379,7 +379,7 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       svg.call(zoom.transform, currentTransform);
     }
 
-  }, [hierarchyData, flattenedFlow, layoutMode, flowOrientation, selectedNodeId, onSelectNode, nodes, spacingH, spacingV, containerHPadding, containerVPaddingTop, hierarchyGap, editingNodeId, updateNode]);
+  }, [hierarchyData, flattenedFlow, layoutMode, flowOrientation, selectedNodeId, onSelectNode, nodes, spacingH, spacingV, containerHPadding, containerVPaddingTop, hierarchyGap, editingNodeId, updateNode, setEditingNodeId]);
 
   if (rootNodes.length === 0) return null;
 

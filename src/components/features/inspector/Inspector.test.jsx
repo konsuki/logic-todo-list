@@ -246,14 +246,17 @@ describe('Inspector title inline editing', () => {
   });
 
   it('should reset editing state when switching to another node', () => {
-    const { getByRole, container, rerender } = render(<SettingsProvider><Inspector {...defaultProps} /></SettingsProvider>);
-    
+    const { getByRole, container, rerender } = render(
+      <SettingsProvider><Inspector key="1" {...defaultProps} /></SettingsProvider>
+    );
+
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
     expect(container.querySelector('.inspector-title-input')).not.toBeNull();
 
-    // Rerender with different selectedNodeId
+    // Rerender with different selectedNodeId. ノード切替時は親（App）が key を変えて
+    // Inspector 全体を再マウントするため、編集状態はリセットされる。
     const nextProps = { ...defaultProps, selectedNodeId: '2' };
-    rerender(<SettingsProvider><Inspector {...nextProps} /></SettingsProvider>);
+    rerender(<SettingsProvider><Inspector key="2" {...nextProps} /></SettingsProvider>);
 
     // Should reset editing state and display the second node title
     expect(container.querySelector('.inspector-title-input')).toBeNull();

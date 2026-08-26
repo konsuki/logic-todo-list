@@ -14,9 +14,9 @@ import './TodoItem.css';
 const ArboristNode = ({ node, style, dragHandle, tree }) => {
   const data = node.data;
   const { settings } = useSettings();
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(() => tree.props.editingNodeId === data.id);
   const [editTitle, setEditTitle] = useState(data.title);
-  const [isAutoEdit, setIsAutoEdit] = useState(false);
+  const [isAutoEdit, setIsAutoEdit] = useState(() => tree.props.editingNodeId === data.id);
   const inputRef = useRef(null);
 
   const isDone = data.status === 'DONE';
@@ -43,16 +43,6 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
     const index = siblings.findIndex(s => s.id === node.id);
     return index !== -1 ? index + 1 : null;
   }, [node, tree]);
-
-  // ショートカット（Enter/Tab）で追加された新タスクは、editingNodeId が
-  // その id と一致するため、自動でタイトル編集モードに入る。
-  useEffect(() => {
-    if (tree.props.editingNodeId === data.id) {
-      setEditTitle(data.title);
-      setIsEditing(true);
-      setIsAutoEdit(true);
-    }
-  }, [tree.props.editingNodeId, data.id, data.title]);
 
   // 追加直後の自動編集時のみ、input のテキストを全選択して、
   // そのまま文字入力で "New Task" を置換できるようにする。

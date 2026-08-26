@@ -7,6 +7,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [87] 08-26: [React Hooks ルール違反の解消（set-state-in-effect・exhaustive-deps）](refactors/lint-react-hooks/spec.md)
 - [86] 08-26: [その他の lint エラー解消（no-useless-escape・no-empty）](refactors/lint-misc-errors/spec.md)
 - [85] 08-26: [react-refresh/only-export-components 対応（SettingsContext.jsx の分離）](refactors/lint-react-refresh-settings/spec.md)
 - [84] 08-26: [no-useless-assignment の解消（useShortcuts.js の nextIndex、TodoItem.jsx の siblings）](refactors/lint-no-useless-assignment/spec.md)
