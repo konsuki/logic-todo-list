@@ -8,6 +8,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [90] 08-26: [i18n.js（翻訳データ）を共有層 lib/ へ移動](refactors/i18n-to-lib/spec.md)
 - [89] 08-26: [設定コンテキストを共有層 lib/ へ移動（SettingsContext.jsx → SettingsProvider.jsx にリネーム）](refactors/settings-context-to-lib/spec.md)
 - [87] 08-26: [React Hooks ルール違反の解消（set-state-in-effect・exhaustive-deps）](refactors/lint-react-hooks/spec.md)
 - [86] 08-26: [その他の lint エラー解消（no-useless-escape・no-empty）](refactors/lint-misc-errors/spec.md)

@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { translations } from '../logic/i18n';
+import { translations } from '../lib/i18n';
 
 export const useI18n = () => {
   const [lang, setLang] = useState(() => {
