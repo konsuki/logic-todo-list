@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, Calendar, Clock, Zap, Sun, Moon } from 'lucide-react';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Check, Clock, Zap, Sun, Moon } from 'lucide-react';
 
 /**
  * DesignSandbox

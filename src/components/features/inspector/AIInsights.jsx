@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
 import { Brain, Loader2 } from 'lucide-react';
 import { useAI } from '../../../hooks/useAI';
-import { NODE_TYPES } from '../../../logic/treeLogic';
 import './AIInsights.css';
 
-const AIInsights = ({ node, nodes, addNode, addNodes, addTreeUnderNode, lang, t }) => {
-  const { getBreakdownSuggestions, getLogicAudit, getDeductiveBreakdown, isLoading, error } = useAI();
-
-
-
+const AIInsights = ({ node, nodes, addTreeUnderNode, t }) => {
+  const { getDeductiveBreakdown, isLoading, error } = useAI();
 
   const handleRequestDeductiveBreakdown = async () => {
-    const tasksTree = await getDeductiveBreakdown(node, nodes, lang);
+    const tasksTree = await getDeductiveBreakdown(node, nodes);
     if (tasksTree && tasksTree.length > 0) {
       addTreeUnderNode(node.id, tasksTree);
     }

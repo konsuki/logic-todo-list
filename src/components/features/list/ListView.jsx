@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Tree } from 'react-arborist';
 import { Target, Plus, Filter, ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff, Folder, FolderPlus } from 'lucide-react';
 import { NODE_TYPES } from '../../../logic/treeLogic';
@@ -347,17 +347,13 @@ const ListView = ({
   updateNode,
   selectedNodeId,
   onSelectNode,
-  expandedNodeIds,
-  toggleExpand,
   moveNode,
   hiddenRootNodes,
   onOpenHiddenTasks,
   editingNodeId,
   setEditingNodeId,
-  folders,
   addFolder,
   deleteFolder,
-  assignTaskToFolder,
   displayMode,
   setDisplayMode,
   treeRef,

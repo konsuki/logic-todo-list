@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText, Tag, Layers, ListOrdered, Trash2, Folder } from 'lucide-react';
 import { useSettings } from '../../../logic/SettingsContext';

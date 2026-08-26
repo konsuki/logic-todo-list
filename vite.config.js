@@ -10,7 +10,7 @@ function bizyuExportPlugin() {
   return {
     name: 'bizyu-export',
     configureServer(server) {
-      server.middlewares.use('/__bizyu_export', (req, res, next) => {
+      server.middlewares.use('/__bizyu_export', (req, res) => {
         const bizyuDir = path.join(os.homedir(), '.bizyu');
         const filePath = path.join(bizyuDir, 'tree_data.json');
 

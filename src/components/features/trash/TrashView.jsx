@@ -1,9 +1,8 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, RotateCcw, X, Inbox } from 'lucide-react';
 import './TrashView.css';
 
-const TrashView = ({ isOpen, onClose, trashedRootNodes, nodes, onRestore, onPermanentDelete, t }) => {
+const TrashView = ({ isOpen, onClose, trashedRootNodes, nodes, onRestore, onPermanentDelete }) => {
   const formatDate = (timestamp) => {
     if (!timestamp) return '';
     return new Date(timestamp).toLocaleDateString('ja-JP', {

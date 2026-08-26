@@ -16,8 +16,6 @@ const STORAGE_KEY = 'logido_section_order';
 const Inspector = ({
   selectedNodeId,
   nodes,
-  addNode,
-  addNodes,
   addTreeUnderNode,
   onSelectNode,
   updateNode,
@@ -32,10 +30,8 @@ const Inspector = ({
   updateGroup,
   folders,
   addFolder,
-  deleteFolder,
   assignTaskToFolder,
-  t,
-  lang
+  t
 }) => {
   const node = nodes[selectedNodeId];
   const { settings } = useSettings();
@@ -57,7 +53,7 @@ const Inspector = ({
         const missing = DEFAULT_SECTION_ORDER.filter(k => !valid.includes(k));
         return [...valid, ...missing];
       }
-    } catch (_) {}
+    } catch {}
     return DEFAULT_SECTION_ORDER;
   });
 
@@ -226,10 +222,7 @@ const Inspector = ({
       <AIInsights
         node={node}
         nodes={nodes}
-        addNode={addNode}
-        addNodes={addNodes}
         addTreeUnderNode={addTreeUnderNode}
-        lang={lang}
         t={t}
       />
     ),
@@ -353,7 +346,7 @@ const Inspector = ({
                   <span>{t('inspector.root_goal')}</span>
                 </div>
               ) : (
-                pathToRoot.map((n, i) => (
+                pathToRoot.map((n) => (
                   <div
                     key={n.id}
                     className="path-item linkable"

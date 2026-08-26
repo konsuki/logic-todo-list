@@ -26,7 +26,7 @@ export const useAI = () => {
 
 
 
-  const getDeductiveBreakdown = useCallback(async (node, nodes, lang = 'ja') => {
+  const getDeductiveBreakdown = useCallback(async (node, nodes) => {
     setIsLoading(true);
     setError(null);
 

@@ -7,6 +7,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [83] 08-26: [未使用 import・未使用変数の削除（no-unused-vars 解消）](refactors/lint-unused-vars-cleanup/spec.md)
 - [82] 08-23: [子タスクの関係（AND/OR）切替とグループ編集の MCP ツール追加（MCP 側）](../../bizyu-mcp-server/docs/features/or_relation_mcp_tools/spec.md)
   → 本機能の UI/ロジック仕様（SSOT）は [features/or_branch_representation/spec.md](features/or_branch_representation/spec.md) にあり。このエントリは MCP 側での対応を記録する参照用。
 - [81] 08-22: [カード型フローティングパネルレイアウト（ヘッダー・メイン・インスペクターをカード化）](features/card_panel_layout/spec.md)

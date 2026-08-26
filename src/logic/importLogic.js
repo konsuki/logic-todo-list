@@ -13,7 +13,7 @@ export const parseImportData = (text) => {
     try {
       const data = JSON.parse(trimmed);
       return normalizeJson(data);
-    } catch (e) {
+    } catch {
       // If it looks like JSON but fails to parse, it might be Markdown with [tags]
       // Fall through to parseMarkdown
     }

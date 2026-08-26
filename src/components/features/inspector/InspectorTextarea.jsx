@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ExternalLink, Maximize2 } from 'lucide-react';
 import DescriptionModal from './DescriptionModal';
 import HelpIcon from './HelpIcon';

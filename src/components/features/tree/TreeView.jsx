@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useMemo, useState } from 'react';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import * as d3 from 'd3';
-import { Target, Zap, Share2, GitCommit, MoveRight, MoveDown, Settings2, X } from 'lucide-react';
+import { Zap, Share2, GitCommit, MoveRight, MoveDown, Settings2, X } from 'lucide-react';
 import * as treeLogic from '../../../logic/treeLogic';
 import './TreeView.css';
 
-const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, expandedNodeIds, toggleExpand, t, editingNodeId, setEditingNodeId }) => {
+const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, t, editingNodeId, setEditingNodeId }) => {
   const svgRef = useRef(null);
   const containerRef = useRef(null);
   const [layoutMode, setLayoutMode] = useState('tree'); // 'tree' or 'flow'
@@ -211,7 +211,7 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
         .attr('width', d => d.width)
         .attr('height', d => d.height)
         .style('rx', 'var(--enclosure-radius, 25px)')
-        .style('fill', d => `var(--border-color)`)
+        .style('fill', () => `var(--border-color)`)
         .style('opacity', d => 0.2 + (d.rank * 0.05));
 
       enclosureGroups.append('rect')
