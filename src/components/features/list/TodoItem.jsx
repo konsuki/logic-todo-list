@@ -69,7 +69,7 @@ const TodoItem = ({
   // Calculate step number relative to siblings
   const stepNumber = useMemo(() => {
     const parent = node.parentId ? allNodes[node.parentId] : null;
-    let siblings = [];
+    let siblings;
     if (parent) {
       siblings = parent.children.map(id => allNodes[id]).filter(Boolean);
     } else {

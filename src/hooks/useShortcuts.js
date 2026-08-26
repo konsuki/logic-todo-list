@@ -45,7 +45,7 @@ export const useShortcuts = ({
           if (visibleNodes.length === 0) return;
 
           const currentIndex = visibleNodes.findIndex(n => n.id === selectedNodeId);
-          let nextIndex = 0;
+          let nextIndex;
 
           if (e.key === 'ArrowUp') {
             nextIndex = currentIndex <= 0 ? visibleNodes.length - 1 : currentIndex - 1;
