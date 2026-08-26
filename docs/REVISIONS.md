@@ -8,6 +8,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [89] 08-26: [設定コンテキストを共有層 lib/ へ移動（SettingsContext.jsx → SettingsProvider.jsx にリネーム）](refactors/settings-context-to-lib/spec.md)
 - [87] 08-26: [React Hooks ルール違反の解消（set-state-in-effect・exhaustive-deps）](refactors/lint-react-hooks/spec.md)
 - [86] 08-26: [その他の lint エラー解消（no-useless-escape・no-empty）](refactors/lint-misc-errors/spec.md)
 - [85] 08-26: [react-refresh/only-export-components 対応（SettingsContext.jsx の分離）](refactors/lint-react-refresh-settings/spec.md)

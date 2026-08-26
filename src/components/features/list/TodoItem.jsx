@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock, Clock, EyeOff } from 'lucide-react';
 import * as treeLogic from '../../../logic/treeLogic';
-import { useSettings } from '../../../logic/settings';
+import { useSettings } from '../../../lib/settings';
 import './TodoItem.css';
 
 const TodoItem = ({

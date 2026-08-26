@@ -1,7 +1,7 @@
 import { render, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Inspector from './Inspector';
-import { SettingsProvider } from '../../../logic/SettingsContext';
+import { SettingsProvider } from '../../../lib/SettingsProvider';
 
 describe('Inspector description link parsing', () => {
   const defaultProps = {
