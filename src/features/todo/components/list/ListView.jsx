@@ -1,8 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Tree } from 'react-arborist';
 import { Target, Plus, Filter, ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff, Folder, FolderPlus } from 'lucide-react';
-import { NODE_TYPES } from '../../../../logic/treeLogic';
-import * as treeLogic from '../../../../logic/treeLogic';
+import { NODE_TYPES } from '../../lib/treeLogic';
+import * as treeLogic from '../../lib/treeLogic';
 import { useSettings } from '../../../../lib/settings';
 import './ListView.css';
 import './TodoItem.css';

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, GripVertical, Folder, FolderPlus } from 'lucide-react';
-import * as treeLogic from '../../../../logic/treeLogic';
+import * as treeLogic from '../../lib/treeLogic';
 import { useSettings } from '../../../../lib/settings';
 import AIInsights from './AIInsights';
 import InspectorTextarea from './InspectorTextarea';

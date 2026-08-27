@@ -1,7 +1,7 @@
 import { useEffect, useRef, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import { Zap, Share2, GitCommit, MoveRight, MoveDown, Settings2, X } from 'lucide-react';
-import * as treeLogic from '../../../../logic/treeLogic';
+import * as treeLogic from '../../lib/treeLogic';
 import './TreeView.css';
 
 const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, t, editingNodeId, setEditingNodeId }) => {

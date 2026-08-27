@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import * as treeLogic from '../../../logic/treeLogic';
+import * as treeLogic from '../lib/treeLogic';
 
 /**
  * Hook to handle global keyboard shortcuts.
