@@ -8,6 +8,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [93] 08-27: [機能フックの features/todo/hooks/ への移動（＋ useI18n は共有 hooks/ へ）](refactors/features-todo-hooks/spec.md)
 - [92] 08-27: [機能 UI コンポーネントの features/todo/components/ への移動](refactors/features-todo-components/spec.md)
 - [91] 08-26: [app/ 層の新設（main.jsx / App.jsx / App.css / provider.jsx）](refactors/app-layer/spec.md)
 - [90] 08-26: [i18n.js（翻訳データ）を共有層 lib/ へ移動](refactors/i18n-to-lib/spec.md)

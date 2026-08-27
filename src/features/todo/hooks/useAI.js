@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { sendChatMessage } from '../logic/aiApi';
+import { sendChatMessage } from '../../../logic/aiApi';
 
 const formatTreeAsText = (nodes, nodeId, depth = 0) => {
   const node = nodes[nodeId];

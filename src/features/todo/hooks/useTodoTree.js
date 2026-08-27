@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import * as treeLogic from '../logic/treeLogic';
+import * as treeLogic from '../../../logic/treeLogic';
 
 const STORAGE_KEY = 'logido_tree_data';
 
