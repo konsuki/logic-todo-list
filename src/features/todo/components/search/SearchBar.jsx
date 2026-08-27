@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Folder } from 'lucide-react';
-import * as treeLogic from '../../lib/treeLogic';
+import { searchNodes } from '../../lib/treeDisplay';
 import './SearchBar.css';
 
 /**
@@ -21,7 +21,7 @@ const SearchBar = ({ nodes, displayMode, treeRef, onSelectNode, t }) => {
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
-    return treeLogic.searchNodes(nodes, searchQuery, { mode: displayMode });
+    return searchNodes(nodes, searchQuery, { mode: displayMode });
   }, [nodes, searchQuery, displayMode]);
 
   const close = useCallback(() => {

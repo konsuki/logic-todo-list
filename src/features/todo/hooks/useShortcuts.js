@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import * as treeLogic from '../lib/treeLogic';
+import { getVisibleNodesList } from '../lib/treeDisplay';
 
 /**
  * Hook to handle global keyboard shortcuts.
@@ -41,7 +41,7 @@ export const useShortcuts = ({
         case 'ArrowUp':
         case 'ArrowDown': {
           e.preventDefault();
-          const visibleNodes = treeLogic.getVisibleNodesList(nodes, rootNodes, expandedNodeIds);
+          const visibleNodes = getVisibleNodesList(nodes, rootNodes, expandedNodeIds);
           if (visibleNodes.length === 0) return;
 
           const currentIndex = visibleNodes.findIndex(n => n.id === selectedNodeId);

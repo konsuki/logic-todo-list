@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import * as treeLogic from './treeLogic';
+import * as treeNodes from './treeNodes';
+import * as treeProgress from './treeProgress';
+import * as treeGroups from './treeGroups';
+import * as treeFolders from './treeFolders';
+import * as treeDisplay from './treeDisplay';
 
-describe('treeLogic.reorderNode', () => {
+describe('treeNodes.reorderNode', () => {
   it('should swap order of two siblings when moving down', () => {
     const nodes = {
       'parent': { id: 'parent', children: ['child1', 'child2'], type: 'GOAL' },
@@ -9,7 +13,7 @@ describe('treeLogic.reorderNode', () => {
       'child2': { id: 'child2', parentId: 'parent', order: 1, title: 'Child 2' }
     };
     
-    const result = treeLogic.reorderNode(nodes, 'child1', 'down');
+    const result = treeNodes.reorderNode(nodes, 'child1', 'down');
     
     expect(result['child1'].order).toBe(1);
     expect(result['child2'].order).toBe(0);
@@ -23,7 +27,7 @@ describe('treeLogic.reorderNode', () => {
       'child2': { id: 'child2', parentId: 'parent', order: 1, title: 'Child 2' }
     };
     
-    const result = treeLogic.reorderNode(nodes, 'child2', 'up');
+    const result = treeNodes.reorderNode(nodes, 'child2', 'up');
     
     expect(result['child1'].order).toBe(1);
     expect(result['child2'].order).toBe(0);
@@ -36,7 +40,7 @@ describe('treeLogic.reorderNode', () => {
       'child2': { id: 'child2', parentId: 'parent', order: 1, title: 'Child 2' }
     };
     
-    const result = treeLogic.reorderNode(nodes, 'child1', 'up');
+    const result = treeNodes.reorderNode(nodes, 'child1', 'up');
     
     expect(result).toEqual(nodes);
   });
@@ -48,13 +52,13 @@ describe('treeLogic.reorderNode', () => {
       'child2': { id: 'child2', parentId: 'parent', order: 1, title: 'Child 2' }
     };
     
-    const result = treeLogic.reorderNode(nodes, 'child2', 'down');
+    const result = treeNodes.reorderNode(nodes, 'child2', 'down');
     
     expect(result).toEqual(nodes);
   });
 });
 
-describe('treeLogic.buildArboristTree', () => {
+describe('treeDisplay.buildArboristTree', () => {
   it('should build arborist tree with children sorted by order', () => {
     const nodes = {
       'parent': { id: 'parent', children: ['child1', 'child2'], type: 'GOAL', title: 'Parent' },
@@ -63,17 +67,17 @@ describe('treeLogic.buildArboristTree', () => {
     };
     const rootNodes = [nodes['parent']];
 
-    const tree = treeLogic.buildArboristTree(nodes, rootNodes);
+    const tree = treeDisplay.buildArboristTree(nodes, rootNodes);
 
     expect(tree[0].children[0].id).toBe('child2');
     expect(tree[0].children[1].id).toBe('child1');
   });
 });
 
-describe('treeLogic.normalizeGroups', () => {
+describe('treeGroups.normalizeGroups', () => {
   it('should normalize legacy string[] form into object form', () => {
     const groups = [['B', 'C'], ['D', 'E', 'F']];
-    const result = treeLogic.normalizeGroups(groups);
+    const result = treeGroups.normalizeGroups(groups);
     expect(result).toHaveLength(2);
     expect(result[0].children).toEqual(['B', 'C']);
     expect(result[1].children).toEqual(['D', 'E', 'F']);
@@ -83,7 +87,7 @@ describe('treeLogic.normalizeGroups', () => {
 
   it('should pass through object form unchanged (with defaults filled)', () => {
     const groups = [{ id: 'g1', name: '予算重視', color: '#4F8CFF', children: ['B', 'C'] }];
-    const result = treeLogic.normalizeGroups(groups);
+    const result = treeGroups.normalizeGroups(groups);
     expect(result[0].id).toBe('g1');
     expect(result[0].name).toBe('予算重視');
     expect(result[0].color).toBe('#4F8CFF');
@@ -91,7 +95,7 @@ describe('treeLogic.normalizeGroups', () => {
   });
 
   it('should return empty array for undefined groups', () => {
-    expect(treeLogic.normalizeGroups(undefined)).toEqual([]);
+    expect(treeGroups.normalizeGroups(undefined)).toEqual([]);
   });
 });
 
@@ -100,7 +104,7 @@ describe('treeLogic OR group operations', () => {
     const nodes = {
       'A': { id: 'A', relation: 'or', groups: [], children: ['B', 'C'] }
     };
-    const result = treeLogic.addGroup(nodes, 'A');
+    const result = treeGroups.addGroup(nodes, 'A');
     expect(result.A.groups).toHaveLength(1);
     expect(result.A.groups[0].name).toBe('グループ1');
     expect(result.A.groups[0].children).toEqual([]);
@@ -111,7 +115,7 @@ describe('treeLogic OR group operations', () => {
     const nodes = {
       'A': { id: 'A', relation: 'or', groups: [{ id: 'g1', name: 'G1', color: '#000', children: ['B'] }], children: ['B', 'C'] }
     };
-    const result = treeLogic.removeGroup(nodes, 'A', 'g1');
+    const result = treeGroups.removeGroup(nodes, 'A', 'g1');
     expect(result.A.groups).toHaveLength(0);
   });
 
@@ -127,7 +131,7 @@ describe('treeLogic OR group operations', () => {
       }
     };
     // Move B from g1 to g2
-    const result = treeLogic.assignChildToGroup(nodes, 'A', 'B', 'g2');
+    const result = treeGroups.assignChildToGroup(nodes, 'A', 'B', 'g2');
     const g1 = result.A.groups.find(g => g.id === 'g1');
     const g2 = result.A.groups.find(g => g.id === 'g2');
     expect(g1.children).not.toContain('B');
@@ -142,7 +146,7 @@ describe('treeLogic OR group operations', () => {
         children: ['B']
       }
     };
-    const result = treeLogic.assignChildToGroup(nodes, 'A', 'B', null);
+    const result = treeGroups.assignChildToGroup(nodes, 'A', 'B', null);
     expect(result.A.groups[0].children).not.toContain('B');
   });
 
@@ -150,7 +154,7 @@ describe('treeLogic OR group operations', () => {
     const nodes = {
       'A': { id: 'A', relation: 'or', groups: [{ id: 'g1', name: 'G1', color: '#000', children: [] }], children: [] }
     };
-    const result = treeLogic.updateGroup(nodes, 'A', 'g1', { name: '予算重視' });
+    const result = treeGroups.updateGroup(nodes, 'A', 'g1', { name: '予算重視' });
     expect(result.A.groups[0].name).toBe('予算重視');
   });
 
@@ -171,11 +175,11 @@ describe('treeLogic OR group operations', () => {
       'F': { id: 'F', parentId: 'A', status: 'TODO', progress: 0 },
     };
     // group1 (B+C) = 100, group2 (D+E+F) = 0 → max 100
-    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+    expect(treeProgress.calculateNodeProgress(nodes, 'A')).toBe(100);
   });
 });
 
-describe('treeLogic.calculateNodeProgress (OR relation)', () => {
+describe('treeProgress.calculateNodeProgress (OR relation)', () => {
   it('should be 100 when any single group is fully done', () => {
     const nodes = {
       'A': { id: 'A', relation: 'or', groups: [['B', 'C'], ['D']], children: ['B', 'C', 'D'], status: 'TODO', progress: 0 },
@@ -183,7 +187,7 @@ describe('treeLogic.calculateNodeProgress (OR relation)', () => {
       'C': { id: 'C', parentId: 'A', status: 'DONE', progress: 100 },
       'D': { id: 'D', parentId: 'A', status: 'TODO', progress: 0 },
     };
-    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+    expect(treeProgress.calculateNodeProgress(nodes, 'A')).toBe(100);
   });
 
   it('should use the max group progress when partially done', () => {
@@ -194,7 +198,7 @@ describe('treeLogic.calculateNodeProgress (OR relation)', () => {
       'D': { id: 'D', parentId: 'A', status: 'TODO', progress: 0 },
     };
     // group [B,C] = 50, group [D] = 0 → max 50
-    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(50);
+    expect(treeProgress.calculateNodeProgress(nodes, 'A')).toBe(50);
   });
 
   it('should treat empty groups as each child being a single-child group', () => {
@@ -204,7 +208,7 @@ describe('treeLogic.calculateNodeProgress (OR relation)', () => {
       'C': { id: 'C', parentId: 'A', status: 'TODO', progress: 0 },
     };
     // each child is its own group: [B]=100, [C]=0 → max 100
-    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+    expect(treeProgress.calculateNodeProgress(nodes, 'A')).toBe(100);
   });
 
   it('should treat uncovered children as single-child groups', () => {
@@ -215,7 +219,7 @@ describe('treeLogic.calculateNodeProgress (OR relation)', () => {
       'D': { id: 'D', parentId: 'A', status: 'DONE', progress: 100 },
     };
     // group [B,C]=0, uncovered [D]=100 → max 100
-    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+    expect(treeProgress.calculateNodeProgress(nodes, 'A')).toBe(100);
   });
 
   it('should keep AND relation as average of active children', () => {
@@ -224,7 +228,7 @@ describe('treeLogic.calculateNodeProgress (OR relation)', () => {
       'B': { id: 'B', parentId: 'A', status: 'DONE', progress: 100 },
       'C': { id: 'C', parentId: 'A', status: 'TODO', progress: 0 },
     };
-    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(50);
+    expect(treeProgress.calculateNodeProgress(nodes, 'A')).toBe(50);
   });
 
   it('should exclude hidden/deleted children from OR group progress', () => {
@@ -234,13 +238,13 @@ describe('treeLogic.calculateNodeProgress (OR relation)', () => {
       'C': { id: 'C', parentId: 'A', status: 'DONE', progress: 100, hidden: true },
     };
     // C is hidden → group [B] only → 100
-    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+    expect(treeProgress.calculateNodeProgress(nodes, 'A')).toBe(100);
   });
 });
 
 describe('treeLogic folder functions', () => {
   it('addFolder creates a FOLDER node with parentId null and folderId', () => {
-    const nodes = treeLogic.addFolder({}, null, 'My Folder');
+    const nodes = treeFolders.addFolder({}, null, 'My Folder');
     const folder = Object.values(nodes)[0];
     expect(folder.type).toBe('FOLDER');
     expect(folder.parentId).toBeNull();
@@ -250,26 +254,26 @@ describe('treeLogic folder functions', () => {
 
   it('addFolder supports nesting under a parent folder', () => {
     const parentId = 'parent-folder';
-    const nodes = treeLogic.addFolder({ [parentId]: { id: parentId, type: 'FOLDER' } }, parentId, 'Child Folder');
+    const nodes = treeFolders.addFolder({ [parentId]: { id: parentId, type: 'FOLDER' } }, parentId, 'Child Folder');
     const child = Object.values(nodes).find(n => n.title === 'Child Folder');
     expect(child.folderId).toBe(parentId);
   });
 
   it('assignTaskToFolder sets folderId on a task', () => {
     const nodes = { 'task': { id: 'task', type: 'ACTION', title: 'Task', folderId: null } };
-    const result = treeLogic.assignTaskToFolder(nodes, 'task', 'folder-1');
+    const result = treeFolders.assignTaskToFolder(nodes, 'task', 'folder-1');
     expect(result['task'].folderId).toBe('folder-1');
   });
 
   it('assignTaskToFolder with null reverts to unclassified', () => {
     const nodes = { 'task': { id: 'task', type: 'ACTION', title: 'Task', folderId: 'folder-1' } };
-    const result = treeLogic.assignTaskToFolder(nodes, 'task', null);
+    const result = treeFolders.assignTaskToFolder(nodes, 'task', null);
     expect(result['task'].folderId).toBeNull();
   });
 
   it('assignTaskToFolder ignores folders', () => {
     const nodes = { 'folder': { id: 'folder', type: 'FOLDER', title: 'Folder', folderId: null } };
-    const result = treeLogic.assignTaskToFolder(nodes, 'folder', 'some-other');
+    const result = treeFolders.assignTaskToFolder(nodes, 'folder', 'some-other');
     expect(result).toEqual(nodes);
   });
 
@@ -279,7 +283,7 @@ describe('treeLogic folder functions', () => {
       'task': { id: 'task', type: 'ACTION', title: 'Task', folderId: 'folder' },
       'other': { id: 'other', type: 'ACTION', title: 'Other', folderId: null },
     };
-    const result = treeLogic.deleteFolder(nodes, 'folder');
+    const result = treeFolders.deleteFolder(nodes, 'folder');
     expect(result['folder']).toBeUndefined();
     expect(result['task'].folderId).toBeNull();
     expect(result['other']).toBeDefined();
@@ -290,7 +294,7 @@ describe('treeLogic folder functions', () => {
       'parent': { id: 'parent', type: 'FOLDER', title: 'Parent', folderId: null },
       'child': { id: 'child', type: 'FOLDER', title: 'Child', folderId: 'parent' },
     };
-    const result = treeLogic.deleteFolder(nodes, 'parent');
+    const result = treeFolders.deleteFolder(nodes, 'parent');
     expect(result['parent']).toBeUndefined();
     expect(result['child']).toBeUndefined();
   });
@@ -301,7 +305,7 @@ describe('treeLogic folder functions', () => {
       'task1': { id: 'task1', type: 'ACTION', title: 'Task 1', folderId: 'folder', order: 0 },
       'task2': { id: 'task2', type: 'ACTION', title: 'Task 2', folderId: null, order: 0 },
     };
-    const tree = treeLogic.buildFolderTree(nodes, 'Uncategorized');
+    const tree = treeFolders.buildFolderTree(nodes, 'Uncategorized');
     const folderNode = tree.find(n => n.id === 'folder');
     expect(folderNode.children.length).toBe(1);
     expect(folderNode.children[0].id).toBe('task1');
@@ -316,11 +320,11 @@ describe('treeLogic folder functions', () => {
       'A': { id: 'A', children: ['B'], status: 'TODO', progress: 0 },
       'B': { id: 'B', parentId: 'A', status: 'DONE', progress: 100, folderId: 'some-folder' },
     };
-    expect(treeLogic.calculateNodeProgress(nodes, 'A')).toBe(100);
+    expect(treeProgress.calculateNodeProgress(nodes, 'A')).toBe(100);
   });
 });
 
-describe('treeLogic.searchNodes', () => {
+describe('treeDisplay.searchNodes', () => {
   const nodes = {
     'goal': { id: 'goal', type: 'GOAL', title: 'Learn React' },
     'strat': { id: 'strat', type: 'STRATEGY', title: 'React Hooks' },
@@ -332,35 +336,35 @@ describe('treeLogic.searchNodes', () => {
   };
 
   it('returns [] for empty/whitespace query', () => {
-    expect(treeLogic.searchNodes(nodes, '', { mode: 'logic' })).toEqual([]);
-    expect(treeLogic.searchNodes(nodes, '   ', { mode: 'folder' })).toEqual([]);
+    expect(treeDisplay.searchNodes(nodes, '', { mode: 'logic' })).toEqual([]);
+    expect(treeDisplay.searchNodes(nodes, '   ', { mode: 'folder' })).toEqual([]);
   });
 
   it('matches task titles case-insensitively in logic mode', () => {
-    const result = treeLogic.searchNodes(nodes, 'react', { mode: 'logic' });
+    const result = treeDisplay.searchNodes(nodes, 'react', { mode: 'logic' });
     const ids = result.map(r => r.id).sort();
     expect(ids).toEqual(['action', 'goal', 'strat']);
   });
 
   it('excludes folders in logic mode', () => {
-    const result = treeLogic.searchNodes(nodes, 'react', { mode: 'logic' });
+    const result = treeDisplay.searchNodes(nodes, 'react', { mode: 'logic' });
     expect(result.some(r => r.id === 'folder')).toBe(false);
   });
 
   it('includes folder names and task titles in folder mode', () => {
-    const result = treeLogic.searchNodes(nodes, 'react', { mode: 'folder' });
+    const result = treeDisplay.searchNodes(nodes, 'react', { mode: 'folder' });
     const ids = result.map(r => r.id).sort();
     expect(ids).toEqual(['action', 'folder', 'goal', 'strat']);
   });
 
   it('excludes hidden and deleted nodes', () => {
-    const result = treeLogic.searchNodes(nodes, 'react', { mode: 'folder' });
+    const result = treeDisplay.searchNodes(nodes, 'react', { mode: 'folder' });
     expect(result.some(r => r.id === 'hidden')).toBe(false);
     expect(result.some(r => r.id === 'deleted')).toBe(false);
   });
 
   it('excludes the virtual unclassified root in folder mode', () => {
-    const result = treeLogic.searchNodes(nodes, 'uncategorized', { mode: 'folder' });
+    const result = treeDisplay.searchNodes(nodes, 'uncategorized', { mode: 'folder' });
     expect(result.some(r => r.id === '__unclassified__')).toBe(false);
   });
 
@@ -368,13 +372,13 @@ describe('treeLogic.searchNodes', () => {
     const specialNodes = {
       'a': { id: 'a', type: 'ACTION', title: 'Fix (bug) and .edge' },
     };
-    const result = treeLogic.searchNodes(specialNodes, '(bug)', { mode: 'logic' });
+    const result = treeDisplay.searchNodes(specialNodes, '(bug)', { mode: 'logic' });
     expect(result.length).toBe(1);
     expect(result[0].id).toBe('a');
   });
 
   it('returns { id, title, type } objects', () => {
-    const result = treeLogic.searchNodes(nodes, 'learn', { mode: 'logic' });
+    const result = treeDisplay.searchNodes(nodes, 'learn', { mode: 'logic' });
     expect(result[0]).toEqual({ id: 'goal', title: 'Learn React', type: 'GOAL' });
   });
 });

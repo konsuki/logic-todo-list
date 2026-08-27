@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import * as treeLogic from '../lib/treeLogic';
+import { NODE_TYPES } from '../lib/treeConstants';
+import { addNode, addNodes, addTreeUnderNode, importTreeToNodes, reorderNode, outdentNode } from '../lib/treeNodes';
+import { toggleNodeStatus, isNodeLocked, checkCircularDependency, updateProgressRecursively } from '../lib/treeProgress';
+import { addGroup, removeGroup, assignChildToGroup, updateGroup } from '../lib/treeGroups';
+import { softDeleteNode, restoreNode, permanentDeleteNode, hideNode, unhideNode } from '../lib/treeLifecycle';
+import { addFolder, deleteFolder, assignTaskToFolder } from '../lib/treeFolders';
 
 const STORAGE_KEY = 'logido_tree_data';
 
@@ -109,39 +114,39 @@ export const useTodoTree = () => {
   }, [nodes]);
 
   const handleAddNode = useCallback((parentId, type, title, predefinedId) => {
-    setNodes(prev => treeLogic.addNode(prev, parentId, type, title, predefinedId));
+    setNodes(prev => addNode(prev, parentId, type, title, predefinedId));
   }, []);
 
   const handleAddNodes = useCallback((parentId, type, titles) => {
-    setNodes(prev => treeLogic.addNodes(prev, parentId, type, titles));
+    setNodes(prev => addNodes(prev, parentId, type, titles));
   }, []);
 
   const handleAddTreeUnderNode = useCallback((parentId, treeDataArray) => {
-    setNodes(prev => treeLogic.addTreeUnderNode(prev, parentId, treeDataArray));
+    setNodes(prev => addTreeUnderNode(prev, parentId, treeDataArray));
   }, []);
 
   const handleDeleteNode = useCallback((nodeId) => {
-    setNodes(prev => treeLogic.softDeleteNode(prev, nodeId));
+    setNodes(prev => softDeleteNode(prev, nodeId));
   }, []);
 
   const handleRestoreNode = useCallback((nodeId) => {
-    setNodes(prev => treeLogic.restoreNode(prev, nodeId));
+    setNodes(prev => restoreNode(prev, nodeId));
   }, []);
 
   const handlePermanentDeleteNode = useCallback((nodeId) => {
-    setNodes(prev => treeLogic.permanentDeleteNode(prev, nodeId));
+    setNodes(prev => permanentDeleteNode(prev, nodeId));
   }, []);
 
   const handleHideNode = useCallback((nodeId) => {
-    setNodes(prev => treeLogic.hideNode(prev, nodeId));
+    setNodes(prev => hideNode(prev, nodeId));
   }, []);
 
   const handleUnhideNode = useCallback((nodeId) => {
-    setNodes(prev => treeLogic.unhideNode(prev, nodeId));
+    setNodes(prev => unhideNode(prev, nodeId));
   }, []);
 
   const handleToggleStatus = useCallback((nodeId) => {
-    setNodes(prev => treeLogic.toggleNodeStatus(prev, nodeId));
+    setNodes(prev => toggleNodeStatus(prev, nodeId));
   }, []);
 
   const handleUpdateNode = useCallback((nodeId, updates) => {
@@ -178,19 +183,19 @@ export const useTodoTree = () => {
   }, []);
 
   const handleAddGroup = useCallback((nodeId) => {
-    setNodes(prev => treeLogic.addGroup(prev, nodeId));
+    setNodes(prev => addGroup(prev, nodeId));
   }, []);
 
   const handleRemoveGroup = useCallback((nodeId, groupId) => {
-    setNodes(prev => treeLogic.removeGroup(prev, nodeId, groupId));
+    setNodes(prev => removeGroup(prev, nodeId, groupId));
   }, []);
 
   const handleAssignChildToGroup = useCallback((nodeId, childId, groupId) => {
-    setNodes(prev => treeLogic.assignChildToGroup(prev, nodeId, childId, groupId));
+    setNodes(prev => assignChildToGroup(prev, nodeId, childId, groupId));
   }, []);
 
   const handleUpdateGroup = useCallback((nodeId, groupId, updates) => {
-    setNodes(prev => treeLogic.updateGroup(prev, nodeId, groupId, updates));
+    setNodes(prev => updateGroup(prev, nodeId, groupId, updates));
   }, []);
 
   const handleAddDependency = useCallback((nodeId, predecessorId) => {
@@ -199,7 +204,7 @@ export const useTodoTree = () => {
       if (!node || !prev[predecessorId]) return prev;
       
       // Check for circular dependency
-      if (treeLogic.checkCircularDependency(prev, nodeId, predecessorId)) {
+      if (checkCircularDependency(prev, nodeId, predecessorId)) {
         alert('Circular dependency detected!');
         return prev;
       }
@@ -235,11 +240,11 @@ export const useTodoTree = () => {
   }, []);
 
   const handleReorderNode = useCallback((nodeId, direction) => {
-    setNodes(prev => treeLogic.reorderNode(prev, nodeId, direction));
+    setNodes(prev => reorderNode(prev, nodeId, direction));
   }, []);
 
   const handleOutdentNode = useCallback((nodeId) => {
-    setNodes(prev => treeLogic.outdentNode(prev, nodeId));
+    setNodes(prev => outdentNode(prev, nodeId));
   }, []);
 
   const handleMoveNode = useCallback((dragIds, newParentId, index) => {
@@ -307,10 +312,10 @@ export const useTodoTree = () => {
 
       // 6. Recalculate progress for both old and new parents
       if (oldParentId) {
-        newNodes = treeLogic.updateProgressRecursively(newNodes, oldParentId);
+        newNodes = updateProgressRecursively(newNodes, oldParentId);
       }
       if (newParentId) {
-        newNodes = treeLogic.updateProgressRecursively(newNodes, newParentId);
+        newNodes = updateProgressRecursively(newNodes, newParentId);
       }
 
       return newNodes;
@@ -318,34 +323,34 @@ export const useTodoTree = () => {
   }, []);
 
   const handleImportNodes = useCallback((importedData) => {
-    setNodes(prev => treeLogic.importTreeToNodes(prev, importedData));
+    setNodes(prev => importTreeToNodes(prev, importedData));
   }, []);
 
   const handleAddFolder = useCallback((parentFolderId, title) => {
-    setNodes(prev => treeLogic.addFolder(prev, parentFolderId, title));
+    setNodes(prev => addFolder(prev, parentFolderId, title));
   }, []);
 
   const handleDeleteFolder = useCallback((folderId) => {
-    setNodes(prev => treeLogic.deleteFolder(prev, folderId));
+    setNodes(prev => deleteFolder(prev, folderId));
   }, []);
 
   const handleAssignTaskToFolder = useCallback((taskId, folderId) => {
-    setNodes(prev => treeLogic.assignTaskToFolder(prev, taskId, folderId));
+    setNodes(prev => assignTaskToFolder(prev, taskId, folderId));
   }, []);
 
   // Active root nodes (exclude soft-deleted, hidden, and folders)
   const rootNodes = Object.values(nodes).filter(node =>
-    !node.parentId && !node.deletedAt && !node.hidden && node.type !== treeLogic.NODE_TYPES.FOLDER
+    !node.parentId && !node.deletedAt && !node.hidden && node.type !== NODE_TYPES.FOLDER
   );
 
   // Folder nodes (independent of the causal tree)
   const folders = Object.values(nodes).filter(node =>
-    node.type === treeLogic.NODE_TYPES.FOLDER && !node.deletedAt && !node.hidden
+    node.type === NODE_TYPES.FOLDER && !node.deletedAt && !node.hidden
   );
 
   // Soft-deleted root nodes → shown in the trash view
   const trashedRootNodes = Object.values(nodes).filter(node =>
-    !node.parentId && !!node.deletedAt && node.type !== treeLogic.NODE_TYPES.FOLDER
+    !node.parentId && !!node.deletedAt && node.type !== NODE_TYPES.FOLDER
   );
 
   // Hidden root nodes → shown in the hidden tasks modal
@@ -353,7 +358,7 @@ export const useTodoTree = () => {
   const hiddenRootNodes = Object.values(nodes).filter(node =>
     !node.deletedAt &&
     !!node.hidden &&
-    node.type !== treeLogic.NODE_TYPES.FOLDER &&
+    node.type !== NODE_TYPES.FOLDER &&
     (!node.parentId || !nodes[node.parentId]?.hidden)
   );
 
@@ -387,7 +392,7 @@ export const useTodoTree = () => {
     addFolder: handleAddFolder,
     deleteFolder: handleDeleteFolder,
     assignTaskToFolder: handleAssignTaskToFolder,
-    isNodeLocked: (nodeId) => treeLogic.isNodeLocked(nodes, nodeId)
+    isNodeLocked: (nodeId) => isNodeLocked(nodes, nodeId)
   };
 };
 

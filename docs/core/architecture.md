@@ -84,14 +84,20 @@ src/features/todo/
 │   ├── useShortcuts.js
 │   └── useAI.js
 └── lib/                  # todo 機能の純粋ドメインロジック・定数（React 非依存）
-    ├── treeLogic.js
-    ├── importLogic.js
-    └── treeViewConstants.js
+    ├── treeConstants.js      # ノード種別・ステータス・グループ配色（定数）
+    ├── treeNodes.js          # ノード CRUD・構造
+    ├── treeProgress.js       # 進捗・状態・依存
+    ├── treeGroups.js         # OR グループ操作
+    ├── treeLifecycle.js      # 削除・非表示（ソフト削除/復元/完全削除）
+    ├── treeFolders.js        # フォルダ
+    ├── treeDisplay.js        # 検索・表示（フロー平坦化/arborist ツリー構築）
+    ├── importLogic.js        # インポート解析
+    └── treeViewConstants.js  # TreeView 表示専用の定数
 ```
 
 - 上記のサブ構成は原本の feature 例（[L40–54](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L40-L54)）に従う。
 - 原本の NOTE「全フォルダを毎回作る必要はない」（[L57](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L57)）に従い、本アプリは `assets`/`stores`/`types`/`utils` を feature 内に持たない。
-- **純粋ドメインロジック（treeLogic/importLogic）の配置**：原本に `domain/` や `logic/` というディレクトリは存在しない。feature 内の再利用ライブラリは原本では `utils`（[L54](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L54)）が担うが、本アプリでは「機能に閉じた純粋ロジック」を `lib/` と命名して明示する。実装計画時にこの命名が不適切と判断した場合は、**原本 L54 の `utils` 定義を確認した上で再決定する**こと。
+- **純粋ドメインロジック（treeConstants / treeNodes / treeProgress / treeGroups / treeLifecycle / treeFolders / treeDisplay / importLogic）の配置**：原本に `domain/` や `logic/` というディレクトリは存在しない。feature 内の再利用ライブラリは原本では `utils`（[L54](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L54)）が担うが、本アプリでは「機能に閉じた純粋ロジック」を `lib/` と命名して明示する。実装計画時にこの命名が不適切と判断した場合は、**原本 L54 の `utils` 定義を確認した上で再決定する**こと。
 
 ---
 
@@ -124,7 +130,7 @@ src/features/todo/
 
 - **コンポーネント**: パスカルケース（`TodoItem.jsx`）
 - **フック**: キャメルケース（`useTodoTree.js`）
-- **ロジック・ユーティリティ**: キャメルケース（`treeLogic.js`）
+- **ロジック・ユーティリティ**: キャメルケース（`treeConstants.js` / `treeNodes.js` / `treeProgress.js` / `treeGroups.js` / `treeLifecycle.js` / `treeFolders.js` / `treeDisplay.js` / `importLogic.js` / `treeViewConstants.js`）
 - **CSS クラス名**: ケバブケース（`todo-item-container`）
 
 ### 4.2 Barrel file の禁止

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock, Clock, EyeOff } from 'lucide-react';
-import * as treeLogic from '../../lib/treeLogic';
+import { isNodeLocked } from '../../lib/treeProgress';
 import { useSettings } from '../../../../lib/settings';
 import './TodoItem.css';
 
@@ -30,7 +30,7 @@ const TodoItem = ({
   const isSelected = selectedNodeId === node.id;
   
   // Dependency logic
-  const isLocked = treeLogic.isNodeLocked(allNodes, node.id);
+  const isLocked = isNodeLocked(allNodes, node.id);
   const unsatisfiedDeps = (node.dependsOn || [])
     .map(id => allNodes[id])
     .filter(n => n && n.status !== 'DONE');

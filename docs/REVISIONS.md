@@ -8,6 +8,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [97] 08-27: [treeLogic.js の責務ごとのサブモジュールへの分割](refactors/treeLogic-split/spec.md)
 - [96] 08-27: [TreeView のハードコードされた文字列・マジックナンバーの定数化](refactors/tree-view-constants/spec.md)
 - [95] 08-27: [setupTests.js の testing/ への移動](refactors/setup-tests-to-testing/spec.md)
 - [94] 08-27: [ドメインロジック・API の features/todo/lib/ と api/ への移動](refactors/features-todo-lib-api/spec.md)
