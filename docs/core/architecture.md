@@ -83,9 +83,10 @@ src/features/todo/
 │   ├── useTodoTree.js
 │   ├── useShortcuts.js
 │   └── useAI.js
-└── lib/                  # todo 機能の純粋ドメインロジック（React 非依存）
+└── lib/                  # todo 機能の純粋ドメインロジック・定数（React 非依存）
     ├── treeLogic.js
-    └── importLogic.js
+    ├── importLogic.js
+    └── treeViewConstants.js
 ```
 
 - 上記のサブ構成は原本の feature 例（[L40–54](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L40-L54)）に従う。

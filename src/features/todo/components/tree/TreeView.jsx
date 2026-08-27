@@ -2,22 +2,76 @@ import { useEffect, useRef, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import { Zap, Share2, GitCommit, MoveRight, MoveDown, Settings2, X } from 'lucide-react';
 import * as treeLogic from '../../lib/treeLogic';
+import {
+  LAYOUT_MODE,
+  FLOW_ORIENTATION,
+  LINK_TYPE,
+  VIRTUAL_ROOT_ID,
+  NODE_WIDTH,
+  NODE_HEIGHT,
+  TREE_NODE_SIZE,
+  FLOW_HORIZONTAL_STEP_RATIO,
+  FLOW_VERTICAL_STEP_RATIO,
+  ENCLOSURE_PADDING_BOTTOM,
+  ENCLOSURE_PADDING_RIGHT,
+  HIERARCHY_GAP_BOTTOM_RATIO,
+  HIERARCHY_GAP_TOP_RATIO,
+  ENCLOSURE_FILL_OPACITY_BASE,
+  ENCLOSURE_FILL_OPACITY_RANK_STEP,
+  NODE_RECT_OFFSET_X,
+  NODE_RECT_OFFSET_Y,
+  NODE_STEP_LABEL_OFFSET_X,
+  NODE_STEP_LABEL_OFFSET_Y,
+  NODE_TYPE_LABEL_DX,
+  NODE_TYPE_LABEL_DY,
+  NODE_TITLE_OFFSET_X,
+  NODE_TITLE_OFFSET_Y,
+  NODE_TITLE_WIDTH_PADDING,
+  NODE_TITLE_HEIGHT,
+  ENCLOSURE_LABEL_OFFSET_X,
+  ENCLOSURE_LABEL_OFFSET_Y,
+  ENCLOSURE_LABEL_MAX_LENGTH_HORIZONTAL,
+  ENCLOSURE_LABEL_MAX_LENGTH_VERTICAL,
+  LINK_ENDPOINT_OFFSET,
+  PROGRESS_MAX,
+  PROGRESS_INDICATOR_OFFSET_X,
+  PROGRESS_INDICATOR_OFFSET_Y,
+  PROGRESS_INDICATOR_HEIGHT,
+  PROGRESS_INDICATOR_RX,
+  MIN_ZOOM,
+  MAX_ZOOM,
+  INITIAL_ZOOM,
+  FLOW_VERTICAL_INITIAL_X_OFFSET,
+  INITIAL_X_DIVISOR,
+  INITIAL_Y_DIVISOR,
+  SPACING_V,
+  SPACING_H,
+  CONTAINER_H_PADDING,
+  CONTAINER_V_PADDING_TOP,
+  HIERARCHY_GAP,
+  SELECTOR,
+  CLASS_NAME,
+  KEY,
+  SVG_NAMESPACE_TAG,
+  THEME_FALLBACK,
+  EDIT_FOCUS_DELAY_MS,
+} from '../../lib/treeViewConstants';
 import './TreeView.css';
 
 const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, t, editingNodeId, setEditingNodeId }) => {
   const svgRef = useRef(null);
   const containerRef = useRef(null);
-  const [layoutMode, setLayoutMode] = useState('tree'); // 'tree' or 'flow'
-  const [flowOrientation, setFlowOrientation] = useState('horizontal'); // 'horizontal' or 'vertical'
+  const [layoutMode, setLayoutMode] = useState(LAYOUT_MODE.TREE);
+  const [flowOrientation, setFlowOrientation] = useState(FLOW_ORIENTATION.HORIZONTAL);
   const prevLayoutRef = useRef(layoutMode);
   const prevOrientationRef = useRef(flowOrientation);
-  
+
   // Confirmed Default Values from User
-  const [spacingH, setSpacingH] = useState(400);
-  const [spacingV, setSpacingV] = useState(144);
-  const [containerHPadding, setContainerHPadding] = useState(64);
-  const [containerVPaddingTop, setContainerVPaddingTop] = useState(80);
-  const [hierarchyGap, setHierarchyGap] = useState(16);
+  const [spacingH, setSpacingH] = useState(SPACING_H.default);
+  const [spacingV, setSpacingV] = useState(SPACING_V.default);
+  const [containerHPadding, setContainerHPadding] = useState(CONTAINER_H_PADDING.default);
+  const [containerVPaddingTop, setContainerVPaddingTop] = useState(CONTAINER_V_PADDING_TOP.default);
+  const [hierarchyGap, setHierarchyGap] = useState(HIERARCHY_GAP.default);
   const [showSettings, setShowSettings] = useState(false);
 
   const hierarchyData = useMemo(() => {
@@ -33,10 +87,10 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
           : []
       };
     };
-    
+
     // Create a virtual root to hold all actual root nodes
     return {
-      id: 'VIRTUAL_ROOT',
+      id: VIRTUAL_ROOT_ID,
       isVirtual: true,
       children: rootNodes.map(root => buildHierarchy(root.id)).filter(Boolean)
     };
@@ -57,22 +111,19 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
 
     const g = svg.append('g');
     const zoom = d3.zoom()
-      .scaleExtent([0.05, 4])
+      .scaleExtent([MIN_ZOOM, MAX_ZOOM])
       .on('zoom', (event) => {
         g.attr('transform', event.transform);
       });
 
     svg.call(zoom);
 
-    const nodeWidth = 260;
-    const nodeHeight = 65;
-
     let displayNodes = [];
     let displayLinks = [];
     let enclosures = [];
 
-    if (layoutMode === 'tree') {
-      const treeLayout = d3.tree().nodeSize([120, 380]);
+    if (layoutMode === LAYOUT_MODE.TREE) {
+      const treeLayout = d3.tree().nodeSize(TREE_NODE_SIZE);
       const root = d3.hierarchy(hierarchyData);
       treeLayout(root);
       displayNodes = root.descendants().filter(d => !d.data.isVirtual);
@@ -81,13 +132,13 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
         .map(l => ({
           source: l.source,
           target: l.target,
-          type: 'hierarchy'
+          type: LINK_TYPE.HIERARCHY
         }));
     } else {
       // Flow Layout: Dynamic Spacing Logic (Robust Sequence)
       const leafNodes = flattenedFlow.filter(n => !n.children || n.children.length === 0);
       const depthMap = new Map(flattenedFlow.map(n => [n.id, n.depth]));
-      
+
       const getAncestors = (nodeId) => {
         const path = [];
         let curr = nodes[nodeId];
@@ -100,9 +151,9 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
 
       const allParents = flattenedFlow.filter(n => n.children && n.children.length > 0);
       const maxDepth = d3.max(allParents, d => d.depth) || 0;
-      
+
       let currentOffset = 0;
-      const baseGap = (flowOrientation === 'horizontal' ? spacingH : spacingV) || 144;
+      const baseGap = (flowOrientation === FLOW_ORIENTATION.HORIZONTAL ? spacingH : spacingV) || SPACING_V.default;
       displayNodes = [];
 
       for (let i = 0; i < leafNodes.length; i++) {
@@ -118,31 +169,31 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
         endingAncestors.forEach(id => {
           const depth = depthMap.get(id) || 0;
           const rank = maxDepth - depth;
-          const vPaddingBottom = 24 + (rank * (hierarchyGap * 0.5));
-          const hPaddingRight = 32 + (rank * hierarchyGap);
-          currentOffset += (flowOrientation === 'horizontal' ? hPaddingRight : vPaddingBottom);
+          const vPaddingBottom = ENCLOSURE_PADDING_BOTTOM + (rank * (hierarchyGap * HIERARCHY_GAP_BOTTOM_RATIO));
+          const hPaddingRight = ENCLOSURE_PADDING_RIGHT + (rank * hierarchyGap);
+          currentOffset += (flowOrientation === FLOW_ORIENTATION.HORIZONTAL ? hPaddingRight : vPaddingBottom);
         });
 
         // Add padding for enclosures starting at this node
         startingAncestors.forEach(id => {
           const depth = depthMap.get(id) || 0;
           const rank = maxDepth - depth;
-          const vPaddingTop = containerVPaddingTop + (rank * (hierarchyGap * 2));
+          const vPaddingTop = containerVPaddingTop + (rank * (hierarchyGap * HIERARCHY_GAP_TOP_RATIO));
           const hPaddingLeft = containerHPadding + (rank * hierarchyGap);
-          currentOffset += (flowOrientation === 'horizontal' ? hPaddingLeft : vPaddingTop);
+          currentOffset += (flowOrientation === FLOW_ORIENTATION.HORIZONTAL ? hPaddingLeft : vPaddingTop);
         });
 
-        const pos = flowOrientation === 'horizontal' 
+        const pos = flowOrientation === FLOW_ORIENTATION.HORIZONTAL
           ? { x: currentOffset, y: 0 }
           : { x: 0, y: currentOffset };
-        
+
         displayNodes.push({ data: node, pos });
 
         // Advance offset for next node
-        const step = flowOrientation === 'horizontal' 
-          ? (nodeWidth + baseGap * 0.2) 
-          : (nodeHeight + baseGap * 0.4);
-        
+        const step = flowOrientation === FLOW_ORIENTATION.HORIZONTAL
+          ? (NODE_WIDTH + baseGap * FLOW_HORIZONTAL_STEP_RATIO)
+          : (NODE_HEIGHT + baseGap * FLOW_VERTICAL_STEP_RATIO);
+
         currentOffset += step;
       }
 
@@ -150,7 +201,7 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
         displayLinks.push({
           source: displayNodes[i],
           target: displayNodes[i+1],
-          type: 'flow'
+          type: LINK_TYPE.FLOW
         });
       }
 
@@ -176,15 +227,15 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
 
           const rank = maxDepth - parentNode.depth;
           const hPadding = containerHPadding + (rank * hierarchyGap);
-          const vPaddingTop = containerVPaddingTop + (rank * (hierarchyGap * 2));
-          const vPaddingBottom = 24 + (rank * (hierarchyGap * 0.5));
+          const vPaddingTop = containerVPaddingTop + (rank * (hierarchyGap * HIERARCHY_GAP_TOP_RATIO));
+          const vPaddingBottom = ENCLOSURE_PADDING_BOTTOM + (rank * (hierarchyGap * HIERARCHY_GAP_BOTTOM_RATIO));
 
           enclosures.push({
             id: parentNode.id,
             x: minX - hPadding,
             y: minY - vPaddingTop,
-            width: flowOrientation === 'horizontal' ? (maxX - minX) + nodeWidth + (hPadding * 2) : nodeWidth + (hPadding * 2),
-            height: flowOrientation === 'horizontal' ? nodeHeight + (vPaddingTop + vPaddingBottom) : (maxY - minY) + nodeHeight + (vPaddingTop + vPaddingBottom),
+            width: flowOrientation === FLOW_ORIENTATION.HORIZONTAL ? (maxX - minX) + NODE_WIDTH + (hPadding * 2) : NODE_WIDTH + (hPadding * 2),
+            height: flowOrientation === FLOW_ORIENTATION.HORIZONTAL ? NODE_HEIGHT + (vPaddingTop + vPaddingBottom) : (maxY - minY) + NODE_HEIGHT + (vPaddingTop + vPaddingBottom),
             progress: parentNode.progress,
             title: parentNode.title,
             depth: parentNode.depth,
@@ -197,75 +248,75 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
     }
 
     // Enclosures
-    if (layoutMode === 'flow') {
-      const enclosureGroups = g.selectAll('.enclosure-group')
+    if (layoutMode === LAYOUT_MODE.FLOW) {
+      const enclosureGroups = g.selectAll(SELECTOR.ENCLOSURE_GROUP)
         .data(enclosures)
         .enter()
         .append('g')
-        .attr('class', 'enclosure-group');
+        .attr('class', CLASS_NAME.ENCLOSURE_GROUP);
 
       enclosureGroups.append('rect')
-        .attr('class', 'parent-enclosure')
+        .attr('class', CLASS_NAME.PARENT_ENCLOSURE)
         .attr('x', d => d.x)
         .attr('y', d => d.y)
         .attr('width', d => d.width)
         .attr('height', d => d.height)
-        .style('rx', 'var(--enclosure-radius, 25px)')
+        .style('rx', THEME_FALLBACK.ENCLOSURE_RADIUS)
         .style('fill', () => `var(--border-color)`)
-        .style('opacity', d => 0.2 + (d.rank * 0.05));
+        .style('opacity', d => ENCLOSURE_FILL_OPACITY_BASE + (d.rank * ENCLOSURE_FILL_OPACITY_RANK_STEP));
 
       enclosureGroups.append('rect')
-        .attr('class', 'enclosure-progress-border')
+        .attr('class', CLASS_NAME.ENCLOSURE_PROGRESS_BORDER)
         .attr('x', d => d.x)
         .attr('y', d => d.y)
         .attr('width', d => d.width)
         .attr('height', d => d.height)
-        .style('rx', 'var(--enclosure-radius, 25px)')
+        .style('rx', THEME_FALLBACK.ENCLOSURE_RADIUS)
         .style('stroke-dasharray', d => {
           const perimeter = 2 * (d.width + d.height);
-          return `${(d.progress / 100) * perimeter}, ${perimeter}`;
+          return `${(d.progress / PROGRESS_MAX) * perimeter}, ${perimeter}`;
         });
-        
+
       enclosureGroups.append('text')
-        .attr('x', d => d.x + 20)
-        .attr('y', d => d.y + 25)
-        .attr('class', 'enclosure-label')
+        .attr('x', d => d.x + ENCLOSURE_LABEL_OFFSET_X)
+        .attr('y', d => d.y + ENCLOSURE_LABEL_OFFSET_Y)
+        .attr('class', CLASS_NAME.ENCLOSURE_LABEL)
         .text(d => {
-          const maxLength = flowOrientation === 'horizontal' ? 50 : 35;
+          const maxLength = flowOrientation === FLOW_ORIENTATION.HORIZONTAL ? ENCLOSURE_LABEL_MAX_LENGTH_HORIZONTAL : ENCLOSURE_LABEL_MAX_LENGTH_VERTICAL;
           return d.title.length > maxLength ? d.title.substring(0, maxLength) + '...' : d.title.toUpperCase();
         });
     }
 
     // Links
-    const allLinks = g.selectAll('path.link-path')
+    const allLinks = g.selectAll(SELECTOR.LINK_PATH)
       .data(displayLinks)
       .enter()
       .append('path')
-      .attr('class', d => `link-path ${d.type === 'flow' ? 'flow-link' : 'tree-link'}`)
+      .attr('class', d => `${CLASS_NAME.LINK_PATH} ${d.type === LINK_TYPE.FLOW ? CLASS_NAME.FLOW_LINK : CLASS_NAME.TREE_LINK}`)
       .attr('d', d => {
-        if (layoutMode === 'tree') {
+        if (layoutMode === LAYOUT_MODE.TREE) {
           return d3.linkHorizontal()
-            .source(l => [l.source.y + (nodeWidth - 10), l.source.x])
-            .target(l => [l.target.y - 10, l.target.x])(d);
+            .source(l => [l.source.y + (NODE_WIDTH - LINK_ENDPOINT_OFFSET), l.source.x])
+            .target(l => [l.target.y - LINK_ENDPOINT_OFFSET, l.target.x])(d);
         } else {
           const s = d.source.pos;
           const t = d.target.pos;
-          if (flowOrientation === 'horizontal') {
-            return `M${s.x + (nodeWidth - 10)},${s.y} L${t.x - 10},${t.y}`;
+          if (flowOrientation === FLOW_ORIENTATION.HORIZONTAL) {
+            return `M${s.x + (NODE_WIDTH - LINK_ENDPOINT_OFFSET)},${s.y} L${t.x - LINK_ENDPOINT_OFFSET},${t.y}`;
           } else {
-            return `M${s.x + (nodeWidth / 2)},${s.y + (nodeHeight / 2)} L${t.x + (nodeWidth / 2)},${t.y - (nodeHeight / 2)}`;
+            return `M${s.x + (NODE_WIDTH / 2)},${s.y + (NODE_HEIGHT / 2)} L${t.x + (NODE_WIDTH / 2)},${t.y - (NODE_HEIGHT / 2)}`;
           }
         }
       });
 
     // Nodes
-    const nodeGroups = g.selectAll('.tree-node')
+    const nodeGroups = g.selectAll(SELECTOR.TREE_NODE)
       .data(displayNodes)
       .enter()
       .append('g')
-      .attr('class', d => `tree-node ${d.data.id === selectedNodeId ? 'is-selected' : ''}`)
+      .attr('class', d => `${CLASS_NAME.TREE_NODE} ${d.data.id === selectedNodeId ? CLASS_NAME.IS_SELECTED : ''}`)
       .attr('transform', d => {
-        if (layoutMode === 'tree') return `translate(${d.y},${d.x})`;
+        if (layoutMode === LAYOUT_MODE.TREE) return `translate(${d.y},${d.x})`;
         return `translate(${d.pos.x},${d.pos.y})`;
       })
       .on('click', (event, d) => {
@@ -273,68 +324,68 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
       })
       .on('mouseenter', (event, d) => {
         allLinks.filter(l => l.source.data.id === d.data.id || l.target.data.id === d.data.id)
-          .classed('is-highlighted', true);
+          .classed(CLASS_NAME.IS_HIGHLIGHTED, true);
       })
       .on('mouseleave', () => {
-        allLinks.classed('is-highlighted', false);
+        allLinks.classed(CLASS_NAME.IS_HIGHLIGHTED, false);
       });
 
     nodeGroups.append('rect')
-      .attr('x', -10)
-      .attr('y', -30)
-      .attr('width', nodeWidth)
-      .attr('height', nodeHeight)
-      .style('rx', 'var(--node-radius, 10px)')
-      .attr('class', d => `node-rect ${d.data.type.toLowerCase()}`);
+      .attr('x', NODE_RECT_OFFSET_X)
+      .attr('y', NODE_RECT_OFFSET_Y)
+      .attr('width', NODE_WIDTH)
+      .attr('height', NODE_HEIGHT)
+      .style('rx', THEME_FALLBACK.NODE_RADIUS)
+      .attr('class', d => `${CLASS_NAME.NODE_RECT} ${d.data.type.toLowerCase()}`);
 
     nodeGroups.append('text')
-      .attr('x', -5)
-      .attr('y', -35)
-      .attr('class', 'node-step-label')
+      .attr('x', NODE_STEP_LABEL_OFFSET_X)
+      .attr('y', NODE_STEP_LABEL_OFFSET_Y)
+      .attr('class', CLASS_NAME.NODE_STEP_LABEL)
       .text((d, i) => {
-        if (layoutMode === 'flow') return `Step ${i + 1}`;
+        if (layoutMode === LAYOUT_MODE.FLOW) return `Step ${i + 1}`;
         const siblings = d.parent?.children || [];
         const index = siblings.findIndex(c => c.data.id === d.data.id);
         return index !== -1 ? `Step ${index + 1}` : '';
       });
 
     nodeGroups.append('rect')
-      .attr('x', -10)
-      .attr('y', 32)
-      .attr('width', d => (d.data.progress / 100) * nodeWidth)
-      .attr('height', 4)
-      .attr('rx', 2)
-      .attr('class', 'node-progress-indicator')
-      .attr('fill', d => d.data.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)');
+      .attr('x', PROGRESS_INDICATOR_OFFSET_X)
+      .attr('y', PROGRESS_INDICATOR_OFFSET_Y)
+      .attr('width', d => (d.data.progress / PROGRESS_MAX) * NODE_WIDTH)
+      .attr('height', PROGRESS_INDICATOR_HEIGHT)
+      .attr('rx', PROGRESS_INDICATOR_RX)
+      .attr('class', CLASS_NAME.NODE_PROGRESS_INDICATOR)
+      .attr('fill', d => d.data.progress === PROGRESS_MAX ? 'var(--success-color)' : 'var(--primary-color)');
 
     nodeGroups.append('text')
-      .attr('dy', -10)
-      .attr('dx', 10)
-      .attr('class', 'node-type-label')
+      .attr('dy', NODE_TYPE_LABEL_DY)
+      .attr('dx', NODE_TYPE_LABEL_DX)
+      .attr('class', CLASS_NAME.NODE_TYPE_LABEL)
       .text(d => d.data.type);
 
     const titleContainer = nodeGroups.append('foreignObject')
-      .attr('x', 0)
-      .attr('y', -5)
-      .attr('width', nodeWidth - 20)
-      .attr('height', 35)
-      .attr('class', 'node-title-foreign-object');
+      .attr('x', NODE_TITLE_OFFSET_X)
+      .attr('y', NODE_TITLE_OFFSET_Y)
+      .attr('width', NODE_WIDTH - NODE_TITLE_WIDTH_PADDING)
+      .attr('height', NODE_TITLE_HEIGHT)
+      .attr('class', CLASS_NAME.NODE_TITLE_FOREIGN_OBJECT);
 
     titleContainer.each(function(d) {
       const container = d3.select(this);
       const isEditing = d.data.id === editingNodeId;
 
       if (isEditing) {
-        const input = container.append('xhtml:input')
-          .attr('class', 'node-edit-input')
+        const input = container.append(SVG_NAMESPACE_TAG.INPUT)
+          .attr('class', CLASS_NAME.NODE_EDIT_INPUT)
           .attr('value', d.data.title)
           .style('width', '100%')
           .style('height', '100%')
           .on('keydown', (event) => {
-            if (event.key === 'Enter') {
+            if (event.key === KEY.ENTER) {
               updateNode(d.data.id, { title: event.target.value });
               setEditingNodeId(null);
-            } else if (event.key === 'Escape') {
+            } else if (event.key === KEY.ESCAPE) {
               setEditingNodeId(null);
             }
           })
@@ -343,12 +394,12 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
             setEditingNodeId(null);
           })
           .on('click', (event) => event.stopPropagation());
-        
+
         // Auto-focus the input
-        setTimeout(() => input.node()?.focus(), 10);
+        setTimeout(() => input.node()?.focus(), EDIT_FOCUS_DELAY_MS);
       } else {
-        container.append('xhtml:div')
-          .attr('class', 'node-title-scroll-container')
+        container.append(SVG_NAMESPACE_TAG.DIV)
+          .attr('class', CLASS_NAME.NODE_TITLE_SCROLL_CONTAINER)
           .attr('title', d.data.title)
           .style('width', '100%')
           .style('height', '100%')
@@ -363,16 +414,16 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
     // Persist or initialize transform
     const currentTransform = d3.zoomTransform(svgRef.current);
     const layoutChanged = prevLayoutRef.current !== layoutMode || prevOrientationRef.current !== flowOrientation;
-    
+
     // Update refs for next render
     prevLayoutRef.current = layoutMode;
     prevOrientationRef.current = flowOrientation;
-    
+
     // Reset to initial if first render, or if the layout mode/orientation just changed
     if ((currentTransform.k === 1 && currentTransform.x === 0 && currentTransform.y === 0) || layoutChanged) {
       const initialTransform = d3.zoomIdentity
-        .translate(flowOrientation === 'vertical' && layoutMode === 'flow' ? width / 2 - 130 : width / 4, height / 4)
-        .scale(0.8);
+        .translate(flowOrientation === FLOW_ORIENTATION.VERTICAL && layoutMode === LAYOUT_MODE.FLOW ? width / 2 - FLOW_VERTICAL_INITIAL_X_OFFSET : width / INITIAL_X_DIVISOR, height / INITIAL_Y_DIVISOR)
+        .scale(INITIAL_ZOOM);
       svg.call(zoom.transform, initialTransform);
     } else {
       // Re-apply the existing transform (maintains drag/zoom state on node click)
@@ -387,21 +438,21 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
     <div className="tree-view-container" ref={containerRef}>
       <div className="tree-controls">
         <div className="control-group-glass">
-          <button className={`mode-btn ${layoutMode === 'tree' ? 'active' : ''}`} onClick={() => setLayoutMode('tree')}>
-            <Share2 size={14} /> Tree
+          <button className={`mode-btn ${layoutMode === LAYOUT_MODE.TREE ? 'active' : ''}`} onClick={() => setLayoutMode(LAYOUT_MODE.TREE)}>
+            <Share2 size={14} /> {t('tree.modeTree')}
           </button>
-          <button className={`mode-btn ${layoutMode === 'flow' ? 'active' : ''}`} onClick={() => setLayoutMode('flow')}>
-            <GitCommit size={14} /> Flow
+          <button className={`mode-btn ${layoutMode === LAYOUT_MODE.FLOW ? 'active' : ''}`} onClick={() => setLayoutMode(LAYOUT_MODE.FLOW)}>
+            <GitCommit size={14} /> {t('tree.modeFlow')}
           </button>
         </div>
 
-        <div className={`orientation-controls-wrapper ${layoutMode === 'flow' ? 'is-visible' : ''}`}>
+        <div className={`orientation-controls-wrapper ${layoutMode === LAYOUT_MODE.FLOW ? 'is-visible' : ''}`}>
           <div className="control-group-glass">
-            <button className={`mode-btn ${flowOrientation === 'horizontal' ? 'active' : ''}`} onClick={() => setFlowOrientation('horizontal')}>
-              <MoveRight size={14} /> Horizontal
+            <button className={`mode-btn ${flowOrientation === FLOW_ORIENTATION.HORIZONTAL ? 'active' : ''}`} onClick={() => setFlowOrientation(FLOW_ORIENTATION.HORIZONTAL)}>
+              <MoveRight size={14} /> {t('tree.orientationHorizontal')}
             </button>
-            <button className={`mode-btn ${flowOrientation === 'vertical' ? 'active' : ''}`} onClick={() => setFlowOrientation('vertical')}>
-              <MoveDown size={14} /> Vertical
+            <button className={`mode-btn ${flowOrientation === FLOW_ORIENTATION.VERTICAL ? 'active' : ''}`} onClick={() => setFlowOrientation(FLOW_ORIENTATION.VERTICAL)}>
+              <MoveDown size={14} /> {t('tree.orientationVertical')}
             </button>
           </div>
         </div>
@@ -421,24 +472,24 @@ const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, 
             </div>
             <div className="tree-settings-content">
               <div className="tree-setting-item">
-                <label>Spacing (V): {spacingV}</label>
-                <input type="range" min="80" max="400" step="8" value={spacingV} onChange={(e) => setSpacingV(parseInt(e.target.value))} />
+                <label>{t('tree.spacingV')}: {spacingV}</label>
+                <input type="range" min={SPACING_V.min} max={SPACING_V.max} step={SPACING_V.step} value={spacingV} onChange={(e) => setSpacingV(parseInt(e.target.value))} />
               </div>
               <div className="tree-setting-item">
-                <label>Spacing (H): {spacingH}</label>
-                <input type="range" min="200" max="800" step="8" value={spacingH} onChange={(e) => setSpacingH(parseInt(e.target.value))} />
+                <label>{t('tree.spacingH')}: {spacingH}</label>
+                <input type="range" min={SPACING_H.min} max={SPACING_H.max} step={SPACING_H.step} value={spacingH} onChange={(e) => setSpacingH(parseInt(e.target.value))} />
               </div>
               <div className="tree-setting-item">
-                <label>Container Width: {containerHPadding}</label>
-                <input type="range" min="16" max="160" step="8" value={containerHPadding} onChange={(e) => setContainerHPadding(parseInt(e.target.value))} />
+                <label>{t('tree.containerWidth')}: {containerHPadding}</label>
+                <input type="range" min={CONTAINER_H_PADDING.min} max={CONTAINER_H_PADDING.max} step={CONTAINER_H_PADDING.step} value={containerHPadding} onChange={(e) => setContainerHPadding(parseInt(e.target.value))} />
               </div>
               <div className="tree-setting-item">
-                <label>Label Gap (V): {containerVPaddingTop}</label>
-                <input type="range" min="40" max="200" step="8" value={containerVPaddingTop} onChange={(e) => setContainerVPaddingTop(parseInt(e.target.value))} />
+                <label>{t('tree.labelGapV')}: {containerVPaddingTop}</label>
+                <input type="range" min={CONTAINER_V_PADDING_TOP.min} max={CONTAINER_V_PADDING_TOP.max} step={CONTAINER_V_PADDING_TOP.step} value={containerVPaddingTop} onChange={(e) => setContainerVPaddingTop(parseInt(e.target.value))} />
               </div>
               <div className="tree-setting-item">
-                <label>Hierarchy Gap: {hierarchyGap}</label>
-                <input type="range" min="0" max="64" step="8" value={hierarchyGap} onChange={(e) => setHierarchyGap(parseInt(e.target.value))} />
+                <label>{t('tree.hierarchyGap')}: {hierarchyGap}</label>
+                <input type="range" min={HIERARCHY_GAP.min} max={HIERARCHY_GAP.max} step={HIERARCHY_GAP.step} value={hierarchyGap} onChange={(e) => setHierarchyGap(parseInt(e.target.value))} />
               </div>
             </div>
           </div>
