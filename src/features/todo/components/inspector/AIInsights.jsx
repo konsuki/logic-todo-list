@@ -1,5 +1,5 @@
 import { Brain, Loader2 } from 'lucide-react';
-import { useAI } from '../../../hooks/useAI';
+import { useAI } from '../../../../hooks/useAI';
 import './AIInsights.css';
 
 const AIInsights = ({ node, nodes, addTreeUnderNode, t }) => {

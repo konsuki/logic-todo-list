@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, FileText, AlertCircle, Check } from 'lucide-react';
-import { parseImportData } from '../../../logic/importLogic';
+import { parseImportData } from '../../../../logic/importLogic';
 import './ImportModal.css';
 
 const ImportModal = ({ isOpen, onClose, onImport, t }) => {

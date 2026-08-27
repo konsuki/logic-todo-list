@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Folder } from 'lucide-react';
-import * as treeLogic from '../../../logic/treeLogic';
+import * as treeLogic from '../../../../logic/treeLogic';
 import './SearchBar.css';
 
 /**
