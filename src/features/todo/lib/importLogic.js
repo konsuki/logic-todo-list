@@ -1,4 +1,4 @@
-import { NODE_TYPES } from './treeLogic';
+import { NODE_TYPES } from './treeConstants';
 
 /**
  * Main entry point for parsing import data.

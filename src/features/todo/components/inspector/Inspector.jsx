@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, GripVertical, Folder, FolderPlus } from 'lucide-react';
-import * as treeLogic from '../../lib/treeLogic';
+import { normalizeGroups, calculateGroupProgress } from '../../lib/treeGroups';
 import { useSettings } from '../../../../lib/settings';
 import AIInsights from './AIInsights';
 import InspectorTextarea from './InspectorTextarea';
@@ -87,7 +87,7 @@ const Inspector = ({
 
   // OR group editing: normalized group objects (object + legacy form compatible)
   const normalizedGroups = node.relation === 'or'
-    ? treeLogic.normalizeGroups(node.groups)
+    ? normalizeGroups(node.groups)
     : [];
   const groupIdOfChild = (childId) => {
     const group = normalizedGroups.find(g => g.children.includes(childId));
@@ -409,7 +409,7 @@ const Inspector = ({
 
                 {normalizedGroups.map(group => {
                   const isCollapsed = collapsedGroups.has(group.id);
-                  const groupProgress = treeLogic.calculateGroupProgress(nodes, group);
+                  const groupProgress = calculateGroupProgress(nodes, group);
                   const isEditingName = editingGroupId === group.id;
                   return (
                     <div key={group.id} className="group-card" style={{ borderLeftColor: group.color }}>

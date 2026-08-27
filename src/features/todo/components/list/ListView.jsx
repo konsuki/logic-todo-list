@@ -1,8 +1,9 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Tree } from 'react-arborist';
 import { Target, Plus, Filter, ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff, Folder, FolderPlus } from 'lucide-react';
-import { NODE_TYPES } from '../../lib/treeLogic';
-import * as treeLogic from '../../lib/treeLogic';
+import { NODE_TYPES } from '../../lib/treeConstants';
+import { buildFolderTree } from '../../lib/treeFolders';
+import { buildArboristTree } from '../../lib/treeDisplay';
 import { useSettings } from '../../../../lib/settings';
 import './ListView.css';
 import './TodoItem.css';
@@ -446,7 +447,7 @@ const ListView = ({
   const arboristData = useMemo(() => {
     // Folder mode: build a hierarchy from folderId, independent of causal parentId.
     if (displayMode === 'folder') {
-      return treeLogic.buildFolderTree(nodes, t('list.uncategorized'));
+      return buildFolderTree(nodes, t('list.uncategorized'));
     }
 
     const filteredNodes = phaseFilter === 'ALL' ? nodes : (() => {
@@ -487,7 +488,7 @@ const ListView = ({
     })();
 
     const filteredRoots = Object.values(filteredNodes).filter(n => !n.parentId && !n.deletedAt && !n.hidden && n.type !== NODE_TYPES.FOLDER);
-    return treeLogic.buildArboristTree(filteredNodes, filteredRoots);
+    return buildArboristTree(filteredNodes, filteredRoots);
   }, [nodes, rootNodes, phaseFilter, displayMode, t]);
 
   if (rootNodes.length === 0) {
