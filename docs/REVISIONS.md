@@ -8,6 +8,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [95] 08-27: [setupTests.js の testing/ への移動](refactors/setup-tests-to-testing/spec.md)
 - [94] 08-27: [ドメインロジック・API の features/todo/lib/ と api/ への移動](refactors/features-todo-lib-api/spec.md)
 - [93] 08-27: [機能フックの features/todo/hooks/ への移動（＋ useI18n は共有 hooks/ へ）](refactors/features-todo-hooks/spec.md)
 - [92] 08-27: [機能 UI コンポーネントの features/todo/components/ への移動](refactors/features-todo-components/spec.md)
