@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Tree } from 'react-arborist';
 import { Target, Plus, Filter, EyeOff, Folder, FolderPlus } from 'lucide-react';
-import { NODE_TYPES } from '../../lib/treeConstants';
+import { NODE_TYPES, PHASES, DISPLAY_MODE } from '../../lib/treeConstants';
 import { buildFolderTree } from '../../lib/treeFolders';
 import { buildArboristTree } from '../../lib/treeDisplay';
 import { useSettings } from '../../../../lib/settings';
@@ -34,7 +34,7 @@ const ListView = ({
   const { settings } = useSettings();
   const [phaseFilter, setPhaseFilter] = useState(() => {
     const saved = localStorage.getItem('logido_list_phase_filter');
-    return saved || 'ALL';
+    return saved || PHASES.ALL;
   });
 
   useEffect(() => {
@@ -127,11 +127,11 @@ const ListView = ({
   // Build arborist tree data
   const arboristData = useMemo(() => {
     // Folder mode: build a hierarchy from folderId, independent of causal parentId.
-    if (displayMode === 'folder') {
+    if (displayMode === DISPLAY_MODE.FOLDER) {
       return buildFolderTree(nodes, t('list.uncategorized'));
     }
 
-    const filteredNodes = phaseFilter === 'ALL' ? nodes : (() => {
+    const filteredNodes = phaseFilter === PHASES.ALL ? nodes : (() => {
       // Filter logic: keep nodes matching phase and their ancestors
       const visibleSet = new Set();
       const checkVisibility = (nodeId, forceVisible = false) => {
@@ -198,23 +198,23 @@ const ListView = ({
           {settings.useFolderView !== false && (
             <div className="display-mode-toggle">
               <button
-                className={`display-mode-btn ${displayMode === 'logic' ? 'active' : ''}`}
-                onClick={() => setDisplayMode('logic')}
+                className={`display-mode-btn ${displayMode === DISPLAY_MODE.LOGIC ? 'active' : ''}`}
+                onClick={() => setDisplayMode(DISPLAY_MODE.LOGIC)}
               >
                 {t('list.logic_tree_mode')}
               </button>
               <button
-                className={`display-mode-btn ${displayMode === 'folder' ? 'active' : ''}`}
-                onClick={() => setDisplayMode('folder')}
+                className={`display-mode-btn ${displayMode === DISPLAY_MODE.FOLDER ? 'active' : ''}`}
+                onClick={() => setDisplayMode(DISPLAY_MODE.FOLDER)}
               >
                 <Folder size={14} style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
                 {t('list.folder_mode')}
               </button>
             </div>
           )}
-          {displayMode === 'logic' && (
+          {displayMode === DISPLAY_MODE.LOGIC && (
             <div className="phase-filter-bar">
-              {['ALL', 'PREP', 'EXEC', 'REVIEW'].map(p => (
+              {[PHASES.ALL, PHASES.PREP, PHASES.EXEC, PHASES.REVIEW].map(p => (
                 <button
                   key={p}
                   className={`phase-filter-btn ${phaseFilter === p ? 'active' : ''}`}
@@ -227,7 +227,7 @@ const ListView = ({
           )}
         </div>
         <div className="header-right">
-          {displayMode === 'folder' && (
+          {displayMode === DISPLAY_MODE.FOLDER && (
             <button
               className="add-goal-btn"
               onClick={() => {
@@ -270,10 +270,10 @@ const ListView = ({
           <Tree
             ref={treeRef}
             data={arboristData}
-            onMove={displayMode === 'logic'
+            onMove={displayMode === DISPLAY_MODE.LOGIC
               ? ({ dragIds, parentId, index }) => moveNode(dragIds, parentId, index)
               : null}
-            disableDrag={displayMode === 'folder'}
+            disableDrag={displayMode === DISPLAY_MODE.FOLDER}
             openByDefault={true}
             initialOpenState={openState}
             onToggle={(id) => {

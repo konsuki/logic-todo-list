@@ -1,6 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff, Folder, FolderPlus, Plus } from 'lucide-react';
 import { useSettings } from '../../../../lib/settings';
+import { NODE_TYPES, NODE_STATUS } from '../../lib/treeConstants';
+import { DUE_SOON_THRESHOLD_MS, DESCRIPTION_PREVIEW_MAX_LENGTH } from '../../lib/treeViewConstants';
 import './TodoItem.css';
 
 /**
@@ -15,22 +17,22 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
   const [isAutoEdit, setIsAutoEdit] = useState(() => tree.props.editingNodeId === data.id);
   const inputRef = useRef(null);
 
-  const isDone = data.status === 'DONE';
-  const isFolder = data.type === 'FOLDER';
+  const isDone = data.status === NODE_STATUS.DONE;
+  const isFolder = data.type === NODE_TYPES.FOLDER;
   const isLocked = (data.dependsOn || []).some(depId => {
     const dep = tree.props.allNodes?.[depId];
-    return !dep || dep.status !== 'DONE';
+    return !dep || dep.status !== NODE_STATUS.DONE;
   });
 
   const childrenCount = data.children ? data.children.length : 0;
-  const showMeceWarning = data.type === 'STRATEGY' && childrenCount === 1;
+  const showMeceWarning = data.type === NODE_TYPES.STRATEGY && childrenCount === 1;
 
   // Timeline logic
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dueDate = data.dueDate ? new Date(data.dueDate) : null;
   const isOverdue = dueDate && dueDate < today && !isDone;
-  const isDueSoon = dueDate && !isOverdue && !isDone && (dueDate.getTime() - today.getTime()) <= (3 * 24 * 60 * 60 * 1000);
+  const isDueSoon = dueDate && !isOverdue && !isDone && (dueDate.getTime() - today.getTime()) <= DUE_SOON_THRESHOLD_MS;
 
   // Step number
   const stepNumber = useMemo(() => {
@@ -268,7 +270,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
 
             {data.description && settings.showDescriptionInList && (
               <div className="node-description-preview" title={data.description}>
-                {data.description.length > 50 ? data.description.substring(0, 50) + '...' : data.description}
+                {data.description.length > DESCRIPTION_PREVIEW_MAX_LENGTH ? data.description.substring(0, DESCRIPTION_PREVIEW_MAX_LENGTH) + '...' : data.description}
               </div>
             )}
           </div>

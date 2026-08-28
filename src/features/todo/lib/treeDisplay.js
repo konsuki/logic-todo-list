@@ -34,7 +34,7 @@ export const getFlattenedFlow = (nodes, rootNodes) => {
     }
 
     // Push node with extra metadata
-    const isMilestone = node.type === 'GOAL' || node.type === 'STRATEGY';
+    const isMilestone = node.type === NODE_TYPES.GOAL || node.type === NODE_TYPES.STRATEGY;
     result.push({
       ...node,
       depth,

@@ -2,6 +2,7 @@ import { useState, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Folder } from 'lucide-react';
 import { searchNodes } from '../../lib/treeDisplay';
+import { NODE_TYPES } from '../../lib/treeConstants';
 import './SearchBar.css';
 
 /**
@@ -101,7 +102,7 @@ const SearchBar = ({ nodes, displayMode, treeRef, onSelectNode, t }) => {
                       className="search-result-item"
                       onMouseDown={(e) => { e.preventDefault(); handleSelect(r.id); }}
                     >
-                      {r.type === 'FOLDER' ? (
+                      {r.type === NODE_TYPES.FOLDER ? (
                         <Folder size={14} className="folder-icon" />
                       ) : (
                         <span className={`node-type-tag ${r.type.toLowerCase()}`}>{r.type}</span>

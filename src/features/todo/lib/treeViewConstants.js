@@ -203,3 +203,9 @@ export const THEME_FALLBACK = {
 
 /** 編集入力へのオートフォーカスを遅延させる時間（ms）。 */
 export const EDIT_FOCUS_DELAY_MS = 10;
+
+/** 期限が「近日」と見なされる残り日数の閾値（ms）。3 日 = 3 * 24 * 60 * 60 * 1000。 */
+export const DUE_SOON_THRESHOLD_MS = 3 * 24 * 60 * 60 * 1000;
+
+/** リスト表示で説明文をプレビュー表示する際の最大文字数。 */
+export const DESCRIPTION_PREVIEW_MAX_LENGTH = 50;

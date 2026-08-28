@@ -8,6 +8,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [101] 08-28: [ドメイン用語の命名を統一する（マジック文字列 → 定数参照へ）](refactors/domain-naming-unification/spec.md)
 - [100] 08-28: [App.jsx のテーマ適用と進捗祝賀ロジックをカスタムフックへ抽出](refactors/app-hooks-extraction/spec.md)
 - [99] 08-28: [Inspector.jsx をセクション単位のサブコンポーネントに分割](refactors/inspector-section-split/spec.md)
 - [98] 08-27: [ListView.jsx から ArboristNode レンダラを別ファイルへ抽出](refactors/arborist-node-extraction/spec.md)

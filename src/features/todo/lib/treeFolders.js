@@ -3,7 +3,7 @@
  * フォルダノードの判定・作成・割当・削除・フォルダツリー構築を担う。
  */
 
-import { NODE_TYPES, NODE_STATUS } from './treeConstants.js';
+import { NODE_TYPES, NODE_STATUS, PHASES } from './treeConstants.js';
 
 /**
  * [Folder] Returns true if a node is a folder (independent of the causal tree).
@@ -33,7 +33,7 @@ export const addFolder = (nodes, parentFolderId = null, title = 'New Folder') =>
     progress: 0,
     children: [],
     dependsOn: [],
-    phase: 'PREP',
+    phase: PHASES.PREP,
     dueDate: null,
     order: 0,
     folderId: parentFolderId,
