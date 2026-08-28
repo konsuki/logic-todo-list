@@ -43,10 +43,10 @@
 | M3 | `ListView.jsx` / `TodoItem.jsx` / `Inspector.jsx` | `progress === 100` の色分岐を共通ヘルパーへ | 3 箇所で同一の三項演算 |
 | M4 | `ListView.jsx` / `TodoItem.jsx` | `isOverdue`/`isDueSoon` を共通ユーティリティへ | 2 箇所で重複 |
 | M5 | `ListView.jsx` / `TodoItem.jsx` | 説明プレビュー `substring(0, 50)` を共通化 | 2 箇所で重複 |
-| M6 | `ListView.jsx` / `App.jsx` / `useShortcuts.js` | view/displayMode の `'list'`/`'tree'`/`'logic'`/`'folder'`/`'preview'` を定数化 | 裸の文字列が散在、typo リスク |
-| M7 | 各コンポーネント | `'DONE'`/`'FOLDER'`/`'STRATEGY'`/`'GOAL'`/`'ACTION'` を `NODE_STATUS`/`NODE_TYPES` へ | `treeLogic.js` に定義済みの定数が未活用 |
+| M6 | `ListView.jsx` / `App.jsx` / `useShortcuts.js` | view/displayMode の `'list'`/`'tree'`/`'logic'`/`'folder'`/`'preview'` を定数化 | 裸の文字列が散在、typo リスク → 実装済み（VIEW_MODE / DISPLAY_MODE） |
+| M7 | 各コンポーネント | `'DONE'`/`'FOLDER'`/`'STRATEGY'`/`'GOAL'`/`'ACTION'` を `NODE_STATUS`/`NODE_TYPES` へ | `treeLogic.js` に定義済みの定数が未活用 → 実装済み |
 | M8 | `ListView.jsx` / `TodoItem.jsx` | `node.type.toLowerCase()` によるクラス生成を共通化 | 複数箇所で重複 |
-| M9 | `Inspector.jsx` | `'PREP'`/`'EXEC'`/`'REVIEW'` のフェーズ定数を共通化 | `phase` 選択肢が裸文字列（`treeLogic.js` にも `phase: 'PREP'` が直書き） |
+| M9 | `Inspector.jsx` | `'PREP'`/`'EXEC'`/`'REVIEW'` のフェーズ定数を共通化 | `phase` 選択肢が裸文字列（`treeLogic.js` にも `phase: 'PREP'` が直書き） → 実装済み（PHASES） |
 | M10 | `useAI.js` | システムプロンプト文字列を別モジュールへ分離 | 111 行中 30 行超がプロンプト定数で、ロジックの見通しを損なう |
 
 ### 優先度 低（コメント・整形）

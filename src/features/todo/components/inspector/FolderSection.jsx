@@ -1,7 +1,8 @@
 import { Folder, FolderPlus } from 'lucide-react';
+import { NODE_TYPES } from '../../lib/treeConstants';
 
 const FolderSection = ({ node, folders, useFolderView, assignTaskToFolder, addFolder, t }) => {
-  if (node.type === 'FOLDER' || useFolderView === false) return null;
+  if (node.type === NODE_TYPES.FOLDER || useFolderView === false) return null;
 
   return (
     <section className="inspector-section">

@@ -3,7 +3,7 @@
  * ノードの追加・一括追加・木構造追加・インポート・並び替え・アウトデントを担う。
  */
 
-import { NODE_TYPES, NODE_STATUS } from './treeConstants.js';
+import { NODE_TYPES, NODE_STATUS, PHASES } from './treeConstants.js';
 import { updateProgressRecursively } from './treeProgress.js';
 
 /**
@@ -59,7 +59,7 @@ export const addNodes = (nodes, parentId, type, titles) => {
       progress: 0,
       children: [],
       dependsOn: [],
-      phase: 'PREP', // Default phase
+      phase: PHASES.PREP, // Default phase
       dueDate: null, // Default due date
       order: nextOrder++, // Assign sequential order
       folderId: null, // Default: unclassified
@@ -118,7 +118,7 @@ export const addTreeUnderNode = (nodes, parentId, treeDataArray) => {
       progress: 0,
       children: [],
       dependsOn: [],
-      phase: 'PREP',
+      phase: PHASES.PREP,
       dueDate: null,
       order: 0, // Will be set by parent mapping
       folderId: null, // Default: unclassified
@@ -280,7 +280,7 @@ export const importTreeToNodes = (nodes, importedData) => {
       progress: 0,
       children: [],
       dependsOn: [],
-      phase: 'PREP',
+      phase: PHASES.PREP,
       order: 0,
       folderId: null, // Default: unclassified
       metadata: {

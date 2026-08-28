@@ -3,6 +3,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { Info, Trash2, AlertTriangle, GripVertical } from 'lucide-react';
 import { normalizeGroups } from '../../lib/treeGroups';
+import { NODE_TYPES } from '../../lib/treeConstants';
 import { useSettings } from '../../../../lib/settings';
 import AIInsights from './AIInsights';
 import SortableSection from './SortableSection';
@@ -90,7 +91,7 @@ const Inspector = ({
 
   const predecessors = (node.dependsOn || []).map(id => nodes[id]).filter(Boolean);
 
-  const showMeceWarning = (node.type === 'STRATEGY' || node.type === 'GOAL') && children.length === 1;
+  const showMeceWarning = (node.type === NODE_TYPES.STRATEGY || node.type === NODE_TYPES.GOAL) && children.length === 1;
 
   const handleSectionReorder = (newOrder) => {
     setSectionOrder(newOrder);

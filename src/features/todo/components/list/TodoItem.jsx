@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
 import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock, Clock, EyeOff } from 'lucide-react';
 import { isNodeLocked } from '../../lib/treeProgress';
+import { NODE_TYPES, NODE_STATUS } from '../../lib/treeConstants';
+import { DUE_SOON_THRESHOLD_MS, DESCRIPTION_PREVIEW_MAX_LENGTH } from '../../lib/treeViewConstants';
 import { useSettings } from '../../../../lib/settings';
 import './TodoItem.css';
 
@@ -26,14 +28,14 @@ const TodoItem = ({
   const [editTitle, setEditTitle] = useState(node.title);
 
   const childrenCount = node.children ? node.children.length : 0;
-  const isDone = node.status === 'DONE';
+  const isDone = node.status === NODE_STATUS.DONE;
   const isSelected = selectedNodeId === node.id;
-  
+
   // Dependency logic
   const isLocked = isNodeLocked(allNodes, node.id);
   const unsatisfiedDeps = (node.dependsOn || [])
     .map(id => allNodes[id])
-    .filter(n => n && n.status !== 'DONE');
+    .filter(n => n && n.status !== NODE_STATUS.DONE);
 
   // Timeline logic
   const today = new Date();
@@ -41,9 +43,9 @@ const TodoItem = ({
   
   const dueDate = node.dueDate ? new Date(node.dueDate) : null;
   const isOverdue = dueDate && dueDate < today && !isDone;
-  const isDueSoon = dueDate && !isOverdue && !isDone && (dueDate.getTime() - today.getTime()) <= (3 * 24 * 60 * 60 * 1000);
+  const isDueSoon = dueDate && !isOverdue && !isDone && (dueDate.getTime() - today.getTime()) <= DUE_SOON_THRESHOLD_MS;
 
-  const showMeceWarning = node.type === 'STRATEGY' && childrenCount === 1;
+  const showMeceWarning = node.type === NODE_TYPES.STRATEGY && childrenCount === 1;
 
   const handleTitleSubmit = (e) => {
     if (e.key === 'Enter' || e.type === 'blur') {
@@ -172,7 +174,7 @@ const TodoItem = ({
 
             {node.description && settings.showDescriptionInList && (
               <div className="node-description-preview" title={node.description}>
-                {node.description.length > 50 ? node.description.substring(0, 50) + '...' : node.description}
+                {node.description.length > DESCRIPTION_PREVIEW_MAX_LENGTH ? node.description.substring(0, DESCRIPTION_PREVIEW_MAX_LENGTH) + '...' : node.description}
               </div>
             )}
           </div>

@@ -23,3 +23,23 @@ export const NODE_STATUS = {
 export const GROUP_COLOR_PALETTE = [
   '#4F8CFF', '#34C759', '#FF9500', '#AF52DE', '#FF3B30', '#5AC8FA'
 ];
+
+/**
+ * 実行フェーズ（Phase）。
+ * ALL はフェーズフィルタの「全件」を表す特殊値で、UI の選択肢として
+ * PREP/EXEC/REVIEW と同じグループを構成するため、同じ定数に含める。
+ */
+export const PHASES = {
+  PREP: 'PREP',
+  EXEC: 'EXEC',
+  REVIEW: 'REVIEW',
+  ALL: 'ALL',
+};
+
+/**
+ * リスト表示の表示モード（ListView.jsx の displayMode）。
+ */
+export const DISPLAY_MODE = {
+  LOGIC: 'logic',
+  FOLDER: 'folder',
+};

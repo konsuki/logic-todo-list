@@ -6,6 +6,8 @@ import { useI18n } from '../hooks/useI18n';
 import { useTheme } from '../hooks/useTheme';
 import { useShortcuts } from '../features/todo/hooks/useShortcuts';
 import { useCelebration } from '../features/todo/hooks/useCelebration';
+import { VIEW_MODE } from '../constants/views';
+import { DISPLAY_MODE } from '../features/todo/lib/treeConstants';
 import ListView from '../features/todo/components/list/ListView';
 import TreeView from '../features/todo/components/tree/TreeView';
 import Inspector from '../features/todo/components/inspector/Inspector';
@@ -50,7 +52,7 @@ function App() {
     assignTaskToFolder
   } = useTodoTree();
   const { t, lang, setLang } = useI18n();
-  const [view, setView] = useState('list');
+  const [view, setView] = useState(VIEW_MODE.LIST);
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -58,7 +60,7 @@ function App() {
   const [isHiddenTasksOpen, setIsHiddenTasksOpen] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [editingNodeId, setEditingNodeId] = useState(null);
-  const [displayMode, setDisplayMode] = useState('logic'); // 'logic' | 'folder'
+  const [displayMode, setDisplayMode] = useState(DISPLAY_MODE.LOGIC); // 'logic' | 'folder'
   const treeRef = useRef(null);
   // Auto-expand all nodes on initial load (nodes are loaded synchronously from
   // localStorage via useTodoTree before this state is initialized).
@@ -116,10 +118,10 @@ function App() {
         
         <div className="view-switcher">
           <button 
-            className={`view-btn ${view === 'tree' ? 'active' : ''}`}
-            onClick={() => setView('tree')}
+            className={`view-btn ${view === VIEW_MODE.TREE ? 'active' : ''}`}
+            onClick={() => setView(VIEW_MODE.TREE)}
           >
-            {view === 'tree' && (
+            {view === VIEW_MODE.TREE && (
               <motion.div 
                 layoutId="activeView"
                 className="active-bg"
@@ -131,10 +133,10 @@ function App() {
             <span style={{ position: 'relative', zIndex: 2 }}>{t('header.tree_view')}</span>
           </button>
           <button 
-            className={`view-btn ${view === 'list' ? 'active' : ''}`}
-            onClick={() => setView('list')}
+            className={`view-btn ${view === VIEW_MODE.LIST ? 'active' : ''}`}
+            onClick={() => setView(VIEW_MODE.LIST)}
           >
-            {view === 'list' && (
+            {view === VIEW_MODE.LIST && (
               <motion.div 
                 layoutId="activeView"
                 className="active-bg"
@@ -158,14 +160,14 @@ function App() {
           </button>
           {import.meta.env.DEV && (
             <button 
-              className={`icon-btn ${view === 'preview' ? 'active' : ''}`}
-              onClick={() => setView(view === 'preview' ? 'list' : 'preview')}
+              className={`icon-btn ${view === VIEW_MODE.PREVIEW ? 'active' : ''}`}
+              onClick={() => setView(view === VIEW_MODE.PREVIEW ? VIEW_MODE.LIST : VIEW_MODE.PREVIEW)}
               title="Design Preview (Alt+P)"
             >
-              <Zap size={20} color={view === 'preview' ? 'var(--primary-color)' : 'var(--text-muted)'} />
+              <Zap size={20} color={view === VIEW_MODE.PREVIEW ? 'var(--primary-color)' : 'var(--text-muted)'} />
             </button>
           )}
-          {view === 'list' && (
+          {view === VIEW_MODE.LIST && (
             <SearchBar
               nodes={nodes}
               displayMode={displayMode}
@@ -190,10 +192,10 @@ function App() {
         </div>
       </header>
 
-      <main className="main-content" style={{ padding: view === 'tree' || view === 'preview' ? '0' : '40px' }}>
-        {import.meta.env.DEV && view === 'preview' ? (
+      <main className="main-content" style={{ padding: view === VIEW_MODE.TREE || view === VIEW_MODE.PREVIEW ? '0' : '40px' }}>
+        {import.meta.env.DEV && view === VIEW_MODE.PREVIEW ? (
           <DesignSandbox />
-        ) : view === 'list' ? (
+        ) : view === VIEW_MODE.LIST ? (
           <ListView
             nodes={nodes}
             rootNodes={rootNodes}

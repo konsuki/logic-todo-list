@@ -1,5 +1,6 @@
 import { Calendar, ArrowUp, ArrowDown } from 'lucide-react';
 import HelpIcon from './HelpIcon';
+import { PHASES } from '../../lib/treeConstants';
 
 const ScheduleSection = ({ node, reorderNode, updateNode, t }) => {
   const handlePhaseChange = (e) => {
@@ -19,13 +20,13 @@ const ScheduleSection = ({ node, reorderNode, updateNode, t }) => {
         <div className="control-group">
           <label>{t('inspector.phase')}</label>
           <select
-            value={node.phase || 'PREP'}
+            value={node.phase || PHASES.PREP}
             onChange={handlePhaseChange}
             className="phase-select"
           >
-            <option value="PREP">{t('phases.PREP')}</option>
-            <option value="EXEC">{t('phases.EXEC')}</option>
-            <option value="REVIEW">{t('phases.REVIEW')}</option>
+            <option value={PHASES.PREP}>{t('phases.PREP')}</option>
+            <option value={PHASES.EXEC}>{t('phases.EXEC')}</option>
+            <option value={PHASES.REVIEW}>{t('phases.REVIEW')}</option>
           </select>
         </div>
         <div className="control-group">

@@ -41,7 +41,7 @@ src/
 │   └── App.css
 ├── assets/               # 静的ファイル（画像・SVG）
 ├── components/           # アプリ横断の共有 UI（sandbox/DesignSandbox.jsx など）
-├── constants/            # 共有定数（themes.js など。定数の集約は別タスク）
+├── constants/            # 共有定数（themes.js / views.js など。定数の集約は別タスク）
 ├── features/             # 機能ベースのモジュール
 │   └── todo/             # 本アプリ唯一の機能モジュール（詳細は §2）
 ├── hooks/                # アプリ横断の共有フック（useI18n.js / useTheme.js など）
