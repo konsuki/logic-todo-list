@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { LayoutGrid, List, Info, Zap, Globe, Settings } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { motion } from 'framer-motion';
 import { useTodoTree } from '../features/todo/hooks/useTodoTree';
 import { useI18n } from '../hooks/useI18n';
+import { useTheme } from '../hooks/useTheme';
 import { useShortcuts } from '../features/todo/hooks/useShortcuts';
+import { useCelebration } from '../features/todo/hooks/useCelebration';
 import ListView from '../features/todo/components/list/ListView';
 import TreeView from '../features/todo/components/tree/TreeView';
 import Inspector from '../features/todo/components/inspector/Inspector';
@@ -14,7 +15,6 @@ import TrashView from '../features/todo/components/trash/TrashView';
 import HiddenTasksModal from '../features/todo/components/list/HiddenTasksModal';
 import DesignSandbox from '../components/sandbox/DesignSandbox';
 import SearchBar from '../features/todo/components/search/SearchBar';
-import { themes } from '../constants/themes';
 import './App.css';
 
 function App() {
@@ -58,31 +58,13 @@ function App() {
   const [isHiddenTasksOpen, setIsHiddenTasksOpen] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [editingNodeId, setEditingNodeId] = useState(null);
-  const [completedGoals, setCompletedGoals] = useState(new Set());
   const [displayMode, setDisplayMode] = useState('logic'); // 'logic' | 'folder'
   const treeRef = useRef(null);
   // Auto-expand all nodes on initial load (nodes are loaded synchronously from
   // localStorage via useTodoTree before this state is initialized).
   const [expandedNodeIds, setExpandedNodeIds] = useState(() => new Set(Object.keys(nodes)));
 
-  // Theme Management
-  const [themeName, setThemeName] = useState(() => localStorage.getItem('themeName') || 'classic');
-  const [themeMode, setThemeMode] = useState(() => localStorage.getItem('themeMode') || 'dark');
-
-  useEffect(() => {
-    const selectedTheme = themes[themeName][themeMode];
-    Object.entries(selectedTheme).forEach(([key, value]) => {
-      document.documentElement.style.setProperty(key, value);
-    });
-    localStorage.setItem('themeName', themeName);
-    localStorage.setItem('themeMode', themeMode);
-    
-    // Also update body background for seamless transitions
-    document.body.style.backgroundColor = selectedTheme['--bg-color'];
-    
-    // Add theme class to body for specific CSS overrides
-    document.body.className = `theme-${themeName}`;
-  }, [themeName, themeMode]);
+  const { themeName, setThemeName, themeMode, setThemeMode } = useTheme();
 
   const toggleExpand = (nodeId) => {
     setExpandedNodeIds(prev => {
@@ -113,27 +95,7 @@ function App() {
     setExpandedNodeIds
   });
 
-  // Celebration Logic
-  useEffect(() => {
-    rootNodes.forEach(root => {
-      if (root.progress === 100 && !completedGoals.has(root.id)) {
-        confetti({
-          particleCount: 150,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#00E5FF', '#00FFAD', '#FFFFFF'],
-          zIndex: 1000
-        });
-        setCompletedGoals(prev => new Set([...prev, root.id]));
-      } else if (root.progress < 100 && completedGoals.has(root.id)) {
-        setCompletedGoals(prev => {
-          const next = new Set(prev);
-          next.delete(root.id);
-          return next;
-        });
-      }
-    });
-  }, [rootNodes, completedGoals]);
+  useCelebration(rootNodes);
 
   const handleSelectNode = (id) => {
     setSelectedNodeId(id);
@@ -232,7 +194,7 @@ function App() {
         {import.meta.env.DEV && view === 'preview' ? (
           <DesignSandbox />
         ) : view === 'list' ? (
-          <ListView 
+          <ListView
             nodes={nodes}
             rootNodes={rootNodes}
             addNode={addNode}
@@ -242,17 +204,13 @@ function App() {
             updateNode={updateNode}
             selectedNodeId={selectedNodeId}
             onSelectNode={handleSelectNode}
-            expandedNodeIds={expandedNodeIds}
-            toggleExpand={toggleExpand}
             moveNode={moveNode}
             hiddenRootNodes={hiddenRootNodes}
             onOpenHiddenTasks={() => setIsHiddenTasksOpen(true)}
             editingNodeId={editingNodeId}
             setEditingNodeId={setEditingNodeId}
-            folders={folders}
             addFolder={addFolder}
             deleteFolder={deleteFolder}
-            assignTaskToFolder={assignTaskToFolder}
             displayMode={displayMode}
             setDisplayMode={setDisplayMode}
             treeRef={treeRef}
