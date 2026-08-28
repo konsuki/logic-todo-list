@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { Target, ChevronUp, ChevronDown, Info, ExternalLink, Trash2, AlertTriangle, Link, X, Plus, Calendar, ArrowUp, ArrowDown, GripVertical, Folder, FolderPlus } from 'lucide-react';
-import { normalizeGroups, calculateGroupProgress } from '../../lib/treeGroups';
+import { Info, Trash2, AlertTriangle, GripVertical } from 'lucide-react';
+import { normalizeGroups } from '../../lib/treeGroups';
 import { useSettings } from '../../../../lib/settings';
 import AIInsights from './AIInsights';
-import InspectorTextarea from './InspectorTextarea';
 import SortableSection from './SortableSection';
-import HelpIcon from './HelpIcon';
+import HowSection from './HowSection';
+import DependencySection from './DependencySection';
+import ScheduleSection from './ScheduleSection';
+import WhySection from './WhySection';
+import FolderSection from './FolderSection';
+import TextareaSection from './TextareaSection';
 import './Inspector.css';
 
 const DEFAULT_SECTION_ORDER = ['description', 'intent', 'procedure', 'folder', 'ai', 'schedule', 'dependency', 'why', 'how'];
@@ -35,15 +39,9 @@ const Inspector = ({
 }) => {
   const node = nodes[selectedNodeId];
   const { settings } = useSettings();
-  const [searchQuery, setSearchQuery] = useState('');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editTitle, setEditTitle] = useState(node?.title || '');
-  const [isWhyOpen, setIsWhyOpen] = useState(true);
-  const [isHowOpen, setIsHowOpen] = useState(true);
   const [isReorderMode, setIsReorderMode] = useState(false);
-  const [collapsedGroups, setCollapsedGroups] = useState(new Set());
-  const [editingGroupId, setEditingGroupId] = useState(null);
-  const [editingGroupName, setEditingGroupName] = useState('');
   const [sectionOrder, setSectionOrder] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -89,47 +87,10 @@ const Inspector = ({
   const normalizedGroups = node.relation === 'or'
     ? normalizeGroups(node.groups)
     : [];
-  const groupIdOfChild = (childId) => {
-    const group = normalizedGroups.find(g => g.children.includes(childId));
-    return group ? group.id : null;
-  };
-
-  const toggleGroupCollapse = (groupId) => {
-    setCollapsedGroups(prev => {
-      const next = new Set(prev);
-      if (next.has(groupId)) next.delete(groupId);
-      else next.add(groupId);
-      return next;
-    });
-  };
-
-  const commitGroupName = (groupId) => {
-    const trimmed = editingGroupName.trim();
-    if (trimmed && editingGroupId === groupId) {
-      updateGroup(node.id, groupId, { name: trimmed });
-    }
-    setEditingGroupId(null);
-    setEditingGroupName('');
-  };
 
   const predecessors = (node.dependsOn || []).map(id => nodes[id]).filter(Boolean);
-  const searchResults = searchQuery.trim()
-    ? Object.values(nodes).filter(n =>
-        n.id !== node.id &&
-        n.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !(node.dependsOn || []).includes(n.id)
-      ).slice(0, 5)
-    : [];
 
   const showMeceWarning = (node.type === 'STRATEGY' || node.type === 'GOAL') && children.length === 1;
-
-  const handlePhaseChange = (e) => {
-    updateNode(selectedNodeId, { phase: e.target.value });
-  };
-
-  const handleDueDateChange = (e) => {
-    updateNode(selectedNodeId, { dueDate: e.target.value });
-  };
 
   const handleSectionReorder = (newOrder) => {
     setSectionOrder(newOrder);
@@ -145,77 +106,44 @@ const Inspector = ({
 
   const sectionMap = {
     description: (
-      <InspectorTextarea
-        key={selectedNodeId}
+      <TextareaSection
         nodeId={selectedNodeId}
-        value={node.description || ''}
-        onChange={(text) => updateNode(selectedNodeId, { description: text })}
-        onModalChange={(text) => updateNode(node.id, { description: text })}
-        label={t('inspector.description')}
-        placeholder={t('inspector.placeholder_desc')}
+        node={node}
+        field="description"
+        updateNode={updateNode}
         t={t}
       />
     ),
 
     intent: (
-      <InspectorTextarea
-        key={selectedNodeId}
+      <TextareaSection
         nodeId={selectedNodeId}
-        value={node.intent || ''}
-        onChange={(text) => updateNode(selectedNodeId, { intent: text })}
-        onModalChange={(text) => updateNode(node.id, { intent: text })}
-        label={t('inspector.intent')}
-        placeholder={t('inspector.placeholder_intent')}
+        node={node}
+        field="intent"
+        updateNode={updateNode}
         t={t}
       />
     ),
 
     procedure: (
-      <InspectorTextarea
-        key={selectedNodeId}
+      <TextareaSection
         nodeId={selectedNodeId}
-        value={node.procedure || ''}
-        onChange={(text) => updateNode(selectedNodeId, { procedure: text })}
-        onModalChange={(text) => updateNode(node.id, { procedure: text })}
-        label={t('inspector.procedure')}
-        placeholder={t('inspector.placeholder_procedure')}
-        helpText={t('inspector.procedure_help')}
+        node={node}
+        field="procedure"
+        updateNode={updateNode}
         t={t}
       />
     ),
 
     folder: (
-      node.type === 'FOLDER' || settings.useFolderView === false ? null : (
-        <section className="inspector-section">
-          <h3 className="section-title">
-            <Folder size={14} /> {t('inspector.folder')}
-          </h3>
-          <div className="folder-assign-controls">
-            <select
-              className="folder-select"
-              value={node.folderId || ''}
-              onChange={(e) => assignTaskToFolder(node.id, e.target.value || null)}
-            >
-              <option value="">{t('inspector.no_folder')}</option>
-              {(folders || []).map(f => (
-                <option key={f.id} value={f.id}>{f.title}</option>
-              ))}
-            </select>
-            <button
-              className="add-folder-btn"
-              onClick={() => {
-                const title = prompt(t('list.enter_folder'));
-                if (title) {
-                  addFolder(null, title);
-                }
-              }}
-              title={t('list.new_folder')}
-            >
-              <FolderPlus size={14} />
-            </button>
-          </div>
-        </section>
-      )
+      <FolderSection
+        node={node}
+        folders={folders}
+        useFolderView={settings.useFolderView}
+        assignTaskToFolder={assignTaskToFolder}
+        addFolder={addFolder}
+        t={t}
+      />
     ),
 
     ai: (
@@ -228,291 +156,49 @@ const Inspector = ({
     ),
 
     schedule: (
-      <section className="inspector-section">
-        <h3 className="section-title">
-          <Calendar size={14} /> {t('inspector.schedule')}
-        </h3>
-        <div className="schedule-controls">
-          <div className="control-group">
-            <label>{t('inspector.phase')}</label>
-            <select
-              value={node.phase || 'PREP'}
-              onChange={handlePhaseChange}
-              className="phase-select"
-            >
-              <option value="PREP">{t('phases.PREP')}</option>
-              <option value="EXEC">{t('phases.EXEC')}</option>
-              <option value="REVIEW">{t('phases.REVIEW')}</option>
-            </select>
-          </div>
-          <div className="control-group">
-            <label>{t('inspector.due_date')}</label>
-            <input
-              type="date"
-              value={node.dueDate || ''}
-              onChange={handleDueDateChange}
-              className="date-input"
-            />
-          </div>
-        </div>
-
-        <div className="order-controls">
-          <div className="section-subtitle-row">
-            <label className="section-subtitle">{t('inspector.order_section')}</label>
-            <HelpIcon text={t('inspector.order_section_help')} />
-          </div>
-          <div className="order-buttons">
-            <button
-              className="order-btn"
-              onClick={() => reorderNode(node.id, 'up')}
-              title={t('inspector.move_up')}
-            >
-              <ArrowUp size={14} /> {t('inspector.move_up')}
-            </button>
-            <button
-              className="order-btn"
-              onClick={() => reorderNode(node.id, 'down')}
-              title={t('inspector.move_down')}
-            >
-              <ArrowDown size={14} /> {t('inspector.move_down')}
-            </button>
-          </div>
-        </div>
-      </section>
+      <ScheduleSection
+        node={node}
+        reorderNode={reorderNode}
+        updateNode={updateNode}
+        t={t}
+      />
     ),
 
     dependency: (
-      <section className="inspector-section">
-        <h3 className="section-title">
-          <Link size={14} /> {t('inspector.predecessors')}
-        </h3>
-        <div className="dependency-manager">
-          <div className="current-dependencies">
-            {predecessors.length === 0 ? (
-              <p className="empty-text">{t('inspector.no_predecessors')}</p>
-            ) : (
-              predecessors.map(p => (
-                <div key={p.id} className="dependency-tag">
-                  <span onClick={() => onSelectNode(p.id)}>{p.title}</span>
-                  <button onClick={() => removeDependency(node.id, p.id)}>
-                    <X size={12} />
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-
-          <div className="dependency-search">
-            <input
-              type="text"
-              placeholder={t('inspector.search_to_link')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {searchResults.length > 0 && (
-              <div className="search-results">
-                {searchResults.map(r => (
-                  <div
-                    key={r.id}
-                    className="search-result-item"
-                    onClick={() => {
-                      addDependency(node.id, r.id);
-                      setSearchQuery('');
-                    }}
-                  >
-                    <span>{r.title}</span>
-                    <Plus size={12} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+      <DependencySection
+        node={node}
+        predecessors={predecessors}
+        nodes={nodes}
+        onSelectNode={onSelectNode}
+        addDependency={addDependency}
+        removeDependency={removeDependency}
+        t={t}
+      />
     ),
 
     why: (
-      <section className="inspector-section">
-        <h3 className="section-title section-title--clickable" onClick={() => setIsWhyOpen(v => !v)}>
-          {isWhyOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          {t('inspector.why')}
-        </h3>
-        {isWhyOpen && (
-          <>
-            <div className="why-path">
-              {pathToRoot.length === 0 ? (
-                <div className="path-item root">
-                  <Target size={14} />
-                  <span>{t('inspector.root_goal')}</span>
-                </div>
-              ) : (
-                pathToRoot.map((n) => (
-                  <div
-                    key={n.id}
-                    className="path-item linkable"
-                    onClick={() => onSelectNode(n.id)}
-                  >
-                    <div className="path-dot" />
-                    <span className="path-title">{n.title}</span>
-                    <ExternalLink size={12} className="link-icon" />
-                  </div>
-                ))
-              )}
-              <div className="path-item active">
-                <div className="path-dot active" />
-                <span className="path-title current">{node.title}</span>
-              </div>
-            </div>
-            <p className="logic-guide">
-              {pathToRoot.length > 0
-                ? t('inspector.achieve_context', { parent: pathToRoot[pathToRoot.length - 1].title })
-                : t('inspector.focus_objective')}
-            </p>
-          </>
-        )}
-      </section>
+      <WhySection
+        node={node}
+        pathToRoot={pathToRoot}
+        onSelectNode={onSelectNode}
+        t={t}
+      />
     ),
 
     how: (
-      <section className="inspector-section">
-        <h3 className="section-title section-title--clickable" onClick={() => setIsHowOpen(v => !v)}>
-          {isHowOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          {t('inspector.how')}
-        </h3>
-        {isHowOpen && (
-          <>
-            {children.length >= 2 && (
-              <div className="relation-toggle">
-                <span className="relation-label">{t('inspector.relation_label')}</span>
-                <div className="relation-toggle-group">
-                  <button
-                    className={`relation-btn ${node.relation !== 'or' ? 'active' : ''}`}
-                    onClick={() => setRelation(node.id, 'and')}
-                  >
-                    {t('inspector.relation_and')}
-                  </button>
-                  <button
-                    className={`relation-btn ${node.relation === 'or' ? 'active' : ''}`}
-                    onClick={() => setRelation(node.id, 'or')}
-                  >
-                    {t('inspector.relation_or')}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {node.relation === 'or' && children.length >= 2 && (
-              <div className="or-group-editor">
-                <button className="add-group-btn" onClick={() => addGroup(node.id)}>
-                  <Plus size={14} /> {t('inspector.add_group')}
-                </button>
-
-                {normalizedGroups.map(group => {
-                  const isCollapsed = collapsedGroups.has(group.id);
-                  const groupProgress = calculateGroupProgress(nodes, group);
-                  const isEditingName = editingGroupId === group.id;
-                  return (
-                    <div key={group.id} className="group-card" style={{ borderLeftColor: group.color }}>
-                      <div className="group-card-header">
-                        <span className="group-color-dot" style={{ backgroundColor: group.color }} />
-                        {isEditingName ? (
-                          <input
-                            className="group-name-input"
-                            value={editingGroupName}
-                            autoFocus
-                            onChange={(e) => setEditingGroupName(e.target.value)}
-                            onBlur={() => commitGroupName(group.id)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') commitGroupName(group.id);
-                              else if (e.key === 'Escape') {
-                                setEditingGroupId(null);
-                                setEditingGroupName('');
-                              }
-                            }}
-                          />
-                        ) : (
-                          <span
-                            className="group-name"
-                            onClick={() => {
-                              setEditingGroupId(group.id);
-                              setEditingGroupName(group.name || '');
-                            }}
-                            title={t('inspector.click_to_edit')}
-                          >
-                            {group.name || `グループ${normalizedGroups.indexOf(group) + 1}`}
-                          </span>
-                        )}
-                        <span className="group-progress">{t('inspector.group_progress')}: {groupProgress}%</span>
-                        <button className="group-collapse-btn" onClick={() => toggleGroupCollapse(group.id)}>
-                          {isCollapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
-                        </button>
-                        <button className="group-remove-btn" onClick={() => removeGroup(node.id, group.id)}>
-                          <X size={14} />
-                        </button>
-                      </div>
-
-                      {!isCollapsed && (
-                        <div className="group-assign-list">
-                          {children.length === 0 ? (
-                            <p className="empty-text">{t('inspector.no_subtasks')}</p>
-                          ) : (
-                            children.map(child => (
-                              <div key={child.id} className="group-assign-item">
-                                <span className="how-title">{child.title}</span>
-                                <select
-                                  className="group-assign-select"
-                                  value={groupIdOfChild(child.id) || ''}
-                                  onChange={(e) =>
-                                    assignChildToGroup(node.id, child.id, e.target.value || null)
-                                  }
-                                >
-                                  <option value="">{t('inspector.no_group')}</option>
-                                  {normalizedGroups.map(g => (
-                                    <option key={g.id} value={g.id}>
-                                      {g.name || `グループ${normalizedGroups.indexOf(g) + 1}`}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-
-                {normalizedGroups.length === 0 && (
-                  <p className="hint">{t('inspector.add_group')} → {t('inspector.alternative_option')}</p>
-                )}
-              </div>
-            )}
-
-            {(node.relation !== 'or' || children.length < 2) && (
-              <div className="how-list">
-                {children.length === 0 ? (
-                  <div className="empty-how">
-                    <p>{t('inspector.no_subtasks')}</p>
-                    <p className="hint">{t('inspector.breakdown_hint')}</p>
-                  </div>
-                ) : (
-                  children.map(child => (
-                    <div
-                      key={child.id}
-                      className="how-item"
-                      onClick={() => onSelectNode(child.id)}
-                    >
-                      <span className={`status-dot ${child.status.toLowerCase()}`} />
-                      <span className="how-title">{child.title}</span>
-                      <span className="how-percent">{child.progress}%</span>
-                    </div>
-                  ))
-                )}
-              </div>
-            )}
-          </>
-        )}
-      </section>
+      <HowSection
+        node={node}
+        children={children}
+        nodes={nodes}
+        normalizedGroups={normalizedGroups}
+        setRelation={setRelation}
+        addGroup={addGroup}
+        removeGroup={removeGroup}
+        assignChildToGroup={assignChildToGroup}
+        updateGroup={updateGroup}
+        onSelectNode={onSelectNode}
+        t={t}
+      />
     ),
   };
 
