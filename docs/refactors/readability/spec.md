@@ -29,7 +29,7 @@
 | # | ファイル | 改善項目 | 根拠 |
 |---|---|---|---|
 | H1 | `treeLogic.js` | 責務ごとにサブモジュールへ分割（CRUD / 進捗 / ORグループ / 削除 / フォルダ / 検索表示 の 7 責務） | 1,104 行に 7 責務が混在し、処理を追いにくい → 実装済み（treeConstants / treeNodes / treeProgress / treeGroups / treeLifecycle / treeFolders / treeDisplay の 7 ファイルに分割） |
-| H2 | `ListView.jsx` | `ArboristNode` レンダラを別ファイルへ抽出 | 635 行。レンダラ（1-328）とビュー本体（330-633）が同居 |
+| H2 | `ListView.jsx` | `ArboristNode` レンダラを別ファイルへ抽出 | 635 行。レンダラ（1-328）とビュー本体（330-633）が同居 → 実装済み（`ArboristNode.jsx` に抽出） |
 | H3 | `Inspector.jsx` | 9 セクション（description/intent/procedure/folder/ai/schedule/dependency/why/how）をサブコンポーネント化 | 634 行。`sectionMap` に巨大 JSX が並ぶ |
 | H4 | `App.jsx` | テーマ適用と confetti 祝賀ロジックをカスタムフックへ抽出 | 347 行。副作用が App 本体に混在 |
 | H5 | `App.jsx` | ListView 呼び出しのデッド props を除去 | `expandedNodeIds`/`toggleExpand`/`folders`/`assignTaskToFolder` を渡しているが ListView は未受領（react-arborist 移行時の残骸） |
