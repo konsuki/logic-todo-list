@@ -8,6 +8,7 @@
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+- [100] 08-28: [App.jsx のテーマ適用と進捗祝賀ロジックをカスタムフックへ抽出](refactors/app-hooks-extraction/spec.md)
 - [99] 08-28: [Inspector.jsx をセクション単位のサブコンポーネントに分割](refactors/inspector-section-split/spec.md)
 - [98] 08-27: [ListView.jsx から ArboristNode レンダラを別ファイルへ抽出](refactors/arborist-node-extraction/spec.md)
 - [97] 08-27: [treeLogic.js の責務ごとのサブモジュールへの分割](refactors/treeLogic-split/spec.md)

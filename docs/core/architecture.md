@@ -44,7 +44,7 @@ src/
 ├── constants/            # 共有定数（themes.js など。定数の集約は別タスク）
 ├── features/             # 機能ベースのモジュール
 │   └── todo/             # 本アプリ唯一の機能モジュール（詳細は §2）
-├── hooks/                # アプリ横断の共有フック（useI18n.js など）
+├── hooks/                # アプリ横断の共有フック（useI18n.js / useTheme.js など）
 ├── lib/                  # アプリ横断の共有ライブラリ（React Context 系・i18n データ）
 ├── testing/              # テスト用ユーティリティ（setupTests.js）
 └── index.css             # グローバルスタイル
@@ -118,7 +118,7 @@ src/features/todo/
 - 共有層（`components/`・`hooks/`・`lib/` トップレベル）はアプリ全体から使える。
 - 現時点で共有層に置くもの：
   - `lib/`：`settings.js`（Context + useSettings）、`SettingsProvider.jsx`（Provider）、`i18n.js`（翻訳データ）
-  - `hooks/`：`useI18n.js`
+  - `hooks/`：`useI18n.js`、`useTheme.js`
   - `components/`：`sandbox/DesignSandbox.jsx`
 - これらは「アプリ横断で 1 箇所で提供すべきもの」であり、特定の feature に属さないため共有層に置く。
 
