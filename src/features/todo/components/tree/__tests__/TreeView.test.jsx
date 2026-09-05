@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import TreeView from './TreeView';
+import TreeView from '../TreeView';
 
 // D3の描画時に必要なコンテナのサイズをモックする
 Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, value: 800 });
