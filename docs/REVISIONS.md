@@ -11,6 +11,7 @@
 
 ## ✅ 完了済み (Completed)
 
+- [104] 09-06: [テストファイルの配置・命名を bulletproof-react 準拠に統一する](refactors/test-layout-unification/spec.md)
 - [103] 09-05: [整形と最終検証を行う](refactors/formatting-final-verification/spec.md)
 - [102] 09-05: [コメントの過不足を調整する](refactors/comment-adjustment/spec.md)
 - [101] 08-28: [ドメイン用語の命名を統一する（マジック文字列 → 定数参照へ）](refactors/domain-naming-unification/spec.md)

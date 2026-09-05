@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { useTodoTree } from './useTodoTree';
+import { useTodoTree } from '../useTodoTree';
 
 /**
  * 起動時優先読み込み（MCP 書き込み反映）の検証。

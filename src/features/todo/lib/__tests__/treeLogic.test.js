@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import * as treeNodes from './treeNodes';
-import * as treeProgress from './treeProgress';
-import * as treeGroups from './treeGroups';
-import * as treeFolders from './treeFolders';
-import * as treeDisplay from './treeDisplay';
+import * as treeNodes from '../treeNodes';
+import * as treeProgress from '../treeProgress';
+import * as treeGroups from '../treeGroups';
+import * as treeFolders from '../treeFolders';
+import * as treeDisplay from '../treeDisplay';
 
 describe('treeNodes.reorderNode', () => {
   it('should swap order of two siblings when moving down', () => {
