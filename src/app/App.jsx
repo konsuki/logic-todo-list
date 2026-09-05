@@ -19,6 +19,9 @@ import DesignSandbox from '../components/sandbox/DesignSandbox';
 import SearchBar from '../features/todo/components/search/SearchBar';
 import './App.css';
 
+/**
+ * アプリ全体の組み立て（状態管理・レイアウト・ビュー切替・モーダル表示）。
+ */
 function App() {
   const {
     nodes,
