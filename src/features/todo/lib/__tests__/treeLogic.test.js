@@ -4,6 +4,7 @@ import * as treeProgress from '../treeProgress';
 import * as treeGroups from '../treeGroups';
 import * as treeFolders from '../treeFolders';
 import * as treeDisplay from '../treeDisplay';
+import * as treePresentation from '../treePresentation';
 
 describe('treeNodes.reorderNode', () => {
   it('should swap order of two siblings when moving down', () => {
@@ -407,5 +408,56 @@ describe('treeDisplay.searchNodes', () => {
   it('returns { id, title, type } objects', () => {
     const result = treeDisplay.searchNodes(nodes, 'learn', { mode: 'logic' });
     expect(result[0]).toEqual({ id: 'goal', title: 'Learn React', type: 'GOAL' });
+  });
+});
+
+describe('treePresentation.getProgressColor', () => {
+  it('returns success color at 100%', () => {
+    expect(treePresentation.getProgressColor(100)).toBe('var(--success-color)');
+  });
+
+  it('returns primary color below 100%', () => {
+    expect(treePresentation.getProgressColor(0)).toBe('var(--primary-color)');
+    expect(treePresentation.getProgressColor(50)).toBe('var(--primary-color)');
+    expect(treePresentation.getProgressColor(99)).toBe('var(--primary-color)');
+  });
+});
+
+describe('treePresentation.getDueStatus', () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  it('returns overdue for a past dueDate on an incomplete node', () => {
+    const past = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const { overdue, dueSoon } = treePresentation.getDueStatus(past, false, today);
+    expect(overdue).toBe(true);
+    expect(dueSoon).toBe(false);
+  });
+
+  it('returns dueSoon for a dueDate within the threshold', () => {
+    const inTwoDays = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
+    const { overdue, dueSoon } = treePresentation.getDueStatus(inTwoDays, false, today);
+    expect(overdue).toBe(false);
+    expect(dueSoon).toBe(true);
+  });
+
+  it('returns neither overdue nor dueSoon for a far-future dueDate', () => {
+    const inTenDays = new Date(today.getTime() + 10 * 24 * 60 * 60 * 1000);
+    const { overdue, dueSoon } = treePresentation.getDueStatus(inTenDays, false, today);
+    expect(overdue).toBe(false);
+    expect(dueSoon).toBe(false);
+  });
+
+  it('returns neither overdue nor dueSoon when done', () => {
+    const past = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const { overdue, dueSoon } = treePresentation.getDueStatus(past, true, today);
+    expect(overdue).toBe(false);
+    expect(dueSoon).toBe(false);
+  });
+
+  it('returns neither overdue nor dueSoon when no dueDate', () => {
+    const { overdue, dueSoon } = treePresentation.getDueStatus(null, false, today);
+    expect(overdue).toBe(false);
+    expect(dueSoon).toBe(false);
   });
 });

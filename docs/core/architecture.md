@@ -128,9 +128,9 @@ src/features/todo/
 
 ### 4.1 命名コンベンション
 
-- **コンポーネント**: パスカルケース（`TodoItem.jsx`）
+- **コンポーネント**: パスカルケース（`ArboristNode.jsx`）
 - **フック**: キャメルケース（`useTodoTree.js`）
-- **ロジック・ユーティリティ**: キャメルケース（`treeConstants.js` / `treeNodes.js` / `treeProgress.js` / `treeGroups.js` / `treeLifecycle.js` / `treeFolders.js` / `treeDisplay.js` / `importLogic.js` / `treeViewConstants.js`）
+- **ロジック・ユーティリティ**: キャメルケース（`treeConstants.js` / `treeNodes.js` / `treeProgress.js` / `treeGroups.js` / `treeLifecycle.js` / `treeFolders.js` / `treeDisplay.js` / `treePresentation.js` / `importLogic.js` / `treeViewConstants.js`）
 - **CSS クラス名**: ケバブケース（`todo-item-container`）
 
 ### 4.2 Barrel file の禁止

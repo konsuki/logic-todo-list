@@ -15,7 +15,8 @@ import {
 } from 'lucide-react';
 import { useSettings } from '../../../../lib/settings';
 import { NODE_TYPES, NODE_STATUS } from '../../lib/treeConstants';
-import { DUE_SOON_THRESHOLD_MS, DESCRIPTION_PREVIEW_MAX_LENGTH } from '../../lib/treeViewConstants';
+import { DESCRIPTION_PREVIEW_MAX_LENGTH } from '../../lib/treeViewConstants';
+import { getProgressColor, getDueStatus } from '../../lib/treePresentation';
 import './TodoItem.css';
 
 /**
@@ -44,8 +45,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const dueDate = data.dueDate ? new Date(data.dueDate) : null;
-  const isOverdue = dueDate && dueDate < today && !isDone;
-  const isDueSoon = dueDate && !isOverdue && !isDone && dueDate.getTime() - today.getTime() <= DUE_SOON_THRESHOLD_MS;
+  const { overdue: isOverdue, dueSoon: isDueSoon } = getDueStatus(dueDate, isDone, today);
 
   // Step number
   const stepNumber = useMemo(() => {
@@ -327,7 +327,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
             className="node-progress-bar"
             style={{
               width: `${data.progress}%`,
-              backgroundColor: data.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)',
+              backgroundColor: getProgressColor(data.progress),
             }}
           />
         </div>

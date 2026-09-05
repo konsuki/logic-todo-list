@@ -2,6 +2,7 @@ import { useEffect, useRef, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import { Zap, Share2, GitCommit, MoveRight, MoveDown, Settings2, X } from 'lucide-react';
 import { getFlattenedFlow } from '../../lib/treeDisplay';
+import { getProgressColor } from '../../lib/treePresentation';
 import {
   LAYOUT_MODE,
   FLOW_ORIENTATION,
@@ -396,7 +397,7 @@ const TreeView = ({
       .attr('height', PROGRESS_INDICATOR_HEIGHT)
       .attr('rx', PROGRESS_INDICATOR_RX)
       .attr('class', CLASS_NAME.NODE_PROGRESS_INDICATOR)
-      .attr('fill', (d) => (d.data.progress === PROGRESS_MAX ? 'var(--success-color)' : 'var(--primary-color)'));
+      .attr('fill', (d) => getProgressColor(d.data.progress));
 
     nodeGroups
       .append('text')

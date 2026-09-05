@@ -4,6 +4,7 @@ import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-ki
 import { Info, Trash2, AlertTriangle, GripVertical } from 'lucide-react';
 import { normalizeGroups } from '../../lib/treeGroups';
 import { NODE_TYPES } from '../../lib/treeConstants';
+import { getProgressColor } from '../../lib/treePresentation';
 import { useSettings } from '../../../../lib/settings';
 import AIInsights from './AIInsights';
 import SortableSection from './SortableSection';
@@ -242,7 +243,7 @@ const Inspector = ({
               className="progress-bar-fill"
               style={{
                 width: `${node.progress}%`,
-                backgroundColor: node.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)',
+                backgroundColor: getProgressColor(node.progress),
               }}
             />
           </div>
