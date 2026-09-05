@@ -3,7 +3,10 @@ import { X, Settings, Eye, EyeOff, Sun, Moon, Palette, FileText, Tag, Layers, Li
 import { useSettings } from '../../../../lib/settings';
 import './SettingsPanel.css';
 
-const SettingsPanel = ({ 
+/**
+ * アプリ設定パネル（テーマ・表示設定・インポート・ゴミ箱への導線）。
+ */
+const SettingsPanel = ({
   isOpen, 
   onClose, 
   t, 

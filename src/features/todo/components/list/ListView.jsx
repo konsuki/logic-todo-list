@@ -9,6 +9,9 @@ import ArboristNode from './ArboristNode';
 import './ListView.css';
 import './TodoItem.css';
 
+/**
+ * リスト表示（react-arborist による階層ツリー）。
+ */
 const ListView = ({
   nodes,
   rootNodes,

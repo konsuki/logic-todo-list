@@ -58,6 +58,9 @@ import {
 } from '../../lib/treeViewConstants';
 import './TreeView.css';
 
+/**
+ * ビジューツリー表示（D3 によるツリー/フローレイアウト）。
+ */
 const TreeView = ({ nodes, rootNodes, updateNode, selectedNodeId, onSelectNode, t, editingNodeId, setEditingNodeId }) => {
   const svgRef = useRef(null);
   const containerRef = useRef(null);

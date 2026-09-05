@@ -59,8 +59,8 @@ export const addNodes = (nodes, parentId, type, titles) => {
       progress: 0,
       children: [],
       dependsOn: [],
-      phase: PHASES.PREP, // Default phase
-      dueDate: null, // Default due date
+      phase: PHASES.PREP,
+      dueDate: null,
       order: nextOrder++, // Assign sequential order
       folderId: null, // Default: unclassified
       metadata: {
