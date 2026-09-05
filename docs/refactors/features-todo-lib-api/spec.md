@@ -26,12 +26,12 @@
 
 ### 移動
 
-| 移動前 | 移動後 |
-|---|---|
-| `src/logic/treeLogic.js` | `src/features/todo/lib/treeLogic.js` |
+| 移動前                        | 移動後                                    |
+| ----------------------------- | ----------------------------------------- |
+| `src/logic/treeLogic.js`      | `src/features/todo/lib/treeLogic.js`      |
 | `src/logic/treeLogic.test.js` | `src/features/todo/lib/treeLogic.test.js` |
-| `src/logic/importLogic.js` | `src/features/todo/lib/importLogic.js` |
-| `src/logic/aiApi.js` | `src/features/todo/api/aiApi.js` |
+| `src/logic/importLogic.js`    | `src/features/todo/lib/importLogic.js`    |
+| `src/logic/aiApi.js`          | `src/features/todo/api/aiApi.js`          |
 
 ### import パス修正
 

@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { NODE_TYPES } from '../lib/treeConstants';
 import { addNode, addNodes, addTreeUnderNode, importTreeToNodes, reorderNode, outdentNode } from '../lib/treeNodes';
-import { toggleNodeStatus, isNodeLocked, checkCircularDependency, updateProgressRecursively } from '../lib/treeProgress';
+import {
+  toggleNodeStatus,
+  isNodeLocked,
+  checkCircularDependency,
+  updateProgressRecursively,
+} from '../lib/treeProgress';
 import { addGroup, removeGroup, assignChildToGroup, updateGroup } from '../lib/treeGroups';
 import { softDeleteNode, restoreNode, permanentDeleteNode, hideNode, unhideNode } from '../lib/treeLifecycle';
 import { addFolder, deleteFolder, assignTaskToFolder } from '../lib/treeFolders';
@@ -61,7 +66,11 @@ export const useTodoTree = () => {
         const localData = (() => {
           const saved = localStorage.getItem(STORAGE_KEY);
           if (!saved) return {};
-          try { return JSON.parse(saved); } catch { return {}; }
+          try {
+            return JSON.parse(saved);
+          } catch {
+            return {};
+          }
         })();
 
         // ファイルが無効（null や配列）なら localStorage が正。ファイルを生成して MCP が読める状態にする。
@@ -109,60 +118,60 @@ export const useTodoTree = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(nodes),
-      }).catch(err => console.error('[bizyu-export] Export failed:', err));
+      }).catch((err) => console.error('[bizyu-export] Export failed:', err));
     }
   }, [nodes]);
 
   const handleAddNode = useCallback((parentId, type, title, predefinedId) => {
-    setNodes(prev => addNode(prev, parentId, type, title, predefinedId));
+    setNodes((prev) => addNode(prev, parentId, type, title, predefinedId));
   }, []);
 
   const handleAddNodes = useCallback((parentId, type, titles) => {
-    setNodes(prev => addNodes(prev, parentId, type, titles));
+    setNodes((prev) => addNodes(prev, parentId, type, titles));
   }, []);
 
   const handleAddTreeUnderNode = useCallback((parentId, treeDataArray) => {
-    setNodes(prev => addTreeUnderNode(prev, parentId, treeDataArray));
+    setNodes((prev) => addTreeUnderNode(prev, parentId, treeDataArray));
   }, []);
 
   const handleDeleteNode = useCallback((nodeId) => {
-    setNodes(prev => softDeleteNode(prev, nodeId));
+    setNodes((prev) => softDeleteNode(prev, nodeId));
   }, []);
 
   const handleRestoreNode = useCallback((nodeId) => {
-    setNodes(prev => restoreNode(prev, nodeId));
+    setNodes((prev) => restoreNode(prev, nodeId));
   }, []);
 
   const handlePermanentDeleteNode = useCallback((nodeId) => {
-    setNodes(prev => permanentDeleteNode(prev, nodeId));
+    setNodes((prev) => permanentDeleteNode(prev, nodeId));
   }, []);
 
   const handleHideNode = useCallback((nodeId) => {
-    setNodes(prev => hideNode(prev, nodeId));
+    setNodes((prev) => hideNode(prev, nodeId));
   }, []);
 
   const handleUnhideNode = useCallback((nodeId) => {
-    setNodes(prev => unhideNode(prev, nodeId));
+    setNodes((prev) => unhideNode(prev, nodeId));
   }, []);
 
   const handleToggleStatus = useCallback((nodeId) => {
-    setNodes(prev => toggleNodeStatus(prev, nodeId));
+    setNodes((prev) => toggleNodeStatus(prev, nodeId));
   }, []);
 
   const handleUpdateNode = useCallback((nodeId, updates) => {
-    setNodes(prev => {
+    setNodes((prev) => {
       const node = prev[nodeId];
       if (!node) return prev;
 
       return {
         ...prev,
-        [nodeId]: { ...node, ...updates, updatedAt: Date.now() }
+        [nodeId]: { ...node, ...updates, updatedAt: Date.now() },
       };
     });
   }, []);
 
   const handleSetRelation = useCallback((nodeId, relation) => {
-    setNodes(prev => {
+    setNodes((prev) => {
       const node = prev[nodeId];
       if (!node) return prev;
 
@@ -177,78 +186,78 @@ export const useTodoTree = () => {
 
       return {
         ...prev,
-        [nodeId]: { ...node, ...updates }
+        [nodeId]: { ...node, ...updates },
       };
     });
   }, []);
 
   const handleAddGroup = useCallback((nodeId) => {
-    setNodes(prev => addGroup(prev, nodeId));
+    setNodes((prev) => addGroup(prev, nodeId));
   }, []);
 
   const handleRemoveGroup = useCallback((nodeId, groupId) => {
-    setNodes(prev => removeGroup(prev, nodeId, groupId));
+    setNodes((prev) => removeGroup(prev, nodeId, groupId));
   }, []);
 
   const handleAssignChildToGroup = useCallback((nodeId, childId, groupId) => {
-    setNodes(prev => assignChildToGroup(prev, nodeId, childId, groupId));
+    setNodes((prev) => assignChildToGroup(prev, nodeId, childId, groupId));
   }, []);
 
   const handleUpdateGroup = useCallback((nodeId, groupId, updates) => {
-    setNodes(prev => updateGroup(prev, nodeId, groupId, updates));
+    setNodes((prev) => updateGroup(prev, nodeId, groupId, updates));
   }, []);
 
   const handleAddDependency = useCallback((nodeId, predecessorId) => {
-    setNodes(prev => {
+    setNodes((prev) => {
       const node = prev[nodeId];
       if (!node || !prev[predecessorId]) return prev;
-      
+
       // Check for circular dependency
       if (checkCircularDependency(prev, nodeId, predecessorId)) {
         alert('Circular dependency detected!');
         return prev;
       }
-      
+
       const currentDeps = node.dependsOn || [];
       if (currentDeps.includes(predecessorId)) return prev;
-      
+
       return {
         ...prev,
         [nodeId]: {
           ...node,
           dependsOn: [...currentDeps, predecessorId],
-          updatedAt: Date.now()
-        }
+          updatedAt: Date.now(),
+        },
       };
     });
   }, []);
 
   const handleRemoveDependency = useCallback((nodeId, predecessorId) => {
-    setNodes(prev => {
+    setNodes((prev) => {
       const node = prev[nodeId];
       if (!node || !node.dependsOn) return prev;
-      
+
       return {
         ...prev,
         [nodeId]: {
           ...node,
-          dependsOn: node.dependsOn.filter(id => id !== predecessorId),
-          updatedAt: Date.now()
-        }
+          dependsOn: node.dependsOn.filter((id) => id !== predecessorId),
+          updatedAt: Date.now(),
+        },
       };
     });
   }, []);
 
   const handleReorderNode = useCallback((nodeId, direction) => {
-    setNodes(prev => reorderNode(prev, nodeId, direction));
+    setNodes((prev) => reorderNode(prev, nodeId, direction));
   }, []);
 
   const handleOutdentNode = useCallback((nodeId) => {
-    setNodes(prev => outdentNode(prev, nodeId));
+    setNodes((prev) => outdentNode(prev, nodeId));
   }, []);
 
   const handleMoveNode = useCallback((dragIds, newParentId, index) => {
-    setNodes(prev => {
+    setNodes((prev) => {
       const nodeId = dragIds[0];
       const node = prev[nodeId];
       if (!node) return prev;
@@ -260,7 +269,7 @@ export const useTodoTree = () => {
       if (oldParentId && newNodes[oldParentId]) {
         newNodes[oldParentId] = {
           ...newNodes[oldParentId],
-          children: newNodes[oldParentId].children.filter(id => id !== nodeId),
+          children: newNodes[oldParentId].children.filter((id) => id !== nodeId),
         };
       }
 
@@ -281,18 +290,22 @@ export const useTodoTree = () => {
       };
 
       // 4. Re-assign order for all siblings in the new parent
-      const newSiblingIds = newParentId && newNodes[newParentId]
-        ? newNodes[newParentId].children
-        : Object.values(newNodes).filter(n => !n.parentId).sort((a, b) => (a.order || 0) - (b.order || 0)).map(n => n.id);
+      const newSiblingIds =
+        newParentId && newNodes[newParentId]
+          ? newNodes[newParentId].children
+          : Object.values(newNodes)
+              .filter((n) => !n.parentId)
+              .sort((a, b) => (a.order || 0) - (b.order || 0))
+              .map((n) => n.id);
 
       // For root-level drops without a parent, insert at index
       if (!newParentId) {
         const rootIds = Object.values(newNodes)
-          .filter(n => !n.parentId)
+          .filter((n) => !n.parentId)
           .sort((a, b) => (a.order || 0) - (b.order || 0))
-          .map(n => n.id);
+          .map((n) => n.id);
         // Re-order: remove nodeId then insert at index
-        const filtered = rootIds.filter(id => id !== nodeId);
+        const filtered = rootIds.filter((id) => id !== nodeId);
         filtered.splice(index, 0, nodeId);
         filtered.forEach((id, i) => {
           newNodes[id] = { ...newNodes[id], order: i };
@@ -323,43 +336,44 @@ export const useTodoTree = () => {
   }, []);
 
   const handleImportNodes = useCallback((importedData) => {
-    setNodes(prev => importTreeToNodes(prev, importedData));
+    setNodes((prev) => importTreeToNodes(prev, importedData));
   }, []);
 
   const handleAddFolder = useCallback((parentFolderId, title) => {
-    setNodes(prev => addFolder(prev, parentFolderId, title));
+    setNodes((prev) => addFolder(prev, parentFolderId, title));
   }, []);
 
   const handleDeleteFolder = useCallback((folderId) => {
-    setNodes(prev => deleteFolder(prev, folderId));
+    setNodes((prev) => deleteFolder(prev, folderId));
   }, []);
 
   const handleAssignTaskToFolder = useCallback((taskId, folderId) => {
-    setNodes(prev => assignTaskToFolder(prev, taskId, folderId));
+    setNodes((prev) => assignTaskToFolder(prev, taskId, folderId));
   }, []);
 
   // Active root nodes (exclude soft-deleted, hidden, and folders)
-  const rootNodes = Object.values(nodes).filter(node =>
-    !node.parentId && !node.deletedAt && !node.hidden && node.type !== NODE_TYPES.FOLDER
+  const rootNodes = Object.values(nodes).filter(
+    (node) => !node.parentId && !node.deletedAt && !node.hidden && node.type !== NODE_TYPES.FOLDER
   );
 
   // Folder nodes (independent of the causal tree)
-  const folders = Object.values(nodes).filter(node =>
-    node.type === NODE_TYPES.FOLDER && !node.deletedAt && !node.hidden
+  const folders = Object.values(nodes).filter(
+    (node) => node.type === NODE_TYPES.FOLDER && !node.deletedAt && !node.hidden
   );
 
   // Soft-deleted root nodes → shown in the trash view
-  const trashedRootNodes = Object.values(nodes).filter(node =>
-    !node.parentId && !!node.deletedAt && node.type !== NODE_TYPES.FOLDER
+  const trashedRootNodes = Object.values(nodes).filter(
+    (node) => !node.parentId && !!node.deletedAt && node.type !== NODE_TYPES.FOLDER
   );
 
   // Hidden root nodes → shown in the hidden tasks modal
   // A "hidden root" is a hidden node whose parent is NOT hidden (i.e. the entry point of hiding)
-  const hiddenRootNodes = Object.values(nodes).filter(node =>
-    !node.deletedAt &&
-    !!node.hidden &&
-    node.type !== NODE_TYPES.FOLDER &&
-    (!node.parentId || !nodes[node.parentId]?.hidden)
+  const hiddenRootNodes = Object.values(nodes).filter(
+    (node) =>
+      !node.deletedAt &&
+      !!node.hidden &&
+      node.type !== NODE_TYPES.FOLDER &&
+      (!node.parentId || !nodes[node.parentId]?.hidden)
   );
 
   return {
@@ -392,7 +406,6 @@ export const useTodoTree = () => {
     addFolder: handleAddFolder,
     deleteFolder: handleDeleteFolder,
     assignTaskToFolder: handleAssignTaskToFolder,
-    isNodeLocked: (nodeId) => isNodeLocked(nodes, nodeId)
+    isNodeLocked: (nodeId) => isNodeLocked(nodes, nodeId),
   };
 };
-

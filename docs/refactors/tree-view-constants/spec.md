@@ -28,17 +28,17 @@
 
 ### 新規ファイル
 
-| ファイル | 内容 |
-|---|---|
+| ファイル                                     | 内容                                                                            |
+| -------------------------------------------- | ------------------------------------------------------------------------------- |
 | `src/features/todo/lib/treeViewConstants.js` | 幾何・識別子・動作系・設定パネル・セレクタ/クラス名・テーマフォールバックの定数 |
 
 ### 変更ファイル
 
-| ファイル | 変更 |
-|---|---|
-| `src/features/todo/components/tree/TreeView.jsx` | リテラルを定数参照・`t()` 参照へ置換 |
-| `src/lib/i18n.js` | `tree` セクションに表示文字列キー追加（ja/en）、未定義だった `tree.layoutSettings` を追加 |
-| `docs/core/architecture.md` | §2 の構造図に `treeViewConstants.js` を反映 |
+| ファイル                                         | 変更                                                                                      |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| `src/features/todo/components/tree/TreeView.jsx` | リテラルを定数参照・`t()` 参照へ置換                                                      |
+| `src/lib/i18n.js`                                | `tree` セクションに表示文字列キー追加（ja/en）、未定義だった `tree.layoutSettings` を追加 |
+| `docs/core/architecture.md`                      | §2 の構造図に `treeViewConstants.js` を反映                                               |
 
 ## 6. 完了の定義（DoD）
 

@@ -21,10 +21,10 @@
 
 **削除対象（確定）**
 
-| ファイル | コメント | 判断理由 |
-|---|---|---|
-| `treeNodes.js` | `// Default phase`（`phase: PHASES.PREP` に付く） | 変数名 `PHASES.PREP` で既に「デフォルトのフェーズ」と分かる。冗長 |
-| `treeNodes.js` | `// Default due date`（`dueDate: null` に付く） | `null` がデフォルトと自明。冗長 |
+| ファイル       | コメント                                                      | 判断理由                                                                                                    |
+| -------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `treeNodes.js` | `// Default phase`（`phase: PHASES.PREP` に付く）             | 変数名 `PHASES.PREP` で既に「デフォルトのフェーズ」と分かる。冗長                                           |
+| `treeNodes.js` | `// Default due date`（`dueDate: null` に付く）               | `null` がデフォルトと自明。冗長                                                                             |
 | `treeNodes.js` | `// Default: unclassified`（`folderId: null` に付く、3 箇所） | ただし「unclassified＝未分類」はドメイン知識。`folderId: null` の意味を補足する価値があるため**残すか検討** |
 
 **削除しない（確定）**
@@ -77,14 +77,14 @@
 
 **追加対象（確定）**
 
-| ファイル | 追加する JSDoc |
-|---|---|
-| `App.jsx` | `App` コンポーネント: アプリ全体の組み立て（状態管理・レイアウト・ビュー切替） |
-| `useTodoTree.js` | `useTodoTree`: ツリー状態の管理と localStorage/MCP への永続化 |
-| `TreeView.jsx` | `TreeView`: D3 によるツリー/フロー表示 |
-| `ListView.jsx` | `ListView`: react-arborist によるリスト表示 |
-| `SettingsPanel.jsx` | `SettingsPanel`: アプリ設定パネル |
-| `useShortcuts.js` | `useShortcuts`: グローバルキーボードショートカット |
+| ファイル            | 追加する JSDoc                                                                 |
+| ------------------- | ------------------------------------------------------------------------------ |
+| `App.jsx`           | `App` コンポーネント: アプリ全体の組み立て（状態管理・レイアウト・ビュー切替） |
+| `useTodoTree.js`    | `useTodoTree`: ツリー状態の管理と localStorage/MCP への永続化                  |
+| `TreeView.jsx`      | `TreeView`: D3 によるツリー/フロー表示                                         |
+| `ListView.jsx`      | `ListView`: react-arborist によるリスト表示                                    |
+| `SettingsPanel.jsx` | `SettingsPanel`: アプリ設定パネル                                              |
+| `useShortcuts.js`   | `useShortcuts`: グローバルキーボードショートカット                             |
 
 **追加しないもの**
 

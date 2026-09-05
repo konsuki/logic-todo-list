@@ -12,13 +12,11 @@ const AIInsights = ({ node, nodes, addTreeUnderNode, t }) => {
     }
   };
 
-
-
   return (
     <div className="ai-insights-container">
       <div className="ai-actions">
-        <button 
-          className="ai-btn primary" 
+        <button
+          className="ai-btn primary"
           onClick={handleRequestDeductiveBreakdown}
           disabled={isLoading}
           style={{ backgroundColor: 'var(--brand-accent)' }}
@@ -39,8 +37,6 @@ const AIInsights = ({ node, nodes, addTreeUnderNode, t }) => {
           <p>{t('ai.thinking')}</p>
         </div>
       )}
-
-
     </div>
   );
 };

@@ -12,6 +12,7 @@
 **対象**: [ListView.jsx](src/components/features/list/ListView.jsx) の `ArboristNode` コンポーネント内、`handleTitleSubmit`（現行 44〜51 行目付近）。
 
 **現行コード:**
+
 ```jsx
 const handleTitleSubmit = (e) => {
   if (e.key === 'Enter' || e.type === 'blur') {
@@ -24,6 +25,7 @@ const handleTitleSubmit = (e) => {
 ```
 
 **修正後コード:**
+
 ```jsx
 const handleTitleSubmit = (e) => {
   // 編集 input 内のキーイベントを react-arborist コンテナへ伝播させない。
@@ -42,12 +44,14 @@ const handleTitleSubmit = (e) => {
 ```
 
 **変更のポイント:**
+
 - keydown イベント（`e.type === 'keydown'`）のときのみ `stopPropagation()` を呼ぶ。
 - blur イベント時は `stopPropagation()` しない（blur の伝播を止めても意味がなく、無用な副作用を避ける）。
 - Enter 確定・blur 確定のロジックはそのまま維持する。
 - グローバルショートカット（`useShortcuts.js`）や react-arborist 本体には手を入れない。
 
 **期待される結果:**
+
 - 編集中の input 内で押したキー（カーソル移動・Backspace・Space・文字・Tab）が react-arborist コンテナに伝播しなくなる。
 - input 内の通常の文字編集・カーソル移動・確定が従来どおり機能する。
 
@@ -56,6 +60,7 @@ const handleTitleSubmit = (e) => {
 **対象**: 修正後のアプリを起動し、リスト表示でタイトル編集の挙動を確認する。
 
 **確認項目:**
+
 1. タイトルをクリックして編集モードに入り、文字を入力できること。
 2. 編集モード中に **← → ↑ ↓ キー** を押しても、選択タスクが移動しないこと（カーソルが input 内で移動するだけ）。
 3. 編集モード中に **Backspace** を押しても、削除確認ダイアログが出ず、文字が削除されるだけであること。
@@ -66,5 +71,6 @@ const handleTitleSubmit = (e) => {
 8. 編集モード外では、従来どおりショートカット（カーソル移動・Enter で兄弟追加・Tab で子追加など）が機能すること。
 
 **確認方法:**
+
 - `npm run dev` で起動し、ブラウザで手動確認する。
 - 必要に応じて既存のテスト（`npm test`）が通ることを確認する。

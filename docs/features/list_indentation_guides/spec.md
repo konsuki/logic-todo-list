@@ -16,17 +16,20 @@
 ## 実装仕様
 
 ### 1. ガイド線の構成
+
 - 各ノードのレンダラー (`ArboristNode`) の左側に、そのノードの `level` 分のガイド要素を配置する。
 - `level: 0` (ルート) の場合は表示しない。
 - `level: n` (n > 0) の場合、左から 1番目 〜 n番目 のガイドを表示する。
 
 ### 2. デザイン
+
 - **線の色**: `var(--border-color)` (デフォルト)
 - **線の太さ**: `1px`
 - **ガイドの幅**: `24px` (`Tree` の `indent` プロパティと一致させる)
 - **高さ**: 100% (ノードの高さ全体に広げることで、上下のノードと線が繋がって見えるようにする)
 
 ### 3. レイアウト
+
 - `todo-item-row` の内部、または `todo-item-container` の直下に配置。
 - コンテンツ（チェックボックスやタイトル）を右に押し出す。
 
@@ -35,12 +38,14 @@
 ## 変更点
 
 ### 1. `ListView.jsx`
+
 - `ArboristNode` コンポーネントの修正。
 - `node.level` に基づくループ処理でガイド要素を生成。
 - 仮想リストの `rowHeight` を `50` に設定し、要素間の隙間を無くす。
 - ガイド線のラッパーには `style={{ width: paddingLeft }}` を付与し、幅の縮小を防ぐ。
 
 ### 2. `TodoItem.css`
+
 - ガイド要素 (`.indent-guide` および `.indent-guides-wrapper`) のスタイル定義。`min-width: max-content` や `flex-shrink: 0` によりレイアウトの崩れを防止。
 - **コンパクトレイアウトの適用**: `.todo-item-row` の上下マージン/パディングを削除し `height: 100%` 化。`.todo-item-content` の高さも `50px` に固定、内部の `gap` を `8px` に縮小。
 - **ホバー・選択状態の統一**: ホバー時および選択状態の背景色を `var(--btn-active-bg)`、テキストやアイコンの色を `var(--btn-active-text)` に変更し、UI全体のテーマと統一。

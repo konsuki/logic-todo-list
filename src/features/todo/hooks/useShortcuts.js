@@ -23,7 +23,7 @@ export const useShortcuts = ({
   editingNodeId,
   setEditingNodeId,
   outdentNode,
-  setExpandedNodeIds
+  setExpandedNodeIds,
 }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -35,7 +35,7 @@ export const useShortcuts = ({
       // Dev-only Preview Shortcut (Alt+P)
       if (e.altKey && e.code === 'KeyP' && import.meta.env.DEV) {
         e.preventDefault();
-        setView(prev => prev === VIEW_MODE.PREVIEW ? VIEW_MODE.LIST : VIEW_MODE.PREVIEW);
+        setView((prev) => (prev === VIEW_MODE.PREVIEW ? VIEW_MODE.LIST : VIEW_MODE.PREVIEW));
         return;
       }
 
@@ -46,7 +46,7 @@ export const useShortcuts = ({
           const visibleNodes = getVisibleNodesList(nodes, rootNodes, expandedNodeIds);
           if (visibleNodes.length === 0) return;
 
-          const currentIndex = visibleNodes.findIndex(n => n.id === selectedNodeId);
+          const currentIndex = visibleNodes.findIndex((n) => n.id === selectedNodeId);
           let nextIndex;
 
           if (e.key === 'ArrowUp') {
@@ -88,7 +88,7 @@ export const useShortcuts = ({
             addNode(selectedNodeId, NODE_TYPES.ACTION, 'New Task', newId);
 
             // Expand parent so we can see the new child safely
-            setExpandedNodeIds(prev => {
+            setExpandedNodeIds((prev) => {
               const next = new Set(prev);
               next.add(selectedNodeId);
               return next;
@@ -100,7 +100,8 @@ export const useShortcuts = ({
           break;
         }
 
-        case ' ': { // Space
+        case ' ': {
+          // Space
           e.preventDefault();
           if (selectedNodeId) {
             toggleStatus(selectedNodeId);
@@ -154,6 +155,6 @@ export const useShortcuts = ({
     editingNodeId,
     setEditingNodeId,
     outdentNode,
-    setExpandedNodeIds
+    setExpandedNodeIds,
   ]);
 };

@@ -13,7 +13,7 @@ const formatTreeAsText = (nodes, nodeId, depth = 0) => {
   }
   text += '\n';
   if (node.children && node.children.length > 0) {
-    node.children.forEach(childId => {
+    node.children.forEach((childId) => {
       text += formatTreeAsText(nodes, childId, depth + 1);
     });
   }
@@ -23,8 +23,6 @@ const formatTreeAsText = (nodes, nodeId, depth = 0) => {
 export const useAI = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-
 
   const getDeductiveBreakdown = useCallback(async (node, nodes) => {
     setIsLoading(true);
@@ -41,7 +39,7 @@ export const useAI = () => {
     }
     const contextPath = path.join(' > ');
     const finalGoal = path[0] || '';
-    
+
     const treeContextText = formatTreeAsText(nodes, rootId, 0).trim();
 
     // 2. プロンプト作成
@@ -91,16 +89,16 @@ ${treeContextText}
     try {
       const fullPrompt = `${systemPrompt}\n\n${userMessage}`;
       const response = await sendChatMessage(fullPrompt, 120000, true, 'expert');
-      
+
       // JSONパース（マークダウンブロックを除去する安全装置）
       const jsonStrMatch = response.match(/```json\n([\s\S]*?)\n```/) || response.match(/\{[\s\S]*\}/);
-      const jsonStr = jsonStrMatch ? (jsonStrMatch[1] || jsonStrMatch[0]) : response;
-      
+      const jsonStr = jsonStrMatch ? jsonStrMatch[1] || jsonStrMatch[0] : response;
+
       const parsed = JSON.parse(jsonStr);
       return parsed.tasks || [];
     } catch (err) {
-      console.error("Failed to parse AI response as JSON", err);
-      setError("AIの応答形式が正しくありませんでした。もう一度お試しください。");
+      console.error('Failed to parse AI response as JSON', err);
+      setError('AIの応答形式が正しくありませんでした。もう一度お試しください。');
       return null;
     } finally {
       setIsLoading(false);

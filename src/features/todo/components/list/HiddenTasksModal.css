@@ -65,7 +65,9 @@
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 .close-btn:hover {
   background: var(--border-color);
@@ -155,15 +157,15 @@
   border: 1px solid var(--border-color);
   background: var(--bg-color);
 }
-.hidden-item-type-badge[data-type="GOAL"] {
+.hidden-item-type-badge[data-type='GOAL'] {
   border-color: rgba(65, 132, 228, 0.4);
   color: var(--primary-color);
 }
-.hidden-item-type-badge[data-type="STRATEGY"] {
+.hidden-item-type-badge[data-type='STRATEGY'] {
   border-color: rgba(163, 113, 247, 0.4);
   color: #a371f7;
 }
-.hidden-item-type-badge[data-type="ACTION"] {
+.hidden-item-type-badge[data-type='ACTION'] {
   border-color: rgba(63, 185, 80, 0.4);
   color: var(--success-color);
 }
@@ -213,7 +215,9 @@
   border: 1px solid var(--border-color);
   background: var(--surface-color);
   color: var(--text-main);
-  transition: background-color 0.1s, border-color 0.1s;
+  transition:
+    background-color 0.1s,
+    border-color 0.1s;
 }
 
 .hidden-btn:hover {

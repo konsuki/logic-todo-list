@@ -13,7 +13,7 @@ const HowSection = ({
   assignChildToGroup,
   updateGroup,
   onSelectNode,
-  t
+  t,
 }) => {
   const [isHowOpen, setIsHowOpen] = useState(true);
   const [collapsedGroups, setCollapsedGroups] = useState(new Set());
@@ -21,12 +21,12 @@ const HowSection = ({
   const [editingGroupName, setEditingGroupName] = useState('');
 
   const groupIdOfChild = (childId) => {
-    const group = normalizedGroups.find(g => g.children.includes(childId));
+    const group = normalizedGroups.find((g) => g.children.includes(childId));
     return group ? group.id : null;
   };
 
   const toggleGroupCollapse = (groupId) => {
-    setCollapsedGroups(prev => {
+    setCollapsedGroups((prev) => {
       const next = new Set(prev);
       if (next.has(groupId)) next.delete(groupId);
       else next.add(groupId);
@@ -45,7 +45,7 @@ const HowSection = ({
 
   return (
     <section className="inspector-section">
-      <h3 className="section-title section-title--clickable" onClick={() => setIsHowOpen(v => !v)}>
+      <h3 className="section-title section-title--clickable" onClick={() => setIsHowOpen((v) => !v)}>
         {isHowOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         {t('inspector.how')}
       </h3>
@@ -77,7 +77,7 @@ const HowSection = ({
                 <Plus size={14} /> {t('inspector.add_group')}
               </button>
 
-              {normalizedGroups.map(group => {
+              {normalizedGroups.map((group) => {
                 const isCollapsed = collapsedGroups.has(group.id);
                 const groupProgress = calculateGroupProgress(nodes, group);
                 const isEditingName = editingGroupId === group.id;
@@ -112,7 +112,9 @@ const HowSection = ({
                           {group.name || `グループ${normalizedGroups.indexOf(group) + 1}`}
                         </span>
                       )}
-                      <span className="group-progress">{t('inspector.group_progress')}: {groupProgress}%</span>
+                      <span className="group-progress">
+                        {t('inspector.group_progress')}: {groupProgress}%
+                      </span>
                       <button className="group-collapse-btn" onClick={() => toggleGroupCollapse(group.id)}>
                         {isCollapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
                       </button>
@@ -126,18 +128,16 @@ const HowSection = ({
                         {children.length === 0 ? (
                           <p className="empty-text">{t('inspector.no_subtasks')}</p>
                         ) : (
-                          children.map(child => (
+                          children.map((child) => (
                             <div key={child.id} className="group-assign-item">
                               <span className="how-title">{child.title}</span>
                               <select
                                 className="group-assign-select"
                                 value={groupIdOfChild(child.id) || ''}
-                                onChange={(e) =>
-                                  assignChildToGroup(node.id, child.id, e.target.value || null)
-                                }
+                                onChange={(e) => assignChildToGroup(node.id, child.id, e.target.value || null)}
                               >
                                 <option value="">{t('inspector.no_group')}</option>
-                                {normalizedGroups.map(g => (
+                                {normalizedGroups.map((g) => (
                                   <option key={g.id} value={g.id}>
                                     {g.name || `グループ${normalizedGroups.indexOf(g) + 1}`}
                                   </option>
@@ -153,7 +153,9 @@ const HowSection = ({
               })}
 
               {normalizedGroups.length === 0 && (
-                <p className="hint">{t('inspector.add_group')} → {t('inspector.alternative_option')}</p>
+                <p className="hint">
+                  {t('inspector.add_group')} → {t('inspector.alternative_option')}
+                </p>
               )}
             </div>
           )}
@@ -166,12 +168,8 @@ const HowSection = ({
                   <p className="hint">{t('inspector.breakdown_hint')}</p>
                 </div>
               ) : (
-                children.map(child => (
-                  <div
-                    key={child.id}
-                    className="how-item"
-                    onClick={() => onSelectNode(child.id)}
-                  >
+                children.map((child) => (
+                  <div key={child.id} className="how-item" onClick={() => onSelectNode(child.id)}>
                     <span className={`status-dot ${child.status.toLowerCase()}`} />
                     <span className="how-title">{child.title}</span>
                     <span className="how-percent">{child.progress}%</span>

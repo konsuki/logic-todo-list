@@ -13,28 +13,31 @@ export const useI18n = () => {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const t = useCallback((keyPath, replacements = {}) => {
-    const keys = keyPath.split('.');
-    let value = translations[lang];
-    
-    for (const key of keys) {
-      if (value && value[key]) {
-        value = value[key];
-      } else {
-        return keyPath; // Fallback to key name if not found
+  const t = useCallback(
+    (keyPath, replacements = {}) => {
+      const keys = keyPath.split('.');
+      let value = translations[lang];
+
+      for (const key of keys) {
+        if (value && value[key]) {
+          value = value[key];
+        } else {
+          return keyPath; // Fallback to key name if not found
+        }
       }
-    }
 
-    if (typeof value === 'string') {
-      let result = value;
-      Object.entries(replacements).forEach(([k, v]) => {
-        result = result.replace(`[${k}]`, v);
-      });
-      return result;
-    }
+      if (typeof value === 'string') {
+        let result = value;
+        Object.entries(replacements).forEach(([k, v]) => {
+          result = result.replace(`[${k}]`, v);
+        });
+        return result;
+      }
 
-    return keyPath;
-  }, [lang]);
+      return keyPath;
+    },
+    [lang]
+  );
 
   return { t, lang, setLang };
 };

@@ -16,17 +16,17 @@
 
 原本（project-structure.md）のキーとなる記述と、本アプリへの適用結果の対応は以下の通り。
 
-| 原本の記述 | 原文の場所 | 本アプリへの適用 |
-|---|---|---|
-| src 配下のトップレベル構成（app/assets/components/config/features/hooks/lib/stores/testing/types/utils） | [L6–32](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L6-L32) | §1 に記載（本アプリは `config`/`stores`/`types`/`utils` をまだ持たないため §1 の構造に含めない） |
-| 「コードの大部分を features フォルダにまとめる」 | [L35](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L35) | 単一機能の本アプリは `features/todo/` に集約（§2） |
-| feature 内のサブ構成（api/assets/components/hooks/stores/types/utils） | [L40–54](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L40-L54) | §2 に記載 |
-| 「全フォルダを毎回作る必要はない。必要なものだけ置く」 | [L57](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L57) | §2 の注記に反映 |
-| 「API 呼び出しを feature 外の専用 `api` フォルダに置くのが実用的な場合がある（feature 間で共有する API が多い場合）」 | [L59](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L59) | 本アプリは API が 1 つ（aiApi）のため feature 内 `api/` を採用。複数 feature が増えたら専用 `api/` への移行を再検討（§3.2） |
-| 「barrel file は Vite のツリーシェイキングに問題を起こすため、直接 import する」 | [L61](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L61) | §4.2 に反映（barrel file 禁止） |
-| 「feature 間の import は避け、アプリレベルで合成する」 | [L63](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L63) | §4.3 に反映 |
-| 「一方向依存（shared → features → app）を強制する」 | [L106](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L106) | §4.4 に反映 |
-| 一方向依存の ESLint 強制例 | [L112–139](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L112-L139) | 本アプリは feature が 1 つのため実装必須ではない（§4.4 参照） |
+| 原本の記述                                                                                                            | 原文の場所                                                                                                | 本アプリへの適用                                                                                                            |
+| --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| src 配下のトップレベル構成（app/assets/components/config/features/hooks/lib/stores/testing/types/utils）              | [L6–32](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L6-L32)       | §1 に記載（本アプリは `config`/`stores`/`types`/`utils` をまだ持たないため §1 の構造に含めない）                            |
+| 「コードの大部分を features フォルダにまとめる」                                                                      | [L35](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L35)            | 単一機能の本アプリは `features/todo/` に集約（§2）                                                                          |
+| feature 内のサブ構成（api/assets/components/hooks/stores/types/utils）                                                | [L40–54](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L40-L54)     | §2 に記載                                                                                                                   |
+| 「全フォルダを毎回作る必要はない。必要なものだけ置く」                                                                | [L57](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L57)            | §2 の注記に反映                                                                                                             |
+| 「API 呼び出しを feature 外の専用 `api` フォルダに置くのが実用的な場合がある（feature 間で共有する API が多い場合）」 | [L59](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L59)            | 本アプリは API が 1 つ（aiApi）のため feature 内 `api/` を採用。複数 feature が増えたら専用 `api/` への移行を再検討（§3.2） |
+| 「barrel file は Vite のツリーシェイキングに問題を起こすため、直接 import する」                                      | [L61](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L61)            | §4.2 に反映（barrel file 禁止）                                                                                             |
+| 「feature 間の import は避け、アプリレベルで合成する」                                                                | [L63](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L63)            | §4.3 に反映                                                                                                                 |
+| 「一方向依存（shared → features → app）を強制する」                                                                   | [L106](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L106)          | §4.4 に反映                                                                                                                 |
+| 一方向依存の ESLint 強制例                                                                                            | [L112–139](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L112-L139) | 本アプリは feature が 1 つのため実装必須ではない（§4.4 参照）                                                               |
 
 ---
 
@@ -52,15 +52,15 @@ src/
 
 ### 各層の責務（原本の定義に基づく）
 
-| ディレクトリ | 責務 | 原本の定義 |
-|---|---|---|
-| `app/` | アプリの組み立て（エントリ・プロバイダ・ルート） | [L8–13](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L8-L13) |
-| `assets/` | 画像・フォントなどの静的ファイル | [L14](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L14) |
-| `components/` | アプリ全体で使う共有コンポーネント | [L16](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L16) |
-| `features/` | 機能ベースのモジュール | [L20](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L20) |
-| `hooks/` | アプリ全体で使う共有フック | [L22](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L22) |
-| `lib/` | アプリ用に事前設定された再利用可能なライブラリ | [L24](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L24) |
-| `testing/` | テスト用ユーティリティとモック | [L28](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L28) |
+| ディレクトリ  | 責務                                             | 原本の定義                                                                                          |
+| ------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `app/`        | アプリの組み立て（エントリ・プロバイダ・ルート） | [L8–13](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L8-L13) |
+| `assets/`     | 画像・フォントなどの静的ファイル                 | [L14](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L14)      |
+| `components/` | アプリ全体で使う共有コンポーネント               | [L16](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L16)      |
+| `features/`   | 機能ベースのモジュール                           | [L20](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L20)      |
+| `hooks/`      | アプリ全体で使う共有フック                       | [L22](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L22)      |
+| `lib/`        | アプリ用に事前設定された再利用可能なライブラリ   | [L24](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L24)      |
+| `testing/`    | テスト用ユーティリティとモック                   | [L28](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L28)      |
 
 > 原本には `config`/`stores`/`types`/`utils` も存在する（[L18](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L18)・[L26](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L26)・[L30](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L30)・[L32](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md#L32)）が、本アプリは現在該当するコードを持たないため §1 の構造に含めない。必要になった時点で原本に従い追加する。
 

@@ -1,12 +1,15 @@
 # GitHub Actions Theme Specification
 
 ## 概要
+
 ユーザーから提供された実際のGitHub Actionsの画像に基づき、ノードのデザイン、背景色、ラインのスタイルを完全に一致させる修正を行う。
 
 ## 追加・修正する仕様詳細
+
 画像分析から以下のCSS詳細を適用する。
 
 ### Color Palette (Light Mode を基準とするがDarkも追従)
+
 - `--bg-color`: `#f6f8fa` (全体の背景)
 - `--surface-color`: `#ffffff` (ノード・エンクロージャの背景)
 - `--border-color`: `#d0d7de` (ノード・ライン・エンクロージャの枠線)
@@ -18,7 +21,9 @@
 - `--node-shadow`: `0 1px 3px rgba(27,31,35,0.12)` (ノードのドロップシャドウ)
 
 ### UIの振る舞い（CSSオーバーライド）
+
 GitHub Actionsのワークフロー表示に近づけるため、テーマが `github` の場合（`body.theme-github` 等）に以下のスタイルを強制する。
+
 1. **Flow Link (コネクタ線)**
    - アニメーション(`dashFlow`)や破線(`stroke-dasharray`)を無効化。
    - `stroke` を `var(--border-color)` にし、透明度を1にする。

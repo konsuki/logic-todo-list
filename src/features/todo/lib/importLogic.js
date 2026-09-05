@@ -9,7 +9,13 @@ export const parseImportData = (text) => {
   if (!trimmed) throw new Error('Input is empty');
 
   // Detection logic with fallback
-  if (trimmed.startsWith('{') || (trimmed.startsWith('[') && !trimmed.startsWith('[GOAL') && !trimmed.startsWith('[STRATEGY') && !trimmed.startsWith('[ACTION'))) {
+  if (
+    trimmed.startsWith('{') ||
+    (trimmed.startsWith('[') &&
+      !trimmed.startsWith('[GOAL') &&
+      !trimmed.startsWith('[STRATEGY') &&
+      !trimmed.startsWith('[ACTION'))
+  ) {
     try {
       const data = JSON.parse(trimmed);
       return normalizeJson(data);
@@ -27,18 +33,18 @@ export const parseImportData = (text) => {
  */
 const normalizeJson = (data) => {
   if (Array.isArray(data)) {
-    return data.map(item => processJsonNode(item));
+    return data.map((item) => processJsonNode(item));
   }
   return [processJsonNode(data)];
 };
 
 const processJsonNode = (node) => {
   if (!node.title) throw new Error('Each node must have a title');
-  
+
   return {
     title: node.title,
     type: node.type || detectType(node),
-    children: (node.children || []).map(child => processJsonNode(child))
+    children: (node.children || []).map((child) => processJsonNode(child)),
   };
 };
 
@@ -51,13 +57,13 @@ const detectType = (node) => {
  * Parses indented text into a nested node structure.
  */
 const parseMarkdown = (text) => {
-  const lines = text.split('\n').filter(line => line.trim() !== '');
+  const lines = text.split('\n').filter((line) => line.trim() !== '');
   if (lines.length === 0) return [];
 
   const rootNodes = [];
   const stack = [];
 
-  lines.forEach(line => {
+  lines.forEach((line) => {
     const indentMatch = line.match(/^(\s*)/);
     const indent = indentMatch ? indentMatch[1].length : 0;
     const content = line.trim();
@@ -76,7 +82,7 @@ const parseMarkdown = (text) => {
       title,
       type,
       indent,
-      children: []
+      children: [],
     };
 
     while (stack.length > 0 && stack[stack.length - 1].indent >= indent) {
@@ -93,12 +99,12 @@ const parseMarkdown = (text) => {
   });
 
   // Second pass: Finalize types and clean up
-  return rootNodes.map(node => finalizeMarkdownNode(node, null));
+  return rootNodes.map((node) => finalizeMarkdownNode(node, null));
 };
 
 const finalizeMarkdownNode = (node, parentType) => {
   let type = node.type;
-  
+
   if (!type) {
     if (!parentType) {
       type = NODE_TYPES.GOAL;
@@ -112,6 +118,6 @@ const finalizeMarkdownNode = (node, parentType) => {
   return {
     title: node.title,
     type,
-    children: node.children.map(child => finalizeMarkdownNode(child, type))
+    children: node.children.map((child) => finalizeMarkdownNode(child, type)),
   };
 };

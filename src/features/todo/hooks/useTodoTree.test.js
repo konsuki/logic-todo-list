@@ -45,10 +45,13 @@ describe('useTodoTree 起動時優先読み込み', () => {
 
     // ファイル（MCP 書き込み）は新しい（updatedAt=200）
     const fileNode = makeNode('file-node', 200);
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ 'file-node': fileNode }),
-    }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ 'file-node': fileNode }),
+      })
+    );
 
     const { result } = renderHook(() => useTodoTree());
 
@@ -66,10 +69,13 @@ describe('useTodoTree 起動時優先読み込み', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ 'local-node': localNode }));
 
     const fileNode = makeNode('file-node', 100);
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ 'file-node': fileNode }),
-    }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ 'file-node': fileNode }),
+      })
+    );
 
     const { result } = renderHook(() => useTodoTree());
 
@@ -86,10 +92,13 @@ describe('useTodoTree 起動時優先読み込み', () => {
     const localNode = makeNode('local-node', 100);
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ 'local-node': localNode }));
 
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => null,
-    }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => null,
+      })
+    );
 
     const { result } = renderHook(() => useTodoTree());
 
@@ -104,10 +113,13 @@ describe('useTodoTree 起動時優先読み込み', () => {
     localStorage.clear();
 
     const fileNode = makeNode('file-node', 200);
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ 'file-node': fileNode }),
-    }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ 'file-node': fileNode }),
+      })
+    );
 
     const { result } = renderHook(() => useTodoTree());
 

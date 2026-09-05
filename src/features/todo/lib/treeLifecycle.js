@@ -20,7 +20,7 @@ export const softDeleteNode = (nodes, nodeId) => {
     const node = newNodes[id];
     if (!node) return;
     newNodes[id] = { ...node, deletedAt: now };
-    (node.children || []).forEach(childId => markDeleted(childId));
+    (node.children || []).forEach((childId) => markDeleted(childId));
   };
 
   markDeleted(nodeId);
@@ -48,7 +48,7 @@ export const hideNode = (nodes, nodeId) => {
     const node = newNodes[id];
     if (!node) return;
     newNodes[id] = { ...node, hidden: true };
-    (node.children || []).forEach(childId => markHidden(childId));
+    (node.children || []).forEach((childId) => markHidden(childId));
   };
 
   markHidden(nodeId);
@@ -76,7 +76,7 @@ export const unhideNode = (nodes, nodeId) => {
     if (!node) return;
     const { hidden, ...rest } = node;
     newNodes[id] = rest;
-    (node.children || []).forEach(childId => markUnhidden(childId));
+    (node.children || []).forEach((childId) => markUnhidden(childId));
   };
 
   markUnhidden(nodeId);
@@ -104,7 +104,7 @@ export const restoreNode = (nodes, nodeId) => {
     if (!node) return;
     const { deletedAt, ...rest } = node;
     newNodes[id] = rest;
-    (node.children || []).forEach(childId => markRestored(childId));
+    (node.children || []).forEach((childId) => markRestored(childId));
   };
 
   markRestored(nodeId);
@@ -134,7 +134,7 @@ export const permanentDeleteNode = (nodes, nodeId) => {
     let ids = [id];
     const node = newNodes[id];
     if (node && node.children) {
-      node.children.forEach(childId => {
+      node.children.forEach((childId) => {
         ids = [...ids, ...getDescendants(childId)];
       });
     }
@@ -144,17 +144,17 @@ export const permanentDeleteNode = (nodes, nodeId) => {
   const allIdsToDelete = new Set(getDescendants(nodeId));
 
   // 1. Remove nodes physically
-  Object.keys(newNodes).forEach(id => {
+  Object.keys(newNodes).forEach((id) => {
     if (allIdsToDelete.has(id)) {
       delete newNodes[id];
     } else {
       // 2. Clean up dangling dependencies
       if (newNodes[id].dependsOn) {
-        newNodes[id].dependsOn = newNodes[id].dependsOn.filter(depId => !allIdsToDelete.has(depId));
+        newNodes[id].dependsOn = newNodes[id].dependsOn.filter((depId) => !allIdsToDelete.has(depId));
       }
       // 3. Clean up parent's children array
       if (newNodes[id].children) {
-        newNodes[id].children = newNodes[id].children.filter(cid => !allIdsToDelete.has(cid));
+        newNodes[id].children = newNodes[id].children.filter((cid) => !allIdsToDelete.has(cid));
       }
     }
   });

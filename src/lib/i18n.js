@@ -50,14 +50,16 @@ export const translations = {
       description: '説明とメモ',
       intent: '詳細意図',
       procedure: '実行手順',
-      procedure_help: 'このタスクを実行するための具体的な手順・段取りを書く場所です。実行の順番や詳細なステップを自由に記述できます。',
+      procedure_help:
+        'このタスクを実行するための具体的な手順・段取りを書く場所です。実行の順番や詳細なステップを自由に記述できます。',
       progress: '全体の進捗',
       placeholder_desc: 'メモや詳細な要件を追加...',
       placeholder_intent: 'このタスクで達成したい状態・なぜこのタスクをするのかを書く...',
       placeholder_procedure: 'このタスクを実行する具体的な手順を書く...',
       root_goal: 'これは最上位の目標です。',
       logic_gap_title: '論理のギャップ警告',
-      logic_gap_desc: 'このノードには子が1つしかありません。適切なロジックツリーの分解には、通常少なくとも2つの要素（MECE）が必要です。',
+      logic_gap_desc:
+        'このノードには子が1つしかありません。適切なロジックツリーの分解には、通常少なくとも2つの要素（MECE）が必要です。',
       focus_objective: 'この究極の目的に集中しましょう。',
       achieve_context: '「[parent]」を達成するために、このタスクを完了する必要があります。',
       no_subtasks: 'サブタスクが未定義です。',
@@ -69,7 +71,8 @@ export const translations = {
       phase: '実行フェーズ',
       due_date: '期限日',
       order_section: '実行順序 (ステップ)',
-      order_section_help: '親タスク直下の兄弟タスクの中で、このタスクが実行される予定の順番を表す設定です。上下ボタンで変更できます。',
+      order_section_help:
+        '親タスク直下の兄弟タスクの中で、このタスクが実行される予定の順番を表す設定です。上下ボタンで変更できます。',
       move_up: '一つ上へ',
       move_down: '一つ下へ',
       relation_label: '子タスクの関係',
@@ -84,6 +87,7 @@ export const translations = {
       remove_group: 'グループを削除',
       folder: 'フォルダ',
       no_folder: '未整理',
+      reorder_sections: 'セクションを並び替え',
     },
     tree: {
       hint: 'ドラッグで移動 / スクロールでズーム',
@@ -139,7 +143,7 @@ export const translations = {
       open_trash: '開く',
       use_folder_view: 'フォルダ機能を使う',
       use_folder_view_desc: '因果とは独立したフォルダでタスクを整理できるようにします。',
-    }
+    },
   },
   en: {
     common: {
@@ -192,14 +196,16 @@ export const translations = {
       description: 'Description & Notes',
       intent: 'Detailed Intent',
       procedure: 'Procedure',
-      procedure_help: 'A place to describe the concrete steps and process to carry out this task. Write the order and detailed steps freely.',
+      procedure_help:
+        'A place to describe the concrete steps and process to carry out this task. Write the order and detailed steps freely.',
       progress: 'Overall Progress',
       placeholder_desc: 'Add notes or detailed requirements...',
       placeholder_intent: 'Describe the intent — what state you want to achieve and why this task matters...',
       placeholder_procedure: 'Describe the concrete steps to carry out this task...',
       root_goal: 'This is a top-level goal.',
       logic_gap_title: 'Logic Gap Warning',
-      logic_gap_desc: 'This node only has one child. A proper logic tree breakdown usually requires at least two mutually exclusive elements (MECE).',
+      logic_gap_desc:
+        'This node only has one child. A proper logic tree breakdown usually requires at least two mutually exclusive elements (MECE).',
       focus_objective: 'Focus on this ultimate objective.',
       achieve_context: 'To achieve "[parent]", you need to complete this task.',
       no_subtasks: 'No sub-tasks defined yet.',
@@ -211,7 +217,8 @@ export const translations = {
       phase: 'Execution Phase',
       due_date: 'Due Date',
       order_section: 'Execution Order (Steps)',
-      order_section_help: 'The planned execution order of this task among its sibling tasks under the parent. Adjust with the up/down buttons.',
+      order_section_help:
+        'The planned execution order of this task among its sibling tasks under the parent. Adjust with the up/down buttons.',
       move_up: 'Move Up',
       move_down: 'Move Down',
       relation_label: 'Child relationship',
@@ -226,6 +233,7 @@ export const translations = {
       remove_group: 'Remove group',
       folder: 'Folder',
       no_folder: 'Uncategorized',
+      reorder_sections: 'Reorder sections',
     },
     tree: {
       hint: 'Drag to Pan / Scroll to Zoom',
@@ -281,6 +289,6 @@ export const translations = {
       open_trash: 'Open',
       use_folder_view: 'Use Folder View',
       use_folder_view_desc: 'Organize tasks into folders independent of causality.',
-    }
-  }
+    },
+  },
 };

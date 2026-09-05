@@ -32,7 +32,7 @@ const ListView = ({
   displayMode,
   setDisplayMode,
   treeRef,
-  t
+  t,
 }) => {
   const { settings } = useSettings();
   const [phaseFilter, setPhaseFilter] = useState(() => {
@@ -79,11 +79,11 @@ const ListView = ({
       const style = window.getComputedStyle(element);
       const isScrollable = style.overflowY === 'auto' || style.overflowY === 'scroll';
       const hasOverflow = element.scrollHeight > element.offsetHeight;
-      
+
       if (isScrollable && hasOverflow) {
         return element;
       }
-      
+
       for (let i = 0; i < element.children.length; i++) {
         const found = findScrollable(element.children[i]);
         if (found) return found;
@@ -134,44 +134,49 @@ const ListView = ({
       return buildFolderTree(nodes, t('list.uncategorized'));
     }
 
-    const filteredNodes = phaseFilter === PHASES.ALL ? nodes : (() => {
-      // Filter logic: keep nodes matching phase and their ancestors
-      const visibleSet = new Set();
-      const checkVisibility = (nodeId, forceVisible = false) => {
-        const node = nodes[nodeId];
-        if (!node || node.deletedAt || node.hidden) return false; // Skip soft-deleted and hidden nodes
-        const matchesPhase = node.phase === phaseFilter;
-        const isVisible = forceVisible || matchesPhase;
-        
-        let childMatches = false;
-        if (node.children) {
-          node.children.forEach(childId => {
-            if (checkVisibility(childId, isVisible)) childMatches = true;
-          });
-        }
-        
-        if (isVisible || childMatches) {
-          visibleSet.add(nodeId);
-          return true;
-        }
-        return false;
-      };
-      rootNodes.forEach(root => checkVisibility(root.id));
-      
-      // Create filtered nodes object
-      const filtered = {};
-      Object.entries(nodes).forEach(([id, node]) => {
-        if (visibleSet.has(id)) {
-          filtered[id] = {
-            ...node,
-            children: (node.children || []).filter(cid => visibleSet.has(cid))
-          };
-        }
-      });
-      return filtered;
-    })();
+    const filteredNodes =
+      phaseFilter === PHASES.ALL
+        ? nodes
+        : (() => {
+            // Filter logic: keep nodes matching phase and their ancestors
+            const visibleSet = new Set();
+            const checkVisibility = (nodeId, forceVisible = false) => {
+              const node = nodes[nodeId];
+              if (!node || node.deletedAt || node.hidden) return false; // Skip soft-deleted and hidden nodes
+              const matchesPhase = node.phase === phaseFilter;
+              const isVisible = forceVisible || matchesPhase;
 
-    const filteredRoots = Object.values(filteredNodes).filter(n => !n.parentId && !n.deletedAt && !n.hidden && n.type !== NODE_TYPES.FOLDER);
+              let childMatches = false;
+              if (node.children) {
+                node.children.forEach((childId) => {
+                  if (checkVisibility(childId, isVisible)) childMatches = true;
+                });
+              }
+
+              if (isVisible || childMatches) {
+                visibleSet.add(nodeId);
+                return true;
+              }
+              return false;
+            };
+            rootNodes.forEach((root) => checkVisibility(root.id));
+
+            // Create filtered nodes object
+            const filtered = {};
+            Object.entries(nodes).forEach(([id, node]) => {
+              if (visibleSet.has(id)) {
+                filtered[id] = {
+                  ...node,
+                  children: (node.children || []).filter((cid) => visibleSet.has(cid)),
+                };
+              }
+            });
+            return filtered;
+          })();
+
+    const filteredRoots = Object.values(filteredNodes).filter(
+      (n) => !n.parentId && !n.deletedAt && !n.hidden && n.type !== NODE_TYPES.FOLDER
+    );
     return buildArboristTree(filteredNodes, filteredRoots);
   }, [nodes, rootNodes, phaseFilter, displayMode, t]);
 
@@ -181,7 +186,7 @@ const ListView = ({
         <Target size={64} color="var(--border-color)" style={{ marginBottom: '16px' }} />
         <h2>{t('list.welcome')}</h2>
         <p>{t('list.create_first_goal')}</p>
-        <button 
+        <button
           className="primary-btn"
           onClick={() => {
             const title = prompt(t('list.enter_goal'));
@@ -217,7 +222,7 @@ const ListView = ({
           )}
           {displayMode === DISPLAY_MODE.LOGIC && (
             <div className="phase-filter-bar">
-              {[PHASES.ALL, PHASES.PREP, PHASES.EXEC, PHASES.REVIEW].map(p => (
+              {[PHASES.ALL, PHASES.PREP, PHASES.EXEC, PHASES.REVIEW].map((p) => (
                 <button
                   key={p}
                   className={`phase-filter-btn ${phaseFilter === p ? 'active' : ''}`}
@@ -242,11 +247,7 @@ const ListView = ({
             </button>
           )}
           {hiddenRootNodes && hiddenRootNodes.length > 0 && (
-            <button
-              className="hidden-tasks-btn"
-              onClick={onOpenHiddenTasks}
-              title={t('list.hidden_tasks')}
-            >
+            <button className="hidden-tasks-btn" onClick={onOpenHiddenTasks} title={t('list.hidden_tasks')}>
               <EyeOff size={16} />
               <span>{t('list.hidden_tasks_count', { count: hiddenRootNodes.length })}</span>
             </button>
@@ -273,14 +274,16 @@ const ListView = ({
           <Tree
             ref={treeRef}
             data={arboristData}
-            onMove={displayMode === DISPLAY_MODE.LOGIC
-              ? ({ dragIds, parentId, index }) => moveNode(dragIds, parentId, index)
-              : null}
+            onMove={
+              displayMode === DISPLAY_MODE.LOGIC
+                ? ({ dragIds, parentId, index }) => moveNode(dragIds, parentId, index)
+                : null
+            }
             disableDrag={displayMode === DISPLAY_MODE.FOLDER}
             openByDefault={true}
             initialOpenState={openState}
             onToggle={(id) => {
-              setOpenState(prev => {
+              setOpenState((prev) => {
                 const isCurrentlyOpen = prev[id] !== undefined ? prev[id] : true;
                 const newState = { ...prev, [id]: !isCurrentlyOpen };
                 localStorage.setItem('logido_list_open_state', JSON.stringify(newState));

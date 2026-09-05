@@ -25,7 +25,7 @@ export const themes = {
       '--border-color': 'hsla(220, 15%, 0%, 0.08)',
       '--glass-bg': 'hsla(220, 30%, 100%, 0.7)',
       '--glass-border': 'hsla(220, 15%, 0%, 0.1)',
-    }
+    },
   },
   premium: {
     dark: {
@@ -53,7 +53,7 @@ export const themes = {
       '--border-color': 'rgba(0, 0, 0, 0.06)',
       '--glass-bg': 'rgba(255, 255, 255, 0.7)',
       '--glass-border': 'rgba(0, 0, 0, 0.1)',
-    }
+    },
   },
   github: {
     dark: {
@@ -91,6 +91,6 @@ export const themes = {
       '--node-hover-shadow': '0 4px 6px rgba(0, 0, 0, 0.12)',
       '--btn-active-bg': '#e6e6e6',
       '--btn-active-text': 'var(--text-main)',
-    }
-  }
+    },
+  },
 };

@@ -1,5 +1,16 @@
 import { useState, useMemo } from 'react';
-import { ChevronDown, ChevronRight, Plus, Trash2, CheckCircle, Circle, AlertTriangle, Lock, Clock, EyeOff } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronRight,
+  Plus,
+  Trash2,
+  CheckCircle,
+  Circle,
+  AlertTriangle,
+  Lock,
+  Clock,
+  EyeOff,
+} from 'lucide-react';
 import { isNodeLocked } from '../../lib/treeProgress';
 import { NODE_TYPES, NODE_STATUS } from '../../lib/treeConstants';
 import { DUE_SOON_THRESHOLD_MS, DESCRIPTION_PREVIEW_MAX_LENGTH } from '../../lib/treeViewConstants';
@@ -20,7 +31,7 @@ const TodoItem = ({
   toggleExpand,
   depth = 0,
   t,
-  visibleNodeIds = null
+  visibleNodeIds = null,
 }) => {
   const { settings } = useSettings();
   const isExpanded = expandedNodeIds.has(node.id);
@@ -34,16 +45,16 @@ const TodoItem = ({
   // Dependency logic
   const isLocked = isNodeLocked(allNodes, node.id);
   const unsatisfiedDeps = (node.dependsOn || [])
-    .map(id => allNodes[id])
-    .filter(n => n && n.status !== NODE_STATUS.DONE);
+    .map((id) => allNodes[id])
+    .filter((n) => n && n.status !== NODE_STATUS.DONE);
 
   // Timeline logic
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
+
   const dueDate = node.dueDate ? new Date(node.dueDate) : null;
   const isOverdue = dueDate && dueDate < today && !isDone;
-  const isDueSoon = dueDate && !isOverdue && !isDone && (dueDate.getTime() - today.getTime()) <= DUE_SOON_THRESHOLD_MS;
+  const isDueSoon = dueDate && !isOverdue && !isDone && dueDate.getTime() - today.getTime() <= DUE_SOON_THRESHOLD_MS;
 
   const showMeceWarning = node.type === NODE_TYPES.STRATEGY && childrenCount === 1;
 
@@ -63,8 +74,8 @@ const TodoItem = ({
 
   // Sort and filter children
   const displayedChildren = useMemo(() => {
-    const children = node.children.map(id => allNodes[id]).filter(Boolean);
-    const filtered = children.filter(child => !visibleNodeIds || visibleNodeIds.has(child.id));
+    const children = node.children.map((id) => allNodes[id]).filter(Boolean);
+    const filtered = children.filter((child) => !visibleNodeIds || visibleNodeIds.has(child.id));
     return filtered.sort((a, b) => (a.order || 0) - (b.order || 0));
   }, [node.children, allNodes, visibleNodeIds]);
 
@@ -73,25 +84,24 @@ const TodoItem = ({
     const parent = node.parentId ? allNodes[node.parentId] : null;
     let siblings;
     if (parent) {
-      siblings = parent.children.map(id => allNodes[id]).filter(Boolean);
+      siblings = parent.children.map((id) => allNodes[id]).filter(Boolean);
     } else {
-      siblings = Object.values(allNodes).filter(n => !n.parentId);
+      siblings = Object.values(allNodes).filter((n) => !n.parentId);
     }
     siblings.sort((a, b) => (a.order || 0) - (b.order || 0));
-    const index = siblings.findIndex(s => s.id === node.id);
+    const index = siblings.findIndex((s) => s.id === node.id);
     return index !== -1 ? index + 1 : null;
   }, [node, allNodes]);
 
   return (
-    <div className={`todo-item-container depth-${depth} ${isSelected ? 'is-selected' : ''} ${isLocked ? 'is-locked' : ''}`}>
-      <div 
-        className={`todo-item-row ${isDone ? 'is-done' : ''}`}
-        onClick={handleRowClick}
-      >
+    <div
+      className={`todo-item-container depth-${depth} ${isSelected ? 'is-selected' : ''} ${isLocked ? 'is-locked' : ''}`}
+    >
+      <div className={`todo-item-row ${isDone ? 'is-done' : ''}`} onClick={handleRowClick}>
         {depth > 0 && <div className="indent-guide" style={{ left: `calc(${depth} * 24px - 12px)` }} />}
 
         <div className="todo-item-content" style={{ paddingLeft: `${depth * 24}px` }}>
-          <button 
+          <button
             className={`expand-btn ${displayedChildren.length === 0 ? 'invisible' : ''}`}
             onClick={(e) => {
               e.stopPropagation();
@@ -101,8 +111,8 @@ const TodoItem = ({
             {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
           </button>
 
-          <button 
-            className={`status-toggle ${isLocked ? 'disabled' : ''}`} 
+          <button
+            className={`status-toggle ${isLocked ? 'disabled' : ''}`}
             onClick={(e) => {
               e.stopPropagation();
               if (!isLocked) onToggle(node.id);
@@ -120,10 +130,8 @@ const TodoItem = ({
 
           <div className="node-info">
             <span className={`node-type-tag ${node.type.toLowerCase()}`}>{node.type}</span>
-            
-            {stepNumber !== null && (
-              <span className="step-badge">Step {stepNumber}</span>
-            )}
+
+            {stepNumber !== null && <span className="step-badge">Step {stepNumber}</span>}
 
             {isEditing ? (
               <input
@@ -144,9 +152,7 @@ const TodoItem = ({
             {/* Timeline Badges */}
             <div className="timeline-meta">
               {node.phase && (
-                <span className={`phase-badge ${node.phase.toLowerCase()}`}>
-                  {t(`phases.${node.phase}`)}
-                </span>
+                <span className={`phase-badge ${node.phase.toLowerCase()}`}>{t(`phases.${node.phase}`)}</span>
               )}
               {node.dueDate && (
                 <span className={`due-date-badge ${isOverdue ? 'overdue' : isDueSoon ? 'due-soon' : ''}`}>
@@ -155,7 +161,7 @@ const TodoItem = ({
                 </span>
               )}
             </div>
-            
+
             {showMeceWarning && (
               <div className="mece-warning-icon" title={t('inspector.logic_gap_desc')}>
                 <AlertTriangle size={14} color="var(--warning-color)" />
@@ -163,18 +169,18 @@ const TodoItem = ({
             )}
 
             {isLocked && (
-              <div className="lock-badge" title={unsatisfiedDeps.map(d => d.title).join(', ')}>
+              <div className="lock-badge" title={unsatisfiedDeps.map((d) => d.title).join(', ')}>
                 <Lock size={10} /> {unsatisfiedDeps.length}
               </div>
             )}
 
-            {node.progress > 0 && node.progress < 100 && (
-              <span className="progress-badge">{node.progress}%</span>
-            )}
+            {node.progress > 0 && node.progress < 100 && <span className="progress-badge">{node.progress}%</span>}
 
             {node.description && settings.showDescriptionInList && (
               <div className="node-description-preview" title={node.description}>
-                {node.description.length > DESCRIPTION_PREVIEW_MAX_LENGTH ? node.description.substring(0, DESCRIPTION_PREVIEW_MAX_LENGTH) + '...' : node.description}
+                {node.description.length > DESCRIPTION_PREVIEW_MAX_LENGTH
+                  ? node.description.substring(0, DESCRIPTION_PREVIEW_MAX_LENGTH) + '...'
+                  : node.description}
               </div>
             )}
           </div>
@@ -214,21 +220,21 @@ const TodoItem = ({
             </button>
           </div>
         </div>
-        
+
         <div className="node-progress-container">
-          <div 
-            className="node-progress-bar" 
-            style={{ 
+          <div
+            className="node-progress-bar"
+            style={{
               width: `${node.progress}%`,
-              backgroundColor: node.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)'
-            }} 
+              backgroundColor: node.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)',
+            }}
           />
         </div>
       </div>
 
       {isExpanded && displayedChildren.length > 0 && (
         <div className="todo-item-children">
-          {displayedChildren.map(child => (
+          {displayedChildren.map((child) => (
             <TodoItem
               key={child.id}
               node={child}

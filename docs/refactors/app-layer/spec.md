@@ -28,11 +28,11 @@
 
 ### 移動・新規
 
-| 操作 | 内容 |
-|---|---|
-| 移動 | `src/main.jsx` → `src/app/main.jsx` |
-| 移動 | `src/App.jsx` → `src/app/App.jsx` |
-| 移動 | `src/App.css` → `src/app/App.css` |
+| 操作 | 内容                                              |
+| ---- | ------------------------------------------------- |
+| 移動 | `src/main.jsx` → `src/app/main.jsx`               |
+| 移動 | `src/App.jsx` → `src/app/App.jsx`                 |
+| 移動 | `src/App.css` → `src/app/App.css`                 |
 | 新規 | `src/app/provider.jsx`（`AppProvider` を export） |
 
 ### import パス修正

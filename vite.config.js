@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import os from 'node:os'
-import fs from 'node:fs'
-import path from 'node:path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import os from 'node:os';
+import fs from 'node:fs';
+import path from 'node:path';
 
 // https://vitejs.dev/config/
 // Custom Vite plugin: exports tree data to filesystem for MCP server consumption
@@ -44,7 +44,9 @@ function bizyuExportPlugin() {
         }
 
         let body = '';
-        req.on('data', chunk => { body += chunk; });
+        req.on('data', (chunk) => {
+          body += chunk;
+        });
         req.on('end', () => {
           try {
             if (!fs.existsSync(bizyuDir)) {
@@ -62,7 +64,7 @@ function bizyuExportPlugin() {
           }
         });
       });
-    }
+    },
   };
 }
 
@@ -73,13 +75,13 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      }
-    }
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: './src/testing/setupTests.js'
-  }
-})
+    setupFiles: './src/testing/setupTests.js',
+  },
+});

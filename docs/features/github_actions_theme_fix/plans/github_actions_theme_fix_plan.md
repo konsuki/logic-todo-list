@@ -8,13 +8,15 @@
 4. **表示の確認・微調整**: Viteの開発サーバーでブラウザ上の見た目を確認し、画像と完全に一致するようpaddingや細かな色味を調整する。
 
 ---
-*※ ここから下の「手順の詳細化」は以降のターンで段階的に追記されます。*
+
+_※ ここから下の「手順の詳細化」は以降のターンで段階的に追記されます。_
 
 ## 手順の詳細化
 
 ### 1. テーマ変数の再定義
+
 - **対象ファイル**: `src/constants/themes.js`
-- **作業内容**: 
+- **作業内容**:
   - `themes.github.light` の色味を以下のように画像に完全に一致する色へ更新する。
     - `--bg-color`: `#f6f8fa`
     - `--surface-color`: `#ffffff`
@@ -27,22 +29,25 @@
     - `--node-shadow`: `0 1px 3px rgba(1, 4, 9, 0.8)` (dark用)
 
 ### 2. App全体のテーマクラス付与
+
 - **対象ファイル**: `src/App.jsx`
-- **作業内容**: 
+- **作業内容**:
   - `useEffect` フック内でテーマ変数を設定している箇所で、現在の `themeName` を `document.body.className` に付与する。
   - 例: `document.body.className = \`theme-${themeName}\`;`
   - 目的: `.theme-github` というプレフィックスを用いて、コンポーネント個別のCSS（特にTreeViewのSVGスタイル等）を安全にオーバーライドできるようにする。
 
 ### 3. ノードとエンクロージャのCSSオーバーライド
+
 - **対象ファイル**: `src/components/features/tree/TreeView.css`
-- **作業内容**: 
+- **作業内容**:
   - ファイルの末尾に `.theme-github` スコープを持つCSSルールを追加する。
   - `flow-link`: 点線アニメーションを無効化（`animation: none`, `stroke-dasharray: none`）し、色を `var(--border-color)`、透明度を `1` に上書きする。
   - `node-rect`: GitHub Actionsと同様の影を付けるため `filter: drop-shadow(var(--node-shadow))` を適用する（元々の色付けロジック `.node-rect.goal` 等への影響も考慮）。
   - `parent-enclosure`: 元々は透明度を持った枠だが、GitHubの枠のように白塗り（`fill: var(--surface-color) !important`）かつ不透明度100%（`opacity: 1 !important`）に変更する。
 
 ### 4. 表示の確認・微調整と完了処理
+
 - **対象環境**: ローカルブラウザ (`npm run dev`)
-- **作業内容**: 
+- **作業内容**:
   - 上記実装後、ユーザーに実際のブラウザ画面で「Flowモード」および「githubテーマ」の見た目を確認してもらう。
   - 問題がなければ、TODOリストの更新、`docs/REVISIONS.md` のタスク完了移動、およびコミットを行いタスクを完了する。

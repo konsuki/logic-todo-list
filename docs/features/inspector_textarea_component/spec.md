@@ -9,25 +9,26 @@
 ## 2. コンポーネント設計
 
 ### コンポーネント名
+
 `InspectorTextarea`（`src/components/features/inspector/InspectorTextarea.jsx`）
 
 ### Props
 
-| prop | 型 | 説明 |
-|------|----|------|
-| `nodeId` | string | ノード切り替え検知用（useEffect の依存配列に使用） |
-| `value` | string | 現在の文字列（親から渡す） |
-| `onChange(text)` | function | onBlur 時に呼ばれるコールバック（保存） |
-| `onModalChange(text)` | function | モーダル内リアルタイム変更時のコールバック |
-| `label` | string | セクションタイトル文字列（例: t('inspector.description')）。モーダルタイトル・expand ボタン tooltip にも使用される |
-| `placeholder` | string | textarea のプレースホルダー |
-| `t` | function | 翻訳関数（モーダル内の共通文言に使用） |
+| prop                  | 型       | 説明                                                                                                               |
+| --------------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `nodeId`              | string   | ノード切り替え検知用（useEffect の依存配列に使用）                                                                 |
+| `value`               | string   | 現在の文字列（親から渡す）                                                                                         |
+| `onChange(text)`      | function | onBlur 時に呼ばれるコールバック（保存）                                                                            |
+| `onModalChange(text)` | function | モーダル内リアルタイム変更時のコールバック                                                                         |
+| `label`               | string   | セクションタイトル文字列（例: t('inspector.description')）。モーダルタイトル・expand ボタン tooltip にも使用される |
+| `placeholder`         | string   | textarea のプレースホルダー                                                                                        |
+| `t`                   | function | 翻訳関数（モーダル内の共通文言に使用）                                                                             |
 
 ### 内部 state
 
-| state | 初期値 | 説明 |
-|-------|--------|------|
-| `isEditing` | `false` | 編集中かどうか |
+| state         | 初期値  | 説明               |
+| ------------- | ------- | ------------------ |
+| `isEditing`   | `false` | 編集中かどうか     |
 | `isModalOpen` | `false` | 拡大モーダルの開閉 |
 
 ### 内部ロジック
@@ -42,21 +43,23 @@
 
 ## 3. 境界条件
 
-| ケース | 挙動 |
-|--------|------|
-| `value` が空 | 常に textarea 表示（編集モードと同じ） |
-| ノード切り替え（`nodeId` 変化） | `isEditing`・`isModalOpen` をリセット |
-| タイトルだけ異なる複数テキストエリア | `label` prop で制御 |
-| モーダルを開いて何も変えず閉じる | 元の value が維持される |
+| ケース                               | 挙動                                   |
+| ------------------------------------ | -------------------------------------- |
+| `value` が空                         | 常に textarea 表示（編集モードと同じ） |
+| ノード切り替え（`nodeId` 変化）      | `isEditing`・`isModalOpen` をリセット  |
+| タイトルだけ異なる複数テキストエリア | `label` prop で制御                    |
+| モーダルを開いて何も変えず閉じる     | 元の value が維持される                |
 
 ## 4. 変更スコープ
 
 ### やること
+
 - `InspectorTextarea.jsx` を新規作成
 - `Inspector.jsx` の `sectionMap.description` を `<InspectorTextarea>` に置き換え
 - `isEditingDesc`・`handleDescriptionChange`・`handleDescModalChange` を Inspector.jsx から削除（コンポーネント内に移動）
 
 ### やらないこと
+
 - `DescriptionModal.jsx` 自体の変更
 - CSS クラス名の変更（既存クラスを流用）
 - T6（詳細意図テキストエリア）の追加（別タスク）

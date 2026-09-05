@@ -39,8 +39,8 @@ export const addFolder = (nodes, parentFolderId = null, title = 'New Folder') =>
     folderId: parentFolderId,
     metadata: {
       createdAt: Date.now(),
-      updatedAt: Date.now()
-    }
+      updatedAt: Date.now(),
+    },
   };
 
   return { ...nodes, [id]: folder };
@@ -56,7 +56,7 @@ export const assignTaskToFolder = (nodes, taskId, folderId = null) => {
 
   return {
     ...nodes,
-    [taskId]: { ...node, folderId }
+    [taskId]: { ...node, folderId },
   };
 };
 
@@ -103,12 +103,8 @@ export const deleteFolder = (nodes, folderId) => {
  * Tasks with `folderId: null` are grouped under a virtual "unclassified" root.
  */
 export const buildFolderTree = (nodes, unclassifiedLabel = 'Uncategorized') => {
-  const activeFolders = Object.values(nodes).filter(
-    (n) => n.type === NODE_TYPES.FOLDER && !n.deletedAt && !n.hidden
-  );
-  const activeTasks = Object.values(nodes).filter(
-    (n) => n.type !== NODE_TYPES.FOLDER && !n.deletedAt && !n.hidden
-  );
+  const activeFolders = Object.values(nodes).filter((n) => n.type === NODE_TYPES.FOLDER && !n.deletedAt && !n.hidden);
+  const activeTasks = Object.values(nodes).filter((n) => n.type !== NODE_TYPES.FOLDER && !n.deletedAt && !n.hidden);
 
   const folderById = new Map(activeFolders.map((f) => [f.id, f]));
   const childFoldersByFolderId = new Map(); // folderId -> array of folder nodes
@@ -118,7 +114,7 @@ export const buildFolderTree = (nodes, unclassifiedLabel = 'Uncategorized') => {
   const buildArboristNode = (node) => ({
     ...node,
     name: node.title,
-    children: undefined
+    children: undefined,
   });
 
   activeFolders.forEach((folder) => {
@@ -148,7 +144,7 @@ export const buildFolderTree = (nodes, unclassifiedLabel = 'Uncategorized') => {
     return {
       ...folder,
       name: folder.title,
-      children: children.length > 0 ? children : undefined
+      children: children.length > 0 ? children : undefined,
     };
   };
 
@@ -159,15 +155,16 @@ export const buildFolderTree = (nodes, unclassifiedLabel = 'Uncategorized') => {
     .map(buildFolder);
 
   // Virtual "unclassified" root holding tasks without a folder.
-  const unclassifiedRoot = unclassified.length > 0
-    ? {
-        id: '__unclassified__',
-        name: unclassifiedLabel,
-        type: NODE_TYPES.FOLDER,
-        isVirtual: true,
-        children: unclassified.map(buildArboristNode)
-      }
-    : null;
+  const unclassifiedRoot =
+    unclassified.length > 0
+      ? {
+          id: '__unclassified__',
+          name: unclassifiedLabel,
+          type: NODE_TYPES.FOLDER,
+          isVirtual: true,
+          children: unclassified.map(buildArboristNode),
+        }
+      : null;
 
   return unclassifiedRoot ? [...rootFolders, unclassifiedRoot] : rootFolders;
 };

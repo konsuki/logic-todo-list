@@ -4,14 +4,16 @@ import { SettingsContext } from './settings';
 export const SettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState(() => {
     const savedSettings = localStorage.getItem('logido_settings');
-    return savedSettings ? JSON.parse(savedSettings) : {
-      showDescriptionInList: true,
-      showPhaseBadges: true,
-      showNodeTypeTags: true,
-      showStepBadges: true,
-      useFolderView: true,
-      theme: 'theme-classic',
-    };
+    return savedSettings
+      ? JSON.parse(savedSettings)
+      : {
+          showDescriptionInList: true,
+          showPhaseBadges: true,
+          showNodeTypeTags: true,
+          showStepBadges: true,
+          useFolderView: true,
+          theme: 'theme-classic',
+        };
   });
 
   useEffect(() => {
@@ -19,15 +21,11 @@ export const SettingsProvider = ({ children }) => {
   }, [settings]);
 
   const updateSetting = (key, value) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
-  return (
-    <SettingsContext.Provider value={{ settings, updateSetting }}>
-      {children}
-    </SettingsContext.Provider>
-  );
+  return <SettingsContext.Provider value={{ settings, updateSetting }}>{children}</SettingsContext.Provider>;
 };

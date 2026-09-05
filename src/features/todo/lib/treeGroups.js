@@ -23,14 +23,14 @@ export const normalizeGroups = (groups) => {
         id: `group-${index}`,
         name: '',
         color: GROUP_COLOR_PALETTE[index % GROUP_COLOR_PALETTE.length],
-        children: [...group]
+        children: [...group],
       };
     }
     return {
       id: group.id || `group-${index}`,
       name: group.name || '',
       color: group.color || GROUP_COLOR_PALETTE[index % GROUP_COLOR_PALETTE.length],
-      children: Array.isArray(group.children) ? [...group.children] : []
+      children: Array.isArray(group.children) ? [...group.children] : [],
     };
   });
 };
@@ -48,16 +48,16 @@ export const normalizeOrGroups = (node, activeChildIds) => {
   const covered = new Set();
   const result = [];
 
-  groups.forEach(group => {
-    const activeMembers = group.children.filter(id => activeChildIds.includes(id));
+  groups.forEach((group) => {
+    const activeMembers = group.children.filter((id) => activeChildIds.includes(id));
     if (activeMembers.length > 0) {
       result.push(activeMembers);
-      activeMembers.forEach(id => covered.add(id));
+      activeMembers.forEach((id) => covered.add(id));
     }
   });
 
   // Any active child not covered by an explicit group becomes its own group.
-  activeChildIds.forEach(id => {
+  activeChildIds.forEach((id) => {
     if (!covered.has(id)) {
       result.push([id]);
     }
@@ -92,12 +92,12 @@ export const addGroup = (nodes, nodeId) => {
     id: crypto.randomUUID(),
     name: `グループ${nextIndex + 1}`,
     color: GROUP_COLOR_PALETTE[nextIndex % GROUP_COLOR_PALETTE.length],
-    children: []
+    children: [],
   };
 
   return {
     ...nodes,
-    [nodeId]: { ...node, groups: [...groups, newGroup] }
+    [nodeId]: { ...node, groups: [...groups, newGroup] },
   };
 };
 
@@ -108,10 +108,10 @@ export const removeGroup = (nodes, nodeId, groupId) => {
   const node = nodes[nodeId];
   if (!node) return nodes;
 
-  const groups = normalizeGroups(node.groups).filter(g => g.id !== groupId);
+  const groups = normalizeGroups(node.groups).filter((g) => g.id !== groupId);
   return {
     ...nodes,
-    [nodeId]: { ...node, groups }
+    [nodeId]: { ...node, groups },
   };
 };
 
@@ -123,8 +123,8 @@ export const assignChildToGroup = (nodes, nodeId, childId, groupId) => {
   const node = nodes[nodeId];
   if (!node) return nodes;
 
-  const groups = normalizeGroups(node.groups).map(group => {
-    const children = group.children.filter(id => id !== childId);
+  const groups = normalizeGroups(node.groups).map((group) => {
+    const children = group.children.filter((id) => id !== childId);
     if (groupId && group.id === groupId) {
       children.push(childId);
     }
@@ -133,7 +133,7 @@ export const assignChildToGroup = (nodes, nodeId, childId, groupId) => {
 
   return {
     ...nodes,
-    [nodeId]: { ...node, groups }
+    [nodeId]: { ...node, groups },
   };
 };
 
@@ -144,12 +144,10 @@ export const updateGroup = (nodes, nodeId, groupId, updates) => {
   const node = nodes[nodeId];
   if (!node) return nodes;
 
-  const groups = normalizeGroups(node.groups).map(group =>
-    group.id === groupId ? { ...group, ...updates } : group
-  );
+  const groups = normalizeGroups(node.groups).map((group) => (group.id === groupId ? { ...group, ...updates } : group));
 
   return {
     ...nodes,
-    [nodeId]: { ...node, groups }
+    [nodeId]: { ...node, groups },
   };
 };

@@ -14,16 +14,19 @@
 「演繹的タスク分解」ボタンを押すと、フロントエンドはローカルの FastAPI サーバー（ポート 8000）へリクエストを送ります。このサーバーが起動していないと、ボタンを押しても何も起きません（ローディングが止まらないか、エラーになります）。
 
 **確認方法：**
+
 ```bash
 curl http://localhost:8000/health
 ```
 
 **正常な応答例：**
+
 ```json
-{"status":"healthy","mode":"parallel_pool","max_concurrent":3,"active_count":0,"session_count":0}
+{ "status": "healthy", "mode": "parallel_pool", "max_concurrent": 3, "active_count": 0, "session_count": 0 }
 ```
 
 **起動していない場合の起動コマンド：**
+
 ```bash
 cd ~/Desktop/Programs/deepseek-chat-api
 python main.py
@@ -36,6 +39,7 @@ python main.py
 サーバーは `deepseek_auth.json` を使って DeepSeek Web UI にログイン済みの状態でブラウザを起動します。このファイルが存在しないと、AIへのリクエストが認証エラーになります。
 
 **確認方法：**
+
 ```bash
 ls -lh ~/Desktop/Programs/deepseek-chat-api/deepseek_auth.json
 ```
@@ -43,10 +47,12 @@ ls -lh ~/Desktop/Programs/deepseek-chat-api/deepseek_auth.json
 **正常な状態：** ファイルが存在し、サイズが数 KB 以上ある。
 
 **ファイルが存在しない・または認証エラーが出る場合：**
+
 ```bash
 cd ~/Desktop/Programs/deepseek-chat-api
 python login.py   # ブラウザが開くので DeepSeek にログインする
 ```
+
 ログイン後に `deepseek_auth.json` が生成される。
 
 ---
@@ -58,12 +64,15 @@ python login.py   # ブラウザが開くので DeepSeek にログインする
 > **注意：** ブラウザのキャッシュにより、Vite が落ちていても画面が表示されたままに見えることがあります。画面が見えているだけでは起動確認になりません。必ずコマンドで確認してください。
 
 **確認方法（必ずコマンドで確認すること）：**
+
 ```bash
 lsof -i :5173
 ```
+
 Vite のプロセスが表示されれば起動中。何も表示されなければ停止中。
 
 **起動していない場合の起動コマンド：**
+
 ```bash
 cd ~/Desktop/Programs/logic-todo-list
 npm run dev

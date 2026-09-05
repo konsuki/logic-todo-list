@@ -76,18 +76,18 @@ export const useCelebration = (rootNodes) => {
   const [completedGoals, setCompletedGoals] = useState(new Set());
 
   useEffect(() => {
-    rootNodes.forEach(root => {
+    rootNodes.forEach((root) => {
       if (root.progress === 100 && !completedGoals.has(root.id)) {
         confetti({
           particleCount: 150,
           spread: 70,
           origin: { y: 0.6 },
           colors: ['#00E5FF', '#00FFAD', '#FFFFFF'],
-          zIndex: 1000
+          zIndex: 1000,
         });
-        setCompletedGoals(prev => new Set([...prev, root.id]));
+        setCompletedGoals((prev) => new Set([...prev, root.id]));
       } else if (root.progress < 100 && completedGoals.has(root.id)) {
-        setCompletedGoals(prev => {
+        setCompletedGoals((prev) => {
           const next = new Set(prev);
           next.delete(root.id);
           return next;
@@ -121,14 +121,17 @@ export const useCelebration = (rootNodes) => {
    - 追加: `import { useTheme } from '../hooks/useTheme';` と `import { useCelebration } from '../features/todo/hooks/useCelebration';`
 
 2. `App.jsx` からテーマ適用ロジック（68-85 行）を削除し、以下に置換:
+
    ```js
    const { themeName, setThemeName, themeMode, setThemeMode } = useTheme();
    ```
 
 3. `App.jsx` から祝賀ロジック（116-136 行）を削除し、以下に置換:
+
    ```js
    useCelebration(rootNodes);
    ```
+
    （`completedGoals` は App 側では参照されていないため、返り値を受け取る必要は無い。戻り値を使わない形で呼び出す。）
 
 4. `App.jsx` の `useState` で、テーマ・祝賀用に使っていた state（`themeName` / `themeMode` / `completedGoals`）の定義を削除する。

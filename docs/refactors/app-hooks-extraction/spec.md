@@ -15,10 +15,10 @@
 
 ### 新規フック
 
-| 新規フック | 配置先 | 返り値 | 内容 |
-|---|---|---|---|
-| `useTheme` | `src/hooks/useTheme.js` | `{ themeName, setThemeName, themeMode, setThemeMode }` | `themeName`/`themeMode` state ＋ テーマ適用 useEffect（App.jsx 68-85 行） |
-| `useCelebration` | `src/features/todo/hooks/useCelebration.js` | `{ completedGoals }` | `completedGoals` state ＋ confetti の useEffect（App.jsx 116-136 行） |
+| 新規フック       | 配置先                                      | 返り値                                                 | 内容                                                                      |
+| ---------------- | ------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------- |
+| `useTheme`       | `src/hooks/useTheme.js`                     | `{ themeName, setThemeName, themeMode, setThemeMode }` | `themeName`/`themeMode` state ＋ テーマ適用 useEffect（App.jsx 68-85 行） |
+| `useCelebration` | `src/features/todo/hooks/useCelebration.js` | `{ completedGoals }`                                   | `completedGoals` state ＋ confetti の useEffect（App.jsx 116-136 行）     |
 
 ### デッド props 除去
 

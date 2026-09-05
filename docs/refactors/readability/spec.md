@@ -20,45 +20,46 @@
 ## 3. 改善点の優先順位付き一覧
 
 優先度の定義:
+
 - **高**: 構造の可読性（ファイル分割・責務分離）を損なう、または明らかなデッドコード。単独タスク化して直ちに着手すべき。
 - **中**: 命名・マジック文字列の統一。既存定数への置換で typo リスクを下げる。
 - **低**: コメントの過不足・整形。他タスク後の仕上げ。
 
 ### 優先度 高（構造）
 
-| # | ファイル | 改善項目 | 根拠 |
-|---|---|---|---|
-| H1 | `treeLogic.js` | 責務ごとにサブモジュールへ分割（CRUD / 進捗 / ORグループ / 削除 / フォルダ / 検索表示 の 7 責務） | 1,104 行に 7 責務が混在し、処理を追いにくい → 実装済み（treeConstants / treeNodes / treeProgress / treeGroups / treeLifecycle / treeFolders / treeDisplay の 7 ファイルに分割） |
-| H2 | `ListView.jsx` | `ArboristNode` レンダラを別ファイルへ抽出 | 635 行。レンダラ（1-328）とビュー本体（330-633）が同居 → 実装済み（`ArboristNode.jsx` に抽出） |
-| H3 | `Inspector.jsx` | 9 セクション（description/intent/procedure/folder/ai/schedule/dependency/why/how）をサブコンポーネント化 | 634 行。`sectionMap` に巨大 JSX が並ぶ → 実装済み（HowSection / DependencySection / ScheduleSection / WhySection / FolderSection / TextareaSection の 6 ファイルに分割） |
-| H4 | `App.jsx` | テーマ適用と confetti 祝賀ロジックをカスタムフックへ抽出 | 347 行。副作用が App 本体に混在 → 実装済み（useTheme / useCelebration に抽出） |
-| H5 | `App.jsx` | ListView 呼び出しのデッド props を除去 | `expandedNodeIds`/`toggleExpand`/`folders`/`assignTaskToFolder` を渡しているが ListView は未受領（react-arborist 移行時の残骸） → 実装済み |
+| #   | ファイル        | 改善項目                                                                                                 | 根拠                                                                                                                                                                            |
+| --- | --------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| H1  | `treeLogic.js`  | 責務ごとにサブモジュールへ分割（CRUD / 進捗 / ORグループ / 削除 / フォルダ / 検索表示 の 7 責務）        | 1,104 行に 7 責務が混在し、処理を追いにくい → 実装済み（treeConstants / treeNodes / treeProgress / treeGroups / treeLifecycle / treeFolders / treeDisplay の 7 ファイルに分割） |
+| H2  | `ListView.jsx`  | `ArboristNode` レンダラを別ファイルへ抽出                                                                | 635 行。レンダラ（1-328）とビュー本体（330-633）が同居 → 実装済み（`ArboristNode.jsx` に抽出）                                                                                  |
+| H3  | `Inspector.jsx` | 9 セクション（description/intent/procedure/folder/ai/schedule/dependency/why/how）をサブコンポーネント化 | 634 行。`sectionMap` に巨大 JSX が並ぶ → 実装済み（HowSection / DependencySection / ScheduleSection / WhySection / FolderSection / TextareaSection の 6 ファイルに分割）        |
+| H4  | `App.jsx`       | テーマ適用と confetti 祝賀ロジックをカスタムフックへ抽出                                                 | 347 行。副作用が App 本体に混在 → 実装済み（useTheme / useCelebration に抽出）                                                                                                  |
+| H5  | `App.jsx`       | ListView 呼び出しのデッド props を除去                                                                   | `expandedNodeIds`/`toggleExpand`/`folders`/`assignTaskToFolder` を渡しているが ListView は未受領（react-arborist 移行時の残骸） → 実装済み                                      |
 
 ### 優先度 中（命名・マジック文字列）
 
-| # | ファイル | 改善項目 | 根拠 |
-|---|---|---|---|
-| M1 | `ListView.jsx` / `TodoItem.jsx` | 期日判定 `3 * 24 * 60 * 60 * 1000` を定数化 | 2 箇所に同一マジックナンバー |
-| M2 | `ListView.jsx` / `TodoItem.jsx` / `Inspector.jsx` | `showMeceWarning` の判定ロジックを共通化 | 3 箇所で `type` と子数による同一判定（ただし STRATEGY のみ vs STRATEGY/GOAL で条件が微妙に異なる点に注意） |
-| M3 | `ListView.jsx` / `TodoItem.jsx` / `Inspector.jsx` | `progress === 100` の色分岐を共通ヘルパーへ | 3 箇所で同一の三項演算 |
-| M4 | `ListView.jsx` / `TodoItem.jsx` | `isOverdue`/`isDueSoon` を共通ユーティリティへ | 2 箇所で重複 |
-| M5 | `ListView.jsx` / `TodoItem.jsx` | 説明プレビュー `substring(0, 50)` を共通化 | 2 箇所で重複 |
-| M6 | `ListView.jsx` / `App.jsx` / `useShortcuts.js` | view/displayMode の `'list'`/`'tree'`/`'logic'`/`'folder'`/`'preview'` を定数化 | 裸の文字列が散在、typo リスク → 実装済み（VIEW_MODE / DISPLAY_MODE） |
-| M7 | 各コンポーネント | `'DONE'`/`'FOLDER'`/`'STRATEGY'`/`'GOAL'`/`'ACTION'` を `NODE_STATUS`/`NODE_TYPES` へ | `treeLogic.js` に定義済みの定数が未活用 → 実装済み |
-| M8 | `ListView.jsx` / `TodoItem.jsx` | `node.type.toLowerCase()` によるクラス生成を共通化 | 複数箇所で重複 |
-| M9 | `Inspector.jsx` | `'PREP'`/`'EXEC'`/`'REVIEW'` のフェーズ定数を共通化 | `phase` 選択肢が裸文字列（`treeLogic.js` にも `phase: 'PREP'` が直書き） → 実装済み（PHASES） |
-| M10 | `useAI.js` | システムプロンプト文字列を別モジュールへ分離 | 111 行中 30 行超がプロンプト定数で、ロジックの見通しを損なう |
+| #   | ファイル                                          | 改善項目                                                                              | 根拠                                                                                                       |
+| --- | ------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| M1  | `ListView.jsx` / `TodoItem.jsx`                   | 期日判定 `3 * 24 * 60 * 60 * 1000` を定数化                                           | 2 箇所に同一マジックナンバー                                                                               |
+| M2  | `ListView.jsx` / `TodoItem.jsx` / `Inspector.jsx` | `showMeceWarning` の判定ロジックを共通化                                              | 3 箇所で `type` と子数による同一判定（ただし STRATEGY のみ vs STRATEGY/GOAL で条件が微妙に異なる点に注意） |
+| M3  | `ListView.jsx` / `TodoItem.jsx` / `Inspector.jsx` | `progress === 100` の色分岐を共通ヘルパーへ                                           | 3 箇所で同一の三項演算                                                                                     |
+| M4  | `ListView.jsx` / `TodoItem.jsx`                   | `isOverdue`/`isDueSoon` を共通ユーティリティへ                                        | 2 箇所で重複                                                                                               |
+| M5  | `ListView.jsx` / `TodoItem.jsx`                   | 説明プレビュー `substring(0, 50)` を共通化                                            | 2 箇所で重複                                                                                               |
+| M6  | `ListView.jsx` / `App.jsx` / `useShortcuts.js`    | view/displayMode の `'list'`/`'tree'`/`'logic'`/`'folder'`/`'preview'` を定数化       | 裸の文字列が散在、typo リスク → 実装済み（VIEW_MODE / DISPLAY_MODE）                                       |
+| M7  | 各コンポーネント                                  | `'DONE'`/`'FOLDER'`/`'STRATEGY'`/`'GOAL'`/`'ACTION'` を `NODE_STATUS`/`NODE_TYPES` へ | `treeLogic.js` に定義済みの定数が未活用 → 実装済み                                                         |
+| M8  | `ListView.jsx` / `TodoItem.jsx`                   | `node.type.toLowerCase()` によるクラス生成を共通化                                    | 複数箇所で重複                                                                                             |
+| M9  | `Inspector.jsx`                                   | `'PREP'`/`'EXEC'`/`'REVIEW'` のフェーズ定数を共通化                                   | `phase` 選択肢が裸文字列（`treeLogic.js` にも `phase: 'PREP'` が直書き） → 実装済み（PHASES）              |
+| M10 | `useAI.js`                                        | システムプロンプト文字列を別モジュールへ分離                                          | 111 行中 30 行超がプロンプト定数で、ロジックの見通しを損なう                                               |
 
 ### 優先度 低（コメント・整形）
 
-| # | ファイル | 改善項目 | 根拠 |
-|---|---|---|---|
-| L1 | `useAI.js` | 連続した空行（27-28）を除去 | 整形漏れ |
-| L2 | `Inspector.jsx` | インライン `style` を CSS クラスへ移す（タイトル行・reorder ボタン） | 可読性・スタイル一元管理 |
-| L3 | `Inspector.jsx` | `title="セクションを並び替え"` 等のハードコード日本語タイトルを i18n 化 | 翻訳漏れ |
-| L4 | `useShortcuts.js` / `TodoItem.jsx` | `'New Task'` 等のデフォルト文言の定数化 | 命名・一貫性 |
-| L5 | 全体 | コメント過不足の調整（冗長コメント削除、意図コメント/JSDoc 補完） | 可読性の仕上げ → 実装済み（コメント調整タスク） |
-| L6 | 全体 | Prettier 等 formatter の導入と適用 | 整形の自動化 |
+| #   | ファイル                           | 改善項目                                                                | 根拠                                            |
+| --- | ---------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------- |
+| L1  | `useAI.js`                         | 連続した空行（27-28）を除去                                             | 整形漏れ                                        |
+| L2  | `Inspector.jsx`                    | インライン `style` を CSS クラスへ移す（タイトル行・reorder ボタン）    | 可読性・スタイル一元管理                        |
+| L3  | `Inspector.jsx`                    | `title="セクションを並び替え"` 等のハードコード日本語タイトルを i18n 化 | 翻訳漏れ                                        |
+| L4  | `useShortcuts.js` / `TodoItem.jsx` | `'New Task'` 等のデフォルト文言の定数化                                 | 命名・一貫性                                    |
+| L5  | 全体                               | コメント過不足の調整（冗長コメント削除、意図コメント/JSDoc 補完）       | 可読性の仕上げ → 実装済み（コメント調整タスク） |
+| L6  | 全体                               | Prettier 等 formatter の導入と適用                                      | 整形の自動化                                    |
 
 ## 4. 以降の子タスクへの対応付け
 

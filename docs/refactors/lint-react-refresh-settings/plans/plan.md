@@ -28,14 +28,16 @@
      export const SettingsProvider = ({ children }) => {
        const [settings, setSettings] = useState(() => {
          const savedSettings = localStorage.getItem('logido_settings');
-         return savedSettings ? JSON.parse(savedSettings) : {
-           showDescriptionInList: true,
-           showPhaseBadges: true,
-           showNodeTypeTags: true,
-           showStepBadges: true,
-           useFolderView: true,
-           theme: 'theme-classic',
-         };
+         return savedSettings
+           ? JSON.parse(savedSettings)
+           : {
+               showDescriptionInList: true,
+               showPhaseBadges: true,
+               showNodeTypeTags: true,
+               showStepBadges: true,
+               useFolderView: true,
+               theme: 'theme-classic',
+             };
        });
 
        useEffect(() => {
@@ -43,14 +45,10 @@
        }, [settings]);
 
        const updateSetting = (key, value) => {
-         setSettings(prev => ({ ...prev, [key]: value }));
+         setSettings((prev) => ({ ...prev, [key]: value }));
        };
 
-       return (
-         <SettingsContext.Provider value={{ settings, updateSetting }}>
-           {children}
-         </SettingsContext.Provider>
-       );
+       return <SettingsContext.Provider value={{ settings, updateSetting }}>{children}</SettingsContext.Provider>;
      };
      ```
    - 削除するもの: `createContext`, `useContext`, `SettingsContext` の定義, `useSettings` 関数。

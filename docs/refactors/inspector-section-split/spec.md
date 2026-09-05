@@ -15,14 +15,14 @@
 
 `components/inspector/` 配下に **6 ファイル**を新規作成する。`ai` セクションは既に `AIInsights.jsx` に分離済みのため対象外。
 
-| 新ファイル | 担当セクション | 根拠 |
-|---|---|---|
-| `HowSection.jsx` | `how`（OR グループ編集） | 約 140 行で最複雑。単独分割の価値が最大 |
-| `DependencySection.jsx` | `dependency` | `searchQuery` という独自 state を持つ |
-| `ScheduleSection.jsx` | `schedule` | フェーズ/期限/実行順序で比較的独立 |
-| `WhySection.jsx` | `why` | `isWhyOpen` という独自 state を持つ |
-| `FolderSection.jsx` | `folder` | フォルダ割り当てで独立 |
-| `TextareaSection.jsx` | `description` / `intent` / `procedure` | 3 セクションが同一パターン（`InspectorTextarea`）のため 1 共通コンポーネントに統一 |
+| 新ファイル              | 担当セクション                         | 根拠                                                                               |
+| ----------------------- | -------------------------------------- | ---------------------------------------------------------------------------------- |
+| `HowSection.jsx`        | `how`（OR グループ編集）               | 約 140 行で最複雑。単独分割の価値が最大                                            |
+| `DependencySection.jsx` | `dependency`                           | `searchQuery` という独自 state を持つ                                              |
+| `ScheduleSection.jsx`   | `schedule`                             | フェーズ/期限/実行順序で比較的独立                                                 |
+| `WhySection.jsx`        | `why`                                  | `isWhyOpen` という独自 state を持つ                                                |
+| `FolderSection.jsx`     | `folder`                               | フォルダ割り当てで独立                                                             |
+| `TextareaSection.jsx`   | `description` / `intent` / `procedure` | 3 セクションが同一パターン（`InspectorTextarea`）のため 1 共通コンポーネントに統一 |
 
 ## 4. 変更内容
 
