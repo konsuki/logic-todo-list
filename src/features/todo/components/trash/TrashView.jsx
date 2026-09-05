@@ -6,8 +6,11 @@ const TrashView = ({ isOpen, onClose, trashedRootNodes, nodes, onRestore, onPerm
   const formatDate = (timestamp) => {
     if (!timestamp) return '';
     return new Date(timestamp).toLocaleDateString('ja-JP', {
-      year: 'numeric', month: 'short', day: 'numeric',
-      hour: '2-digit', minute: '2-digit'
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
 
@@ -39,8 +42,9 @@ const TrashView = ({ isOpen, onClose, trashedRootNodes, nodes, onRestore, onPerm
   const itemVariants = {
     hidden: { opacity: 0, y: 12 },
     visible: (i) => ({
-      opacity: 1, y: 0,
-      transition: { delay: i * 0.06, duration: 0.25 }
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.06, duration: 0.25 },
     }),
   };
 
@@ -59,21 +63,13 @@ const TrashView = ({ isOpen, onClose, trashedRootNodes, nodes, onRestore, onPerm
           />
 
           {/* Panel */}
-          <motion.div
-            className="trash-panel"
-            variants={panelVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
+          <motion.div className="trash-panel" variants={panelVariants} initial="hidden" animate="visible" exit="exit">
             {/* Header */}
             <div className="trash-header">
               <div className="trash-header-title">
                 <Trash2 size={18} />
                 <span>ゴミ箱</span>
-                {trashedRootNodes.length > 0 && (
-                  <span className="trash-count-badge">{trashedRootNodes.length}</span>
-                )}
+                {trashedRootNodes.length > 0 && <span className="trash-count-badge">{trashedRootNodes.length}</span>}
               </div>
               <button className="trash-close-btn" onClick={onClose} aria-label="閉じる">
                 <X size={18} />
@@ -109,20 +105,12 @@ const TrashView = ({ isOpen, onClose, trashedRootNodes, nodes, onRestore, onPerm
                             </div>
                             <div className="trash-item-title">{node.title}</div>
                             <div className="trash-item-meta">
-                              {childCount > 0 && (
-                                <span className="trash-item-children">子タスク {childCount} 件</span>
-                              )}
-                              <span className="trash-item-date">
-                                削除日時: {formatDate(node.deletedAt)}
-                              </span>
+                              {childCount > 0 && <span className="trash-item-children">子タスク {childCount} 件</span>}
+                              <span className="trash-item-date">削除日時: {formatDate(node.deletedAt)}</span>
                             </div>
                           </div>
                           <div className="trash-item-actions">
-                            <button
-                              className="trash-btn restore"
-                              onClick={() => onRestore(node.id)}
-                              title="復元する"
-                            >
+                            <button className="trash-btn restore" onClick={() => onRestore(node.id)} title="復元する">
                               <RotateCcw size={14} />
                               <span>復元</span>
                             </button>

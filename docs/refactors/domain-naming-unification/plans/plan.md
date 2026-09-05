@@ -51,15 +51,15 @@ export const DISPLAY_MODE = {
 
 `'GOAL'`/`'STRATEGY'`/`'ACTION'`/`'FOLDER'`/`'DONE'` の裸文字列を、`NODE_TYPES` / `NODE_STATUS` 参照へ置換する。対象ファイルと置換箇所は以下の通り（事前調査済み）。
 
-| ファイル | 現状 | 置換後 |
-|---|---|---|
-| `FolderSection.jsx` | `node.type === 'FOLDER'` | `node.type === NODE_TYPES.FOLDER` |
-| `Inspector.jsx` | `node.type === 'STRATEGY' \|\| node.type === 'GOAL'` | `node.type === NODE_TYPES.STRATEGY \|\| node.type === NODE_TYPES.GOAL` |
-| `SearchBar.jsx` | `r.type === 'FOLDER'` | `r.type === NODE_TYPES.FOLDER` |
-| `ArboristNode.jsx` | `data.status === 'DONE'`（2箇所）, `data.type === 'FOLDER'`, `data.type === 'STRATEGY'` | `data.status === NODE_STATUS.DONE`（2箇所）, `data.type === NODE_TYPES.FOLDER`, `data.type === NODE_TYPES.STRATEGY` |
-| `TodoItem.jsx` | `node.status === 'DONE'`（2箇所）, `node.type === 'STRATEGY'` | `node.status === NODE_STATUS.DONE`（2箇所）, `node.type === NODE_TYPES.STRATEGY` |
-| `useShortcuts.js` | `addNode(selectedNodeId, 'ACTION', ...)` | `addNode(selectedNodeId, NODE_TYPES.ACTION, ...)` |
-| `treeDisplay.js` | `node.type === 'GOAL' \|\| node.type === 'STRATEGY'` | `node.type === NODE_TYPES.GOAL \|\| node.type === NODE_TYPES.STRATEGY` |
+| ファイル            | 現状                                                                                    | 置換後                                                                                                              |
+| ------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `FolderSection.jsx` | `node.type === 'FOLDER'`                                                                | `node.type === NODE_TYPES.FOLDER`                                                                                   |
+| `Inspector.jsx`     | `node.type === 'STRATEGY' \|\| node.type === 'GOAL'`                                    | `node.type === NODE_TYPES.STRATEGY \|\| node.type === NODE_TYPES.GOAL`                                              |
+| `SearchBar.jsx`     | `r.type === 'FOLDER'`                                                                   | `r.type === NODE_TYPES.FOLDER`                                                                                      |
+| `ArboristNode.jsx`  | `data.status === 'DONE'`（2箇所）, `data.type === 'FOLDER'`, `data.type === 'STRATEGY'` | `data.status === NODE_STATUS.DONE`（2箇所）, `data.type === NODE_TYPES.FOLDER`, `data.type === NODE_TYPES.STRATEGY` |
+| `TodoItem.jsx`      | `node.status === 'DONE'`（2箇所）, `node.type === 'STRATEGY'`                           | `node.status === NODE_STATUS.DONE`（2箇所）, `node.type === NODE_TYPES.STRATEGY`                                    |
+| `useShortcuts.js`   | `addNode(selectedNodeId, 'ACTION', ...)`                                                | `addNode(selectedNodeId, NODE_TYPES.ACTION, ...)`                                                                   |
+| `treeDisplay.js`    | `node.type === 'GOAL' \|\| node.type === 'STRATEGY'`                                    | `node.type === NODE_TYPES.GOAL \|\| node.type === NODE_TYPES.STRATEGY`                                              |
 
 **各ファイルへの import 追加**
 
@@ -82,12 +82,12 @@ export const DISPLAY_MODE = {
 
 `'PREP'`/`'EXEC'`/`'REVIEW'`/`'ALL'` の裸文字列を `PHASES` 参照へ置換する。
 
-| ファイル | 現状 | 置換後 |
-|---|---|---|
-| `ScheduleSection.jsx` | `node.phase \|\| 'PREP'`、`value="PREP"`/`value="EXEC"`/`value="REVIEW"` | `node.phase \|\| PHASES.PREP`、`value={PHASES.PREP}` 等 |
-| `ListView.jsx` | `saved \|\| 'ALL'`、`phaseFilter === 'ALL'`、`['ALL', 'PREP', 'EXEC', 'REVIEW'].map(p => ...)` | `saved \|\| PHASES.ALL`、`phaseFilter === PHASES.ALL`、`[PHASES.ALL, PHASES.PREP, PHASES.EXEC, PHASES.REVIEW].map(p => ...)` |
-| `treeFolders.js` | `phase: 'PREP'` | `phase: PHASES.PREP` |
-| `treeNodes.js` | `phase: 'PREP'`（3箇所） | `phase: PHASES.PREP` |
+| ファイル              | 現状                                                                                           | 置換後                                                                                                                       |
+| --------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `ScheduleSection.jsx` | `node.phase \|\| 'PREP'`、`value="PREP"`/`value="EXEC"`/`value="REVIEW"`                       | `node.phase \|\| PHASES.PREP`、`value={PHASES.PREP}` 等                                                                      |
+| `ListView.jsx`        | `saved \|\| 'ALL'`、`phaseFilter === 'ALL'`、`['ALL', 'PREP', 'EXEC', 'REVIEW'].map(p => ...)` | `saved \|\| PHASES.ALL`、`phaseFilter === PHASES.ALL`、`[PHASES.ALL, PHASES.PREP, PHASES.EXEC, PHASES.REVIEW].map(p => ...)` |
+| `treeFolders.js`      | `phase: 'PREP'`                                                                                | `phase: PHASES.PREP`                                                                                                         |
+| `treeNodes.js`        | `phase: 'PREP'`（3箇所）                                                                       | `phase: PHASES.PREP`                                                                                                         |
 
 **import 追加**
 
@@ -111,11 +111,11 @@ export const DISPLAY_MODE = {
 
 `DISPLAY_MODE`（logic/folder）と `VIEW_MODE`（list/tree/preview）の裸文字列を定数参照へ置換する。
 
-| ファイル | 現状 | 置換後 |
-|---|---|---|
-| `App.jsx` | `view === 'tree'`/`'list'`/`'preview'`（多数）、`displayMode === 'logic'`/`'folder'` | `view === VIEW_MODE.TREE` 等、`displayMode === DISPLAY_MODE.LOGIC` 等 |
-| `ListView.jsx` | `displayMode === 'logic'`/`'folder'`（多数） | `displayMode === DISPLAY_MODE.LOGIC` 等 |
-| `useShortcuts.js` | `view === 'list' ? 'tree' : 'list'`、`prev === 'preview' ? 'list' : 'preview'` | `VIEW_MODE` 参照へ |
+| ファイル          | 現状                                                                                 | 置換後                                                                |
+| ----------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `App.jsx`         | `view === 'tree'`/`'list'`/`'preview'`（多数）、`displayMode === 'logic'`/`'folder'` | `view === VIEW_MODE.TREE` 等、`displayMode === DISPLAY_MODE.LOGIC` 等 |
+| `ListView.jsx`    | `displayMode === 'logic'`/`'folder'`（多数）                                         | `displayMode === DISPLAY_MODE.LOGIC` 等                               |
+| `useShortcuts.js` | `view === 'list' ? 'tree' : 'list'`、`prev === 'preview' ? 'list' : 'preview'`       | `VIEW_MODE` 参照へ                                                    |
 
 **import 追加**
 

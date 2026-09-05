@@ -7,14 +7,14 @@ describe('Inspector description link parsing', () => {
   const defaultProps = {
     selectedNodeId: '1',
     nodes: {
-      '1': {
+      1: {
         id: '1',
         title: 'Test Node',
         type: 'GOAL',
         children: [],
         dependsOn: [],
         description: '',
-      }
+      },
     },
     addNode: vi.fn(),
     addNodes: vi.fn(),
@@ -33,20 +33,24 @@ describe('Inspector description link parsing', () => {
     const props = {
       ...defaultProps,
       nodes: {
-        '1': {
+        1: {
           ...defaultProps.nodes['1'],
           description: '(https://example.com/foo)',
-        }
-      }
+        },
+      },
     };
 
-    const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
+    const { container } = render(
+      <SettingsProvider>
+        <Inspector {...props} />
+      </SettingsProvider>
+    );
     const linkElement = container.querySelector('a.description-link');
-    
+
     expect(linkElement).not.toBeNull();
     expect(linkElement.getAttribute('href')).toBe('https://example.com/foo');
     expect(linkElement.textContent.trim()).toBe('https://example.com/foo');
-    
+
     // Check that parentheses are rendered outside the link
     const displayContainer = container.querySelector('.description-display');
     expect(displayContainer.textContent).toContain('(https://example.com/foo)');
@@ -56,19 +60,23 @@ describe('Inspector description link parsing', () => {
     const props = {
       ...defaultProps,
       nodes: {
-        '1': {
+        1: {
           ...defaultProps.nodes['1'],
           description: '申込サイト(https://example.com/bosyu)にアクセスする。',
-        }
-      }
+        },
+      },
     };
 
-    const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
+    const { container } = render(
+      <SettingsProvider>
+        <Inspector {...props} />
+      </SettingsProvider>
+    );
     const linkElement = container.querySelector('a.description-link');
-    
+
     expect(linkElement).not.toBeNull();
     expect(linkElement.getAttribute('href')).toBe('https://example.com/bosyu');
-    
+
     const displayContainer = container.querySelector('.description-display');
     expect(displayContainer.textContent).toContain('申込サイト(https://example.com/bosyu)にアクセスする。');
   });
@@ -77,19 +85,23 @@ describe('Inspector description link parsing', () => {
     const props = {
       ...defaultProps,
       nodes: {
-        '1': {
+        1: {
           ...defaultProps.nodes['1'],
           description: 'Go to https://example.com.',
-        }
-      }
+        },
+      },
     };
 
-    const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
+    const { container } = render(
+      <SettingsProvider>
+        <Inspector {...props} />
+      </SettingsProvider>
+    );
     const linkElement = container.querySelector('a.description-link');
-    
+
     expect(linkElement).not.toBeNull();
     expect(linkElement.getAttribute('href')).toBe('https://example.com');
-    
+
     const displayContainer = container.querySelector('.description-display');
     expect(displayContainer.textContent).toContain('Go to https://example.com.');
   });
@@ -98,14 +110,18 @@ describe('Inspector description link parsing', () => {
     const props = {
       ...defaultProps,
       nodes: {
-        '1': {
+        1: {
           ...defaultProps.nodes['1'],
           description: 'https://example.com/search?q=test&page=1',
-        }
-      }
+        },
+      },
     };
 
-    const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
+    const { container } = render(
+      <SettingsProvider>
+        <Inspector {...props} />
+      </SettingsProvider>
+    );
     const linkElement = container.querySelector('a.description-link');
 
     expect(linkElement).not.toBeNull();
@@ -113,18 +129,23 @@ describe('Inspector description link parsing', () => {
   });
 
   it('should parse obsidian:// scheme links as clickable links', () => {
-    const obsidianUrl = 'obsidian://open?vault=%E6%97%A5%E5%B8%B8%E3%81%A7%E4%BD%BF%E3%81%88%E3%82%8B%E7%9F%A5%E8%AD%98&file=%E3%82%84%E3%82%8B%E3%81%93%E3%81%A8%2F%E3%83%9D%E3%83%BC%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%AA%E3%82%AA%2F%E8%A9%95%E4%BE%A1%E3%81%95%E3%82%8C%E3%82%8B%E3%83%9D%E3%83%BC%E3%83%88%E3%83%95%E3%82%A9%E3%83%AA%E3%82%AA1';
+    const obsidianUrl =
+      'obsidian://open?vault=%E6%97%A5%E5%B8%B8%E3%81%A7%E4%BD%BF%E3%81%88%E3%82%8B%E7%9F%A5%E8%AD%98&file=%E3%82%84%E3%82%8B%E3%81%93%E3%81%A8%2F%E3%83%9D%E3%83%BC%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%AA%E3%82%AA%2F%E8%A9%95%E4%BE%A1%E3%81%95%E3%82%8C%E3%82%8B%E3%83%9D%E3%83%BC%E3%83%88%E3%83%95%E3%82%A9%E3%83%AA%E3%82%AA1';
     const props = {
       ...defaultProps,
       nodes: {
-        '1': {
+        1: {
           ...defaultProps.nodes['1'],
           description: `[Obsidian で開く](${obsidianUrl})`,
-        }
-      }
+        },
+      },
     };
 
-    const { container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
+    const { container } = render(
+      <SettingsProvider>
+        <Inspector {...props} />
+      </SettingsProvider>
+    );
     const linkElement = container.querySelector('a.description-link');
 
     expect(linkElement).not.toBeNull();
@@ -137,7 +158,7 @@ describe('Inspector title inline editing', () => {
   const defaultProps = {
     selectedNodeId: '1',
     nodes: {
-      '1': {
+      1: {
         id: '1',
         title: 'Original Title',
         type: 'GOAL',
@@ -145,14 +166,14 @@ describe('Inspector title inline editing', () => {
         dependsOn: [],
         description: '',
       },
-      '2': {
+      2: {
         id: '2',
         title: 'Second Title',
         type: 'GOAL',
         children: [],
         dependsOn: [],
         description: '',
-      }
+      },
     },
     addNode: vi.fn(),
     addNodes: vi.fn(),
@@ -168,8 +189,12 @@ describe('Inspector title inline editing', () => {
   };
 
   it('should render the original title as h2 and switch to input on click', () => {
-    const { getByRole, container } = render(<SettingsProvider><Inspector {...defaultProps} /></SettingsProvider>);
-    
+    const { getByRole, container } = render(
+      <SettingsProvider>
+        <Inspector {...defaultProps} />
+      </SettingsProvider>
+    );
+
     const h2Element = getByRole('heading', { name: 'Original Title' });
     expect(h2Element).toBeInTheDocument();
     expect(container.querySelector('.inspector-title-input')).toBeNull();
@@ -186,8 +211,12 @@ describe('Inspector title inline editing', () => {
   it('should update the node title on Enter key', () => {
     const updateNodeMock = vi.fn();
     const props = { ...defaultProps, updateNode: updateNodeMock };
-    
-    const { getByRole, container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
+
+    const { getByRole, container } = render(
+      <SettingsProvider>
+        <Inspector {...props} />
+      </SettingsProvider>
+    );
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
 
     const inputElement = container.querySelector('.inspector-title-input');
@@ -202,8 +231,12 @@ describe('Inspector title inline editing', () => {
   it('should update the node title on blur', () => {
     const updateNodeMock = vi.fn();
     const props = { ...defaultProps, updateNode: updateNodeMock };
-    
-    const { getByRole, container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
+
+    const { getByRole, container } = render(
+      <SettingsProvider>
+        <Inspector {...props} />
+      </SettingsProvider>
+    );
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
 
     const inputElement = container.querySelector('.inspector-title-input');
@@ -217,8 +250,12 @@ describe('Inspector title inline editing', () => {
   it('should cancel edit and restore original title on Escape', () => {
     const updateNodeMock = vi.fn();
     const props = { ...defaultProps, updateNode: updateNodeMock };
-    
-    const { getByRole, container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
+
+    const { getByRole, container } = render(
+      <SettingsProvider>
+        <Inspector {...props} />
+      </SettingsProvider>
+    );
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
 
     const inputElement = container.querySelector('.inspector-title-input');
@@ -233,8 +270,12 @@ describe('Inspector title inline editing', () => {
   it('should not call updateNode if the value is empty or only spaces', () => {
     const updateNodeMock = vi.fn();
     const props = { ...defaultProps, updateNode: updateNodeMock };
-    
-    const { getByRole, container } = render(<SettingsProvider><Inspector {...props} /></SettingsProvider>);
+
+    const { getByRole, container } = render(
+      <SettingsProvider>
+        <Inspector {...props} />
+      </SettingsProvider>
+    );
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
 
     const inputElement = container.querySelector('.inspector-title-input');
@@ -247,7 +288,9 @@ describe('Inspector title inline editing', () => {
 
   it('should reset editing state when switching to another node', () => {
     const { getByRole, container, rerender } = render(
-      <SettingsProvider><Inspector key="1" {...defaultProps} /></SettingsProvider>
+      <SettingsProvider>
+        <Inspector key="1" {...defaultProps} />
+      </SettingsProvider>
     );
 
     fireEvent.click(getByRole('heading', { name: 'Original Title' }));
@@ -256,7 +299,11 @@ describe('Inspector title inline editing', () => {
     // Rerender with different selectedNodeId. ノード切替時は親（App）が key を変えて
     // Inspector 全体を再マウントするため、編集状態はリセットされる。
     const nextProps = { ...defaultProps, selectedNodeId: '2' };
-    rerender(<SettingsProvider><Inspector key="2" {...nextProps} /></SettingsProvider>);
+    rerender(
+      <SettingsProvider>
+        <Inspector key="2" {...nextProps} />
+      </SettingsProvider>
+    );
 
     // Should reset editing state and display the second node title
     expect(container.querySelector('.inspector-title-input')).toBeNull();

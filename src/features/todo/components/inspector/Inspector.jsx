@@ -15,7 +15,17 @@ import FolderSection from './FolderSection';
 import TextareaSection from './TextareaSection';
 import './Inspector.css';
 
-const DEFAULT_SECTION_ORDER = ['description', 'intent', 'procedure', 'folder', 'ai', 'schedule', 'dependency', 'why', 'how'];
+const DEFAULT_SECTION_ORDER = [
+  'description',
+  'intent',
+  'procedure',
+  'folder',
+  'ai',
+  'schedule',
+  'dependency',
+  'why',
+  'how',
+];
 const STORAGE_KEY = 'logido_section_order';
 
 const Inspector = ({
@@ -36,7 +46,7 @@ const Inspector = ({
   folders,
   addFolder,
   assignTaskToFolder,
-  t
+  t,
 }) => {
   const node = nodes[selectedNodeId];
   const { settings } = useSettings();
@@ -48,8 +58,8 @@ const Inspector = ({
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        const valid = parsed.filter(k => DEFAULT_SECTION_ORDER.includes(k));
-        const missing = DEFAULT_SECTION_ORDER.filter(k => !valid.includes(k));
+        const valid = parsed.filter((k) => DEFAULT_SECTION_ORDER.includes(k));
+        const missing = DEFAULT_SECTION_ORDER.filter((k) => !valid.includes(k));
         return [...valid, ...missing];
       }
     } catch {
@@ -58,9 +68,7 @@ const Inspector = ({
     return DEFAULT_SECTION_ORDER;
   });
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
-  );
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   if (!node) {
     return (
@@ -82,14 +90,12 @@ const Inspector = ({
   };
 
   const pathToRoot = getPathToRoot(selectedNodeId);
-  const children = node.children.map(id => nodes[id]).filter(Boolean);
+  const children = node.children.map((id) => nodes[id]).filter(Boolean);
 
   // OR group editing: normalized group objects (object + legacy form compatible)
-  const normalizedGroups = node.relation === 'or'
-    ? normalizeGroups(node.groups)
-    : [];
+  const normalizedGroups = node.relation === 'or' ? normalizeGroups(node.groups) : [];
 
-  const predecessors = (node.dependsOn || []).map(id => nodes[id]).filter(Boolean);
+  const predecessors = (node.dependsOn || []).map((id) => nodes[id]).filter(Boolean);
 
   const showMeceWarning = (node.type === NODE_TYPES.STRATEGY || node.type === NODE_TYPES.GOAL) && children.length === 1;
 
@@ -107,34 +113,12 @@ const Inspector = ({
 
   const sectionMap = {
     description: (
-      <TextareaSection
-        nodeId={selectedNodeId}
-        node={node}
-        field="description"
-        updateNode={updateNode}
-        t={t}
-      />
+      <TextareaSection nodeId={selectedNodeId} node={node} field="description" updateNode={updateNode} t={t} />
     ),
 
-    intent: (
-      <TextareaSection
-        nodeId={selectedNodeId}
-        node={node}
-        field="intent"
-        updateNode={updateNode}
-        t={t}
-      />
-    ),
+    intent: <TextareaSection nodeId={selectedNodeId} node={node} field="intent" updateNode={updateNode} t={t} />,
 
-    procedure: (
-      <TextareaSection
-        nodeId={selectedNodeId}
-        node={node}
-        field="procedure"
-        updateNode={updateNode}
-        t={t}
-      />
-    ),
+    procedure: <TextareaSection nodeId={selectedNodeId} node={node} field="procedure" updateNode={updateNode} t={t} />,
 
     folder: (
       <FolderSection
@@ -147,23 +131,9 @@ const Inspector = ({
       />
     ),
 
-    ai: (
-      <AIInsights
-        node={node}
-        nodes={nodes}
-        addTreeUnderNode={addTreeUnderNode}
-        t={t}
-      />
-    ),
+    ai: <AIInsights node={node} nodes={nodes} addTreeUnderNode={addTreeUnderNode} t={t} />,
 
-    schedule: (
-      <ScheduleSection
-        node={node}
-        reorderNode={reorderNode}
-        updateNode={updateNode}
-        t={t}
-      />
-    ),
+    schedule: <ScheduleSection node={node} reorderNode={reorderNode} updateNode={updateNode} t={t} />,
 
     dependency: (
       <DependencySection
@@ -177,14 +147,7 @@ const Inspector = ({
       />
     ),
 
-    why: (
-      <WhySection
-        node={node}
-        pathToRoot={pathToRoot}
-        onSelectNode={onSelectNode}
-        t={t}
-      />
-    ),
+    why: <WhySection node={node} pathToRoot={pathToRoot} onSelectNode={onSelectNode} t={t} />,
 
     how: (
       <HowSection
@@ -206,13 +169,13 @@ const Inspector = ({
   return (
     <div className={`inspector-container${isReorderMode ? ' reorder-mode' : ''}`}>
       <header className="inspector-header">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div className="inspector-header-top">
           <span className={`node-type-tag ${node.type.toLowerCase()}`}>{node.type}</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <div className="inspector-header-actions">
             <button
               className={`reorder-toggle-btn${isReorderMode ? ' active' : ''}`}
-              onClick={() => setIsReorderMode(v => !v)}
-              title="セクションを並び替え"
+              onClick={() => setIsReorderMode((v) => !v)}
+              title={t('inspector.reorder_sections')}
             >
               <GripVertical size={16} />
             </button>
@@ -279,7 +242,7 @@ const Inspector = ({
               className="progress-bar-fill"
               style={{
                 width: `${node.progress}%`,
-                backgroundColor: node.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)'
+                backgroundColor: node.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)',
               }}
             />
           </div>
@@ -289,7 +252,7 @@ const Inspector = ({
 
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
-          {sectionOrder.map(key => {
+          {sectionOrder.map((key) => {
             if (sectionMap[key] == null) return null;
             if (key === 'how' && showMeceWarning) {
               return (
@@ -313,7 +276,6 @@ const Inspector = ({
           })}
         </SortableContext>
       </DndContext>
-
     </div>
   );
 };

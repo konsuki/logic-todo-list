@@ -31,13 +31,15 @@
   white-space: normal;
   text-transform: none;
   letter-spacing: normal;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--primary-glow);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 1px var(--primary-glow);
   pointer-events: none;
   z-index: 9999;
 }
 
 .help-tooltip::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 100%;
   left: 50%;

@@ -18,7 +18,7 @@ export const calculateNodeProgress = (nodes, nodeId) => {
   if (!node) return 0;
 
   // Active children only (exclude soft-deleted and hidden)
-  const activeChildren = (node.children || []).filter(id => !nodes[id]?.deletedAt && !nodes[id]?.hidden);
+  const activeChildren = (node.children || []).filter((id) => !nodes[id]?.deletedAt && !nodes[id]?.hidden);
 
   // Leaf node (Action) - Simplified binary progress for MVP
   if (activeChildren.length === 0) {
@@ -28,7 +28,7 @@ export const calculateNodeProgress = (nodes, nodeId) => {
   // OR relation: progress is the max group progress (best-group strategy)
   if (node.relation === 'or') {
     const groups = normalizeOrGroups(node, activeChildren);
-    const groupProgresses = groups.map(group => {
+    const groupProgresses = groups.map((group) => {
       const total = group.reduce((acc, childId) => acc + (nodes[childId]?.progress || 0), 0);
       return Math.round(total / group.length);
     });
@@ -59,8 +59,7 @@ export const updateProgressRecursively = (nodes, nodeId) => {
     newNodes[currentId] = {
       ...node,
       progress: newProgress,
-      status: newProgress === 100 ? NODE_STATUS.DONE :
-              newProgress > 0 ? NODE_STATUS.IN_PROGRESS : NODE_STATUS.TODO
+      status: newProgress === 100 ? NODE_STATUS.DONE : newProgress > 0 ? NODE_STATUS.IN_PROGRESS : NODE_STATUS.TODO,
     };
 
     currentId = node.parentId;
@@ -77,7 +76,7 @@ export const isNodeLocked = (nodes, nodeId) => {
   if (!node || !node.dependsOn || node.dependsOn.length === 0) return false;
 
   // If any dependency is NOT DONE, the node is locked
-  return node.dependsOn.some(depId => {
+  return node.dependsOn.some((depId) => {
     const depNode = nodes[depId];
     return !depNode || depNode.status !== NODE_STATUS.DONE;
   });
@@ -133,11 +132,11 @@ export const toggleNodeStatus = (nodes, nodeId) => {
     newNodes[id] = {
       ...n,
       status,
-      progress: status === NODE_STATUS.DONE ? 100 : 0
+      progress: status === NODE_STATUS.DONE ? 100 : 0,
     };
 
     if (n.children) {
-      n.children.forEach(childId => setStatusRecursively(childId, status));
+      n.children.forEach((childId) => setStatusRecursively(childId, status));
     }
   };
 

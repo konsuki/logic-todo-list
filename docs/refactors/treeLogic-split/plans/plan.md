@@ -43,14 +43,14 @@
 
 `src/features/todo/lib/` 配下に 6 ファイルを新規作成し、`treeLogic.js` の関数を責務ごとに移す。各関数の**本体・JSDoc・引数・返り値は 1 文字も変更しない**。各モジュール先頭に責務を説明するヘッダコメントを付ける。
 
-| 新ファイル | 収容する関数（移行元の export 順を保つ） |
-|---|---|
-| `treeNodes.js` | `addNode`, `addNodes`, `addTreeUnderNode`, `importTreeToNodes`, `reorderNode`, `outdentNode` |
-| `treeProgress.js` | `calculateNodeProgress`, `updateProgressRecursively`, `isNodeLocked`, `checkCircularDependency`, `toggleNodeStatus` |
-| `treeGroups.js` | `normalizeGroups`, `normalizeOrGroups`, `calculateGroupProgress`, `addGroup`, `removeGroup`, `assignChildToGroup`, `updateGroup` |
-| `treeLifecycle.js` | `softDeleteNode`, `hideNode`, `unhideNode`, `restoreNode`, `permanentDeleteNode` |
-| `treeFolders.js` | `isFolderNode`, `addFolder`, `assignTaskToFolder`, `deleteFolder`, `buildFolderTree` |
-| `treeDisplay.js` | `searchNodes`, `getFlattenedFlow`, `getVisibleNodesList`, `buildArboristTree` |
+| 新ファイル         | 収容する関数（移行元の export 順を保つ）                                                                                         |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `treeNodes.js`     | `addNode`, `addNodes`, `addTreeUnderNode`, `importTreeToNodes`, `reorderNode`, `outdentNode`                                     |
+| `treeProgress.js`  | `calculateNodeProgress`, `updateProgressRecursively`, `isNodeLocked`, `checkCircularDependency`, `toggleNodeStatus`              |
+| `treeGroups.js`    | `normalizeGroups`, `normalizeOrGroups`, `calculateGroupProgress`, `addGroup`, `removeGroup`, `assignChildToGroup`, `updateGroup` |
+| `treeLifecycle.js` | `softDeleteNode`, `hideNode`, `unhideNode`, `restoreNode`, `permanentDeleteNode`                                                 |
+| `treeFolders.js`   | `isFolderNode`, `addFolder`, `assignTaskToFolder`, `deleteFolder`, `buildFolderTree`                                             |
+| `treeDisplay.js`   | `searchNodes`, `getFlattenedFlow`, `getVisibleNodesList`, `buildArboristTree`                                                    |
 
 **関数内で使う定数・別関数は、この段階ではまだ import を張らない**（参照を一時的に壊すため、手順 3 で import を張る）。
 
@@ -72,15 +72,15 @@
 
 各モジュール内で参照している「定数」と「別モジュールの関数」に import 文を追加する。参照関係は以下の通り（原 `treeLogic.js` の呼び出しを精査して確定済み）。
 
-| モジュール | 内部で import する対象 |
-|---|---|
-| `treeConstants.js` | （依存なし。全ての起点） |
-| `treeProgress.js` | `treeConstants.js` の `NODE_STATUS`（`calculateNodeProgress` / `updateProgressRecursively` / `isNodeLocked` / `toggleNodeStatus` で使用） |
-| `treeGroups.js` | `treeConstants.js` の `GROUP_COLOR_PALETTE`（`normalizeGroups` / `addGroup` で使用） |
-| `treeNodes.js` | `treeConstants.js` の `NODE_TYPES`, `NODE_STATUS` ／ `treeProgress.js` の `updateProgressRecursively`（`addNodes` / `addTreeUnderNode` / `importTreeToNodes` で使用） |
-| `treeLifecycle.js` | `treeProgress.js` の `updateProgressRecursively`（`softDeleteNode` / `hideNode` / `unhideNode` / `restoreNode` / `permanentDeleteNode` で使用） |
-| `treeFolders.js` | `treeConstants.js` の `NODE_TYPES`（`isFolderNode` / `addFolder` / `assignTaskToFolder` / `deleteFolder` / `buildFolderTree` で使用） |
-| `treeDisplay.js` | `treeConstants.js` の `NODE_TYPES`（`buildFolderTree` 相当の仮想ルート生成は `treeFolders.js` 側にあるため、`treeDisplay.js` は `treeFolders.js` の `buildFolderTree` を import するかは要確認） |
+| モジュール         | 内部で import する対象                                                                                                                                                                           |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `treeConstants.js` | （依存なし。全ての起点）                                                                                                                                                                         |
+| `treeProgress.js`  | `treeConstants.js` の `NODE_STATUS`（`calculateNodeProgress` / `updateProgressRecursively` / `isNodeLocked` / `toggleNodeStatus` で使用）                                                        |
+| `treeGroups.js`    | `treeConstants.js` の `GROUP_COLOR_PALETTE`（`normalizeGroups` / `addGroup` で使用）                                                                                                             |
+| `treeNodes.js`     | `treeConstants.js` の `NODE_TYPES`, `NODE_STATUS` ／ `treeProgress.js` の `updateProgressRecursively`（`addNodes` / `addTreeUnderNode` / `importTreeToNodes` で使用）                            |
+| `treeLifecycle.js` | `treeProgress.js` の `updateProgressRecursively`（`softDeleteNode` / `hideNode` / `unhideNode` / `restoreNode` / `permanentDeleteNode` で使用）                                                  |
+| `treeFolders.js`   | `treeConstants.js` の `NODE_TYPES`（`isFolderNode` / `addFolder` / `assignTaskToFolder` / `deleteFolder` / `buildFolderTree` で使用）                                                            |
+| `treeDisplay.js`   | `treeConstants.js` の `NODE_TYPES`（`buildFolderTree` 相当の仮想ルート生成は `treeFolders.js` 側にあるため、`treeDisplay.js` は `treeFolders.js` の `buildFolderTree` を import するかは要確認） |
 
 **注意（確定が必要な依存）**
 
@@ -106,16 +106,16 @@
 
 ### ソース 8 ファイルの書き換え対応表
 
-| ファイル | 現 import | 新 import | 参照置換 |
-|---|---|---|---|
-| `TreeView.jsx` | `import * as treeLogic from '../../lib/treeLogic'` | `import { getFlattenedFlow } from '../../lib/treeDisplay'` | `treeLogic.getFlattenedFlow` → `getFlattenedFlow`（1 箇所） |
-| `SearchBar.jsx` | `import * as treeLogic from '../../lib/treeLogic'` | `import { searchNodes } from '../../lib/treeDisplay'` | `treeLogic.searchNodes` → `searchNodes`（1 箇所） |
-| `TodoItem.jsx` | `import * as treeLogic from '../../lib/treeLogic'` | `import { isNodeLocked } from '../../lib/treeProgress'` | `treeLogic.isNodeLocked` → `isNodeLocked`（1 箇所） |
-| `useShortcuts.js` | `import * as treeLogic from '../lib/treeLogic'` | `import { getVisibleNodesList } from '../lib/treeDisplay'` | `treeLogic.getVisibleNodesList` → `getVisibleNodesList`（1 箇所） |
-| `Inspector.jsx` | `import * as treeLogic from '../../lib/treeLogic'` | `import { normalizeGroups, calculateGroupProgress } from '../../lib/treeGroups'` | `treeLogic.normalizeGroups` → `normalizeGroups`、`treeLogic.calculateGroupProgress` → `calculateGroupProgress`（各 1 箇所） |
-| `ListView.jsx` | `import { NODE_TYPES } from '../../lib/treeLogic'`<br>`import * as treeLogic from '../../lib/treeLogic'` | `import { NODE_TYPES } from '../../lib/treeConstants'`<br>`import { buildFolderTree } from '../../lib/treeFolders'`<br>`import { buildArboristTree } from '../../lib/treeDisplay'` | `treeLogic.buildFolderTree` → `buildFolderTree`、`treeLogic.buildArboristTree` → `buildArboristTree`（各 1 箇所） |
-| `importLogic.js` | `import { NODE_TYPES } from './treeLogic'` | `import { NODE_TYPES } from './treeConstants'` | 置換なし（import 先のみ変更） |
-| `useTodoTree.js` | `import * as treeLogic from '../lib/treeLogic'` | 下記「useTodoTree.js の書き換え」参照 | 下記参照 |
+| ファイル          | 現 import                                                                                                | 新 import                                                                                                                                                                          | 参照置換                                                                                                                    |
+| ----------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `TreeView.jsx`    | `import * as treeLogic from '../../lib/treeLogic'`                                                       | `import { getFlattenedFlow } from '../../lib/treeDisplay'`                                                                                                                         | `treeLogic.getFlattenedFlow` → `getFlattenedFlow`（1 箇所）                                                                 |
+| `SearchBar.jsx`   | `import * as treeLogic from '../../lib/treeLogic'`                                                       | `import { searchNodes } from '../../lib/treeDisplay'`                                                                                                                              | `treeLogic.searchNodes` → `searchNodes`（1 箇所）                                                                           |
+| `TodoItem.jsx`    | `import * as treeLogic from '../../lib/treeLogic'`                                                       | `import { isNodeLocked } from '../../lib/treeProgress'`                                                                                                                            | `treeLogic.isNodeLocked` → `isNodeLocked`（1 箇所）                                                                         |
+| `useShortcuts.js` | `import * as treeLogic from '../lib/treeLogic'`                                                          | `import { getVisibleNodesList } from '../lib/treeDisplay'`                                                                                                                         | `treeLogic.getVisibleNodesList` → `getVisibleNodesList`（1 箇所）                                                           |
+| `Inspector.jsx`   | `import * as treeLogic from '../../lib/treeLogic'`                                                       | `import { normalizeGroups, calculateGroupProgress } from '../../lib/treeGroups'`                                                                                                   | `treeLogic.normalizeGroups` → `normalizeGroups`、`treeLogic.calculateGroupProgress` → `calculateGroupProgress`（各 1 箇所） |
+| `ListView.jsx`    | `import { NODE_TYPES } from '../../lib/treeLogic'`<br>`import * as treeLogic from '../../lib/treeLogic'` | `import { NODE_TYPES } from '../../lib/treeConstants'`<br>`import { buildFolderTree } from '../../lib/treeFolders'`<br>`import { buildArboristTree } from '../../lib/treeDisplay'` | `treeLogic.buildFolderTree` → `buildFolderTree`、`treeLogic.buildArboristTree` → `buildArboristTree`（各 1 箇所）           |
+| `importLogic.js`  | `import { NODE_TYPES } from './treeLogic'`                                                               | `import { NODE_TYPES } from './treeConstants'`                                                                                                                                     | 置換なし（import 先のみ変更）                                                                                               |
+| `useTodoTree.js`  | `import * as treeLogic from '../lib/treeLogic'`                                                          | 下記「useTodoTree.js の書き換え」参照                                                                                                                                              | 下記参照                                                                                                                    |
 
 ### useTodoTree.js の書き換え（20 関数超・6 モジュールに跨る）
 
@@ -131,6 +131,7 @@ import { addFolder, deleteFolder, assignTaskToFolder } from '../lib/treeFolders'
 ```
 
 参照置換:
+
 - `treeLogic.addNode` → `addNode`（ほか `addNodes` / `addTreeUnderNode` / `importTreeToNodes` / `reorderNode` / `outdentNode` / `toggleNodeStatus` / `isNodeLocked` / `addGroup` / `removeGroup` / `assignChildToGroup` / `updateGroup` / `softDeleteNode` / `restoreNode` / `permanentDeleteNode` / `hideNode` / `unhideNode` / `addFolder` / `deleteFolder` / `assignTaskToFolder` も同様）
 - `treeLogic.NODE_TYPES.FOLDER` → `NODE_TYPES.FOLDER`（`rootNodes` / `folders` / `trashedRootNodes` / `hiddenRootNodes` の filter 内 5 箇所）
 
@@ -148,14 +149,14 @@ import * as treeDisplay from './treeDisplay';
 
 参照置換（`treeLogic.X` → 対応モジュールの `*.X`）:
 
-| 元参照 | 新参照 |
-|---|---|
-| `treeLogic.reorderNode` | `treeNodes.reorderNode` |
-| `treeLogic.buildArboristTree` | `treeDisplay.buildArboristTree` |
-| `treeLogic.normalizeGroups` / `addGroup` / `removeGroup` / `assignChildToGroup` / `updateGroup` | `treeGroups.*` |
-| `treeLogic.calculateNodeProgress` | `treeProgress.calculateNodeProgress` |
-| `treeLogic.addFolder` / `assignTaskToFolder` / `deleteFolder` / `buildFolderTree` | `treeFolders.*` |
-| `treeLogic.searchNodes` | `treeDisplay.searchNodes` |
+| 元参照                                                                                          | 新参照                               |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `treeLogic.reorderNode`                                                                         | `treeNodes.reorderNode`              |
+| `treeLogic.buildArboristTree`                                                                   | `treeDisplay.buildArboristTree`      |
+| `treeLogic.normalizeGroups` / `addGroup` / `removeGroup` / `assignChildToGroup` / `updateGroup` | `treeGroups.*`                       |
+| `treeLogic.calculateNodeProgress`                                                               | `treeProgress.calculateNodeProgress` |
+| `treeLogic.addFolder` / `assignTaskToFolder` / `deleteFolder` / `buildFolderTree`               | `treeFolders.*`                      |
+| `treeLogic.searchNodes`                                                                         | `treeDisplay.searchNodes`            |
 
 **変更しないもの**
 

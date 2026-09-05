@@ -16,8 +16,10 @@ const FolderSection = ({ node, folders, useFolderView, assignTaskToFolder, addFo
           onChange={(e) => assignTaskToFolder(node.id, e.target.value || null)}
         >
           <option value="">{t('inspector.no_folder')}</option>
-          {(folders || []).map(f => (
-            <option key={f.id} value={f.id}>{f.title}</option>
+          {(folders || []).map((f) => (
+            <option key={f.id} value={f.id}>
+              {f.title}
+            </option>
           ))}
         </select>
         <button

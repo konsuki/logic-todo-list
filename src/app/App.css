@@ -1,8 +1,8 @@
 .app-container {
   display: grid;
   grid-template-areas:
-    "header header"
-    "main   side";
+    'header header'
+    'main   side';
   grid-template-rows: var(--header-height) 1fr;
   grid-template-columns: 1fr var(--sidebar-width);
   gap: 16px;
@@ -144,8 +144,9 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  transition: padding 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    padding 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .inspector-panel.collapsed {

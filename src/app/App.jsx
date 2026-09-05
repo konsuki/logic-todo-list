@@ -52,7 +52,7 @@ function App() {
     folders,
     addFolder,
     deleteFolder,
-    assignTaskToFolder
+    assignTaskToFolder,
   } = useTodoTree();
   const { t, lang, setLang } = useI18n();
   const [view, setView] = useState(VIEW_MODE.LIST);
@@ -72,7 +72,7 @@ function App() {
   const { themeName, setThemeName, themeMode, setThemeMode } = useTheme();
 
   const toggleExpand = (nodeId) => {
-    setExpandedNodeIds(prev => {
+    setExpandedNodeIds((prev) => {
       const next = new Set(prev);
       if (next.has(nodeId)) next.delete(nodeId);
       else next.add(nodeId);
@@ -97,7 +97,7 @@ function App() {
     editingNodeId,
     setEditingNodeId,
     outdentNode,
-    setExpandedNodeIds
+    setExpandedNodeIds,
   });
 
   useCelebration(rootNodes);
@@ -114,46 +114,71 @@ function App() {
           <img
             src="/src/assets/bizyu-logo-icon.png"
             alt="LogiDo icon"
-            style={{ height: '32px', width: 'auto', display: 'inline', verticalAlign: 'middle', marginRight: '10px', flexShrink: 0 }}
+            style={{
+              height: '32px',
+              width: 'auto',
+              display: 'inline',
+              verticalAlign: 'middle',
+              marginRight: '10px',
+              flexShrink: 0,
+            }}
           />
-          <span className="logo-wordmark" style={{ fontFamily: "'Noto Sans JP','Hiragino Kaku Gothic ProN','Meiryo',sans-serif", fontWeight: 800, fontSize: '18px', letterSpacing: '0.05em', color: 'var(--text-main)', WebkitTextFillColor: 'var(--text-main)' }}>ビジュー</span>
+          <span
+            className="logo-wordmark"
+            style={{
+              fontFamily: "'Noto Sans JP','Hiragino Kaku Gothic ProN','Meiryo',sans-serif",
+              fontWeight: 800,
+              fontSize: '18px',
+              letterSpacing: '0.05em',
+              color: 'var(--text-main)',
+              WebkitTextFillColor: 'var(--text-main)',
+            }}
+          >
+            ビジュー
+          </span>
         </div>
-        
+
         <div className="view-switcher">
-          <button 
+          <button
             className={`view-btn ${view === VIEW_MODE.TREE ? 'active' : ''}`}
             onClick={() => setView(VIEW_MODE.TREE)}
           >
             {view === VIEW_MODE.TREE && (
-              <motion.div 
+              <motion.div
                 layoutId="activeView"
                 className="active-bg"
-                transition={{ type: "spring", stiffness: 400, damping: 30, mass: 1.2 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30, mass: 1.2 }}
                 style={{ position: 'absolute', inset: 0 }}
               />
             )}
-            <LayoutGrid size={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom', position: 'relative', zIndex: 2 }} />
+            <LayoutGrid
+              size={16}
+              style={{ marginRight: '6px', verticalAlign: 'text-bottom', position: 'relative', zIndex: 2 }}
+            />
             <span style={{ position: 'relative', zIndex: 2 }}>{t('header.tree_view')}</span>
           </button>
-          <button 
+          <button
             className={`view-btn ${view === VIEW_MODE.LIST ? 'active' : ''}`}
             onClick={() => setView(VIEW_MODE.LIST)}
           >
             {view === VIEW_MODE.LIST && (
-              <motion.div 
+              <motion.div
                 layoutId="activeView"
                 className="active-bg"
-                transition={{ type: "spring", stiffness: 400, damping: 30, mass: 1.2 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30, mass: 1.2 }}
                 style={{ position: 'absolute', inset: 0 }}
               />
             )}
-            <List size={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom', position: 'relative', zIndex: 2 }} />
+            <List
+              size={16}
+              style={{ marginRight: '6px', verticalAlign: 'text-bottom', position: 'relative', zIndex: 2 }}
+            />
             <span style={{ position: 'relative', zIndex: 2 }}>{t('header.list_view')}</span>
           </button>
         </div>
 
         <div className="header-actions">
-          <button 
+          <button
             className="lang-switcher"
             onClick={() => setLang(lang === 'ja' ? 'en' : 'ja')}
             title="Switch Language"
@@ -162,7 +187,7 @@ function App() {
             <span className="lang-label">{lang.toUpperCase()}</span>
           </button>
           {import.meta.env.DEV && (
-            <button 
+            <button
               className={`icon-btn ${view === VIEW_MODE.PREVIEW ? 'active' : ''}`}
               onClick={() => setView(view === VIEW_MODE.PREVIEW ? VIEW_MODE.LIST : VIEW_MODE.PREVIEW)}
               title="Design Preview (Alt+P)"
@@ -179,23 +204,19 @@ function App() {
               t={t}
             />
           )}
-          <button
-            className="icon-btn"
-            onClick={() => setIsSettingsOpen(true)}
-            title="Settings"
-          >
+          <button className="icon-btn" onClick={() => setIsSettingsOpen(true)} title="Settings">
             <Settings size={20} color="var(--text-muted)" />
           </button>
-          <button 
-            className="icon-btn"
-            onClick={() => setIsInspectorOpen(!isInspectorOpen)}
-          >
+          <button className="icon-btn" onClick={() => setIsInspectorOpen(!isInspectorOpen)}>
             <Info size={20} color={isInspectorOpen ? 'var(--primary-color)' : 'var(--text-muted)'} />
           </button>
         </div>
       </header>
 
-      <main className="main-content" style={{ padding: view === VIEW_MODE.TREE || view === VIEW_MODE.PREVIEW ? '0' : '40px' }}>
+      <main
+        className="main-content"
+        style={{ padding: view === VIEW_MODE.TREE || view === VIEW_MODE.PREVIEW ? '0' : '40px' }}
+      >
         {import.meta.env.DEV && view === VIEW_MODE.PREVIEW ? (
           <DesignSandbox />
         ) : view === VIEW_MODE.LIST ? (
@@ -265,7 +286,7 @@ function App() {
         />
       </aside>
 
-      <SettingsPanel 
+      <SettingsPanel
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         t={t}

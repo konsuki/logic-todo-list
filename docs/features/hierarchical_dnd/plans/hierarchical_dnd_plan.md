@@ -10,11 +10,13 @@
 6. **スタイリングの調整**: D&D中のドラッグカーソル・ドロップラインのCSSをテーマに合わせて調整する。
 
 ---
-*※ ここから下の「手順の詳細化」は以降のターンで段階的に追記されます。*
+
+_※ ここから下の「手順の詳細化」は以降のターンで段階的に追記されます。_
 
 ## 手順の詳細化
 
 ### 1. パッケージのインストール
+
 - **コマンド**: `npm install react-arborist`
 - **確認事項**:
   - インストール後に `npm run dev` が正常に起動することを確認する。
@@ -22,6 +24,7 @@
   - `package.json` の `dependencies` に `react-arborist` が追加されていることを確認する。
 
 ### 2. treeLogic.js の拡張
+
 - **対象ファイル**: `src/logic/treeLogic.js`
 - **追加する関数**: `buildArboristTree(nodes, rootNodes)`
 - **処理内容**:
@@ -32,6 +35,7 @@
 - **既存関数への変更**: なし（純粋な関数追加のみ）。
 
 ### 3. useTodoTree.js の拡張
+
 - **対象ファイル**: `src/hooks/useTodoTree.js`
 - **追加する関数**: `handleMoveNode(dragIds, parentId, index)`
 - **処理内容**:
@@ -45,6 +49,7 @@
 - **既存関数への変更**: なし。
 
 ### 4. App.jsx の更新
+
 - **対象ファイル**: `src/App.jsx`
 - **変更内容**:
   - `useTodoTree()` の返り値から `moveNode` を分割代入で受け取る（既存の `reorderNode` 等と同列に追加）。
@@ -52,6 +57,7 @@
 - **既存のプロップ・ロジックへの変更**: なし（追加のみ）。
 
 ### 5. ListView.jsx の書き換え
+
 - **対象ファイル**: `src/components/features/list/ListView.jsx`
 - **変更内容**:
   - `import { Tree } from 'react-arborist'` を追加する。
@@ -69,7 +75,7 @@
       indent={24}
       rowHeight={56}
     >
-      {Node}  // カスタムノードレンダラー
+      {Node} // カスタムノードレンダラー
     </Tree>
     ```
   - カスタムノードレンダラー `Node` コンポーネントを同ファイル内（または別ファイル）に作成する。このレンダラーは既存の `TodoItem` の行部分（`todo-item-row`）の描画ロジックを流用し、react-arboristから渡される `node`・`style`・`dragHandle` props を使用する。
@@ -79,6 +85,7 @@
   - フェーズフィルター機能は、`buildArboristTree` の段階でフィルタリングするか、react-arboristの `searchTerm` / `searchMatch` を使って対応する。
 
 ### 6. スタイリングの調整
+
 - **対象ファイル**: `src/components/features/list/ListView.css` および `TodoItem.css`
 - **変更内容**:
   - react-arboristが生成するDOM構造（`[role="treeitem"]` 等）に合わせてCSSセレクタを調整する。

@@ -6,8 +6,14 @@
 }
 
 @keyframes fadeInRight {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .inspector-empty {
@@ -225,7 +231,10 @@
   background-color: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .relation-btn.active {
@@ -282,7 +291,9 @@
   background-color: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .add-group-btn:hover {
@@ -347,7 +358,9 @@
   background-color: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 
 .group-collapse-btn:hover {
@@ -406,9 +419,15 @@
   border-radius: 50%;
 }
 
-.status-dot.todo { background-color: var(--text-muted); }
-.status-dot.in_progress { background-color: var(--warning-color); }
-.status-dot.done { background-color: var(--success-color); }
+.status-dot.todo {
+  background-color: var(--text-muted);
+}
+.status-dot.in_progress {
+  background-color: var(--warning-color);
+}
+.status-dot.done {
+  background-color: var(--success-color);
+}
 
 .how-title {
   flex: 1;
@@ -455,7 +474,8 @@
   letter-spacing: 0.5px;
 }
 
-.phase-select, .date-input {
+.phase-select,
+.date-input {
   width: 100%;
   padding: 8px 10px;
   background-color: var(--bg-color);
@@ -467,7 +487,8 @@
   transition: border-color 0.2s;
 }
 
-.phase-select:focus, .date-input:focus {
+.phase-select:focus,
+.date-input:focus {
   border-color: var(--primary-color);
 }
 
@@ -537,7 +558,7 @@
   border-radius: 6px;
   margin-top: 4px;
   z-index: 100;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .search-result-item {
@@ -769,7 +790,9 @@
   box-sizing: border-box;
   font-family: var(--font-display);
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .inspector-title-input:focus {
@@ -826,4 +849,16 @@
 
 .section-subtitle-row .section-subtitle {
   margin-bottom: 0;
+}
+
+.inspector-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.inspector-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }

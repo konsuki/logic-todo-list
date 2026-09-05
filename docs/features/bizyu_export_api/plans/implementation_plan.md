@@ -17,6 +17,7 @@
 **変更内容**:
 
 1. ファイル先頭に Node.js 標準モジュールの import を追加する：
+
    ```js
    import os from 'node:os';
    import fs from 'node:fs';
@@ -73,11 +74,11 @@
 
 3. **変更後の `vite.config.js` 全体像**:
    ```js
-   import { defineConfig } from 'vite'
-   import react from '@vitejs/plugin-react'
-   import os from 'node:os'
-   import fs from 'node:fs'
-   import path from 'node:path'
+   import { defineConfig } from 'vite';
+   import react from '@vitejs/plugin-react';
+   import os from 'node:os';
+   import fs from 'node:fs';
+   import path from 'node:path';
 
    export default defineConfig({
      plugins: [react()],
@@ -86,8 +87,8 @@
          '/api': {
            target: 'http://localhost:8000',
            changeOrigin: true,
-           rewrite: (path) => path.replace(/^\/api/, '')
-         }
+           rewrite: (path) => path.replace(/^\/api/, ''),
+         },
        },
        configureServer(server) {
          server.middlewares.use('/__bizyu_export', (req, res) => {
@@ -99,7 +100,9 @@
            }
 
            let body = '';
-           req.on('data', chunk => { body += chunk; });
+           req.on('data', (chunk) => {
+             body += chunk;
+           });
            req.on('end', () => {
              try {
                const bizyuDir = path.join(os.homedir(), '.bizyu');
@@ -119,17 +122,18 @@
              }
            });
          });
-       }
+       },
      },
      test: {
        environment: 'jsdom',
        globals: true,
-       setupFiles: './src/setupTests.js'
-     }
-   })
+       setupFiles: './src/setupTests.js',
+     },
+   });
    ```
 
 **補足**:
+
 - Vite の `configureServer` は内部で Connect 互換のミドルウェア API を提供している。`req` / `res` は Node.js の `http.IncomingMessage` / `http.ServerResponse` そのもの。
 - `server.middlewares.use('/__bizyu_export', ...)` はパスが `/__bizyu_export` で始まるリクエストにのみマッチする。
 - `body` は生の JSON 文字列をそのまま受け取り、検証せずにファイルに書き込む。バリデーションは行わない（ブラウザ側の `JSON.stringify` の出力を信頼する）。
@@ -141,31 +145,34 @@
 **対象**: `src/hooks/useTodoTree.js`（14〜18 行目の `useEffect`）
 
 **変更前**:
+
 ```js
-  // Persist to LocalStorage whenever nodes change
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes));
-  }, [nodes]);
+// Persist to LocalStorage whenever nodes change
+useEffect(() => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes));
+}, [nodes]);
 ```
 
 **変更後**:
-```js
-  // Persist to LocalStorage whenever nodes change
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes));
 
-    // DEV 時のみ: MCP 連携用にツリーデータをファイルエクスポートする
-    if (import.meta.env.DEV) {
-      fetch('/__bizyu_export', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(nodes),
-      }).catch(err => console.error('[bizyu-export] Export failed:', err));
-    }
-  }, [nodes]);
+```js
+// Persist to LocalStorage whenever nodes change
+useEffect(() => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes));
+
+  // DEV 時のみ: MCP 連携用にツリーデータをファイルエクスポートする
+  if (import.meta.env.DEV) {
+    fetch('/__bizyu_export', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(nodes),
+    }).catch((err) => console.error('[bizyu-export] Export failed:', err));
+  }
+}, [nodes]);
 ```
 
 **補足**:
+
 - `import.meta.env.DEV` は Vite が提供するグローバル変数。`vite build` 時には `false` に置換され、コード自体が tree-shaking で削除される。
 - `fetch` は非同期かつ `.catch()` のみで結果を待たないため、UI スレッドをブロックしない。
 - エクスポートに失敗しても `console.error` を出力するだけで、アプリの動作には一切影響しない。
@@ -178,6 +185,7 @@
 **確認手順**:
 
 1. ビジューを起動する：
+
    ```bash
    cd /Users/konnsuki/Desktop/Programs/logic-todo-list && npm run dev
    ```
@@ -187,14 +195,17 @@
 3. タスクを追加する（例: 新規 GOAL として「テスト用プロジェクト」を作成）。
 
 4. エクスポートファイルが生成されていることを確認する：
+
    ```bash
    cat ~/.bizyu/tree_data.json | head -c 500
    ```
+
    → GOAL ノードの JSON が表示されれば成功。
 
 5. タスクの状態を変更する（例: 完了にする）。
 
 6. ファイルが即時更新されていることを確認する：
+
    ```bash
    cat ~/.bizyu/tree_data.json | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'ノード数: {len(d)}')"
    ```

@@ -32,7 +32,9 @@ export const addNodes = (nodes, parentId, type, titles) => {
     nextOrder = maxOrder + 1;
   } else {
     // Root level order
-    const rootIds = Object.values(nodes).filter(n => !n.parentId).map(n => n.id);
+    const rootIds = Object.values(nodes)
+      .filter((n) => !n.parentId)
+      .map((n) => n.id);
     const maxOrder = rootIds.reduce((max, rid) => {
       return Math.max(max, nodes[rid]?.order || 0);
     }, -1);
@@ -41,12 +43,12 @@ export const addNodes = (nodes, parentId, type, titles) => {
 
   const newChildIds = [];
 
-  titles.forEach(item => {
+  titles.forEach((item) => {
     // Handle both simple strings and { title, description } objects
     const title = typeof item === 'string' ? item : item.title;
-    const description = typeof item === 'object' ? (item.description || '') : '';
+    const description = typeof item === 'object' ? item.description || '' : '';
 
-    const id = (typeof item === 'object' && item.id) ? item.id : crypto.randomUUID();
+    const id = typeof item === 'object' && item.id ? item.id : crypto.randomUUID();
     const newNode = {
       id,
       parentId,
@@ -65,8 +67,8 @@ export const addNodes = (nodes, parentId, type, titles) => {
       folderId: null, // Default: unclassified
       metadata: {
         createdAt: Date.now(),
-        updatedAt: Date.now()
-      }
+        updatedAt: Date.now(),
+      },
     };
     newNodes[id] = newNode;
     newChildIds.push(id);
@@ -77,7 +79,7 @@ export const addNodes = (nodes, parentId, type, titles) => {
       ...newNodes[parentId],
       children: [...(newNodes[parentId].children || []), ...newChildIds],
       // If parent was ACTION, it becomes STRATEGY when children are added
-      type: newNodes[parentId].type === NODE_TYPES.ACTION ? NODE_TYPES.STRATEGY : newNodes[parentId].type
+      type: newNodes[parentId].type === NODE_TYPES.ACTION ? NODE_TYPES.STRATEGY : newNodes[parentId].type,
     };
   }
 
@@ -112,8 +114,8 @@ export const addTreeUnderNode = (nodes, parentId, treeDataArray) => {
       id,
       parentId: pid,
       type,
-      title: nodeData.title || "無題",
-      description: nodeData.description || "",
+      title: nodeData.title || '無題',
+      description: nodeData.description || '',
       status: NODE_STATUS.TODO,
       progress: 0,
       children: [],
@@ -124,8 +126,8 @@ export const addTreeUnderNode = (nodes, parentId, treeDataArray) => {
       folderId: null, // Default: unclassified
       metadata: {
         createdAt: Date.now(),
-        updatedAt: Date.now()
-      }
+        updatedAt: Date.now(),
+      },
     };
     currentNodes[id] = newNode;
 
@@ -154,7 +156,7 @@ export const addTreeUnderNode = (nodes, parentId, treeDataArray) => {
     currentNodes[parentId] = {
       ...parentNode,
       children: [...(parentNode.children || []), ...newChildIds],
-      type: parentNode.type === NODE_TYPES.ACTION && newChildIds.length > 0 ? NODE_TYPES.STRATEGY : parentNode.type
+      type: parentNode.type === NODE_TYPES.ACTION && newChildIds.length > 0 ? NODE_TYPES.STRATEGY : parentNode.type,
     };
     return updateProgressRecursively(currentNodes, parentId);
   }
@@ -174,7 +176,7 @@ export const reorderNode = (nodes, nodeId, direction) => {
 
   // Get all siblings and ensure they have valid unique orders
   let siblings = Object.values(nodes)
-    .filter(n => n.parentId === parentId)
+    .filter((n) => n.parentId === parentId)
     .sort((a, b) => (a.order || 0) - (b.order || 0) || (a.metadata?.createdAt || 0) - (b.metadata?.createdAt || 0));
 
   const newNodes = { ...nodes };
@@ -185,9 +187,9 @@ export const reorderNode = (nodes, nodeId, direction) => {
   });
 
   // Re-fetch sorted siblings with repaired orders
-  const repairedSiblings = siblings.map(s => newNodes[s.id]);
+  const repairedSiblings = siblings.map((s) => newNodes[s.id]);
 
-  const currentIndex = repairedSiblings.findIndex(n => n.id === nodeId);
+  const currentIndex = repairedSiblings.findIndex((n) => n.id === nodeId);
   const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
 
   if (targetIndex < 0 || targetIndex >= repairedSiblings.length) return nodes;
@@ -202,7 +204,9 @@ export const reorderNode = (nodes, nodeId, direction) => {
 
   // Sync children array order in parent node to match new orders
   if (parentId && newNodes[parentId]) {
-    const sortedChildIds = [...newNodes[parentId].children].sort((a, b) => (newNodes[a]?.order || 0) - (newNodes[b]?.order || 0));
+    const sortedChildIds = [...newNodes[parentId].children].sort(
+      (a, b) => (newNodes[a]?.order || 0) - (newNodes[b]?.order || 0)
+    );
     newNodes[parentId] = { ...newNodes[parentId], children: sortedChildIds };
   }
 
@@ -225,7 +229,7 @@ export const outdentNode = (nodes, nodeId) => {
   // Remove from old parent
   newNodes[parent.id] = {
     ...parent,
-    children: parent.children.filter(id => id !== nodeId)
+    children: parent.children.filter((id) => id !== nodeId),
   };
 
   // Add to new parent (or root)
@@ -242,14 +246,14 @@ export const outdentNode = (nodes, nodeId) => {
 
     newNodes[newParentId] = {
       ...newParent,
-      children: newChildren
+      children: newChildren,
     };
   }
 
   // Update node
   newNodes[nodeId] = {
     ...node,
-    parentId: newParentId || null
+    parentId: newParentId || null,
   };
 
   // Update progress for both old and new paths
@@ -285,8 +289,8 @@ export const importTreeToNodes = (nodes, importedData) => {
       folderId: null, // Default: unclassified
       metadata: {
         createdAt: Date.now(),
-        updatedAt: Date.now()
-      }
+        updatedAt: Date.now(),
+      },
     };
 
     currentNodes[id] = newNode;
@@ -307,10 +311,10 @@ export const importTreeToNodes = (nodes, importedData) => {
     return id;
   };
 
-  const newRootIds = importedData.map(rootData => addRecursive(null, rootData));
+  const newRootIds = importedData.map((rootData) => addRecursive(null, rootData));
 
   // Fix root orders
-  const allRootNodes = Object.values(currentNodes).filter(n => !n.parentId);
+  const allRootNodes = Object.values(currentNodes).filter((n) => !n.parentId);
   // Sort by existing order or createdAt
   const sortedRoots = allRootNodes.sort((a, b) => (a.order || 0) - (b.order || 0));
   sortedRoots.forEach((n, idx) => {
@@ -329,7 +333,7 @@ export const importTreeToNodes = (nodes, importedData) => {
 
   // Update from bottom to top by sorting by depth (leaf nodes first)
   // But updateProgressRecursively already handles parent updates, so just calling it on leaves is enough.
-  allNewIds.forEach(id => {
+  allNewIds.forEach((id) => {
     if (!finalNodes[id].children || finalNodes[id].children.length === 0) {
       finalNodes = updateProgressRecursively(finalNodes, id);
     }

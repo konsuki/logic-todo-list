@@ -48,7 +48,7 @@
    - 注意: 引数の削除は「呼び出し元からの props 受け渡し」も同時に更新する（Cascading Update）。特に `AIInsights` は `Inspector.jsx` から props を受け取っている。
 5. **未使用 map/catch 引数・catch 節の修正**: `i`(Inspector), `d`(TreeView), `_`(Inspector), `e`(importLogic) を削除（catch 節は optional catch binding 化）。
    - `Inspector.jsx:356`: `pathToRoot.map((n, i) => (` → `pathToRoot.map((n) => (`（`i` 未使用）。
-   - `TreeView.jsx:214`: `.style('fill', d => \`var(--border-color)\`)` → `.style('fill', () => \`var(--border-color)\`)`（`d` 未使用。ただし d3 の chained `.style()` コールバックで index/引数を使わないため `() =>` に変更）。
+   - `TreeView.jsx:214`: `.style('fill', d => \`var(--border-color)\`)`→`.style('fill', () => \`var(--border-color)\`)`（`d`未使用。ただし d3 の chained`.style()`コールバックで index/引数を使わないため`() =>` に変更）。
    - `Inspector.jsx:60`: `} catch (_) {}` → `} catch {`（optional catch binding 化。`_` 未使用かつ空ブロック `no-empty` との二重抵触。ただし `no-empty` は本タスク範囲外のため、`catch {` にすると空ブロックが残り `no-empty` が残る点に注意。→ ここは `_` 削除のみ行い、`no-empty` は後続タスクに残す）。※実装時に再判断: `catch {}` は ES2019+ の optional catch binding で有効。空ブロック警告 `no-empty` は残るが、それは本タスク対象外。
    - `importLogic.js:16`: `} catch (e) {` → `} catch {`（`e` 未使用、optional catch binding 化）。
 6. **未使用 middleware 引数の削除**: `vite.config.js` の `next` を削除。

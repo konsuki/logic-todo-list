@@ -18,7 +18,8 @@ const renderText = (text) => {
           className="description-link"
           onClick={(e) => e.stopPropagation()}
         >
-          {part}<ExternalLink size={10} style={{ marginLeft: '2px', verticalAlign: 'middle' }} />
+          {part}
+          <ExternalLink size={10} style={{ marginLeft: '2px', verticalAlign: 'middle' }} />
         </a>
       );
     }
@@ -43,11 +44,7 @@ const InspectorTextarea = ({ nodeId, value, onChange, onModalChange, label, plac
               {t('common.edit') || 'Edit'}
             </button>
           )}
-          <button
-            className="expand-btn"
-            onClick={() => setIsModalOpen(true)}
-            title={`${label} を拡大`}
-          >
+          <button className="expand-btn" onClick={() => setIsModalOpen(true)} title={`${label} を拡大`}>
             <Maximize2 size={13} />
           </button>
         </div>
@@ -66,11 +63,7 @@ const InspectorTextarea = ({ nodeId, value, onChange, onModalChange, label, plac
           }}
         />
       ) : (
-        <div
-          className="description-display"
-          onClick={() => setIsEditing(true)}
-          title="Click to edit"
-        >
+        <div className="description-display" onClick={() => setIsEditing(true)} title="Click to edit">
           {renderText(value)}
         </div>
       )}

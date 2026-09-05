@@ -27,9 +27,9 @@
 
 ### 移動・リネーム
 
-| 移動前 | 移動後 |
-|---|---|
-| `src/logic/settings.js` | `src/lib/settings.js` |
+| 移動前                          | 移動後                                     |
+| ------------------------------- | ------------------------------------------ |
+| `src/logic/settings.js`         | `src/lib/settings.js`                      |
 | `src/logic/SettingsContext.jsx` | `src/lib/SettingsProvider.jsx`（リネーム） |
 
 ### import パス修正（6ファイル）

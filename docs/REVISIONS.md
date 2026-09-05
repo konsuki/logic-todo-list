@@ -1,13 +1,17 @@
 # 修正・機能追加リクエスト
 
 ## 🚀 未完了 (Incomplete)
+
 <!-- テンプレ: - [XX] MM-DD: [タスク名](features/name/spec.md) -->
+
 - [88] 08-26: ディレクトリ構造の責務分離（bulletproof-react 準拠に再設計）
 - [56] 07-15: インスペクター「Edit」ボタンのi18nキー `common.edit` が未解決で文字列そのまま表示される問題の修正
 - [76] 08-19: フォルダのリネームをできるようにする
 - [77] 08-19: フォルダ表示のアイテムをDnDで並び替えできるようにする
 
 ## ✅ 完了済み (Completed)
+
+- [103] 09-05: [整形と最終検証を行う](refactors/formatting-final-verification/spec.md)
 - [102] 09-05: [コメントの過不足を調整する](refactors/comment-adjustment/spec.md)
 - [101] 08-28: [ドメイン用語の命名を統一する（マジック文字列 → 定数参照へ）](refactors/domain-naming-unification/spec.md)
 - [100] 08-28: [App.jsx のテーマ適用と進捗祝賀ロジックをカスタムフックへ抽出](refactors/app-hooks-extraction/spec.md)

@@ -38,7 +38,7 @@ body {
 
 /* Premium Noise Texture Overlay */
 body::before {
-  content: "";
+  content: '';
   position: fixed;
   top: 0;
   left: 0;
@@ -50,7 +50,10 @@ body::before {
   z-index: 9999;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: var(--font-display);
   font-weight: 600;
 }
@@ -63,14 +66,16 @@ button {
   font-family: inherit;
 }
 
-input, textarea {
+input,
+textarea {
   background: none;
   border: none;
   color: inherit;
   font-family: inherit;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   outline: none;
 }
 

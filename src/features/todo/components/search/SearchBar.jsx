@@ -87,7 +87,11 @@ const SearchBar = ({ nodes, displayMode, treeRef, onSelectNode, t }) => {
                 placeholder={t('list.search_placeholder')}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                onBlur={() => setTimeout(() => { if (searchOpen) close(); }, 150)}
+                onBlur={() =>
+                  setTimeout(() => {
+                    if (searchOpen) close();
+                  }, 150)
+                }
               />
             </div>
 
@@ -100,7 +104,10 @@ const SearchBar = ({ nodes, displayMode, treeRef, onSelectNode, t }) => {
                     <div
                       key={r.id}
                       className="search-result-item"
-                      onMouseDown={(e) => { e.preventDefault(); handleSelect(r.id); }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        handleSelect(r.id);
+                      }}
                     >
                       {r.type === NODE_TYPES.FOLDER ? (
                         <Folder size={14} className="folder-icon" />

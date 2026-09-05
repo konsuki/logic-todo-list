@@ -20,12 +20,12 @@
 
 ### 定数一覧
 
-| 定数 | 配置先 | 値 | 対象 |
-|---|---|---|---|
-| `NODE_TYPES` / `NODE_STATUS` | 既存 `src/features/todo/lib/treeConstants.js`（利用のみ） | — | ノード種別・ステータス |
-| `PHASES`（新規追記） | `src/features/todo/lib/treeConstants.js` | `{ PREP: 'PREP', EXEC: 'EXEC', REVIEW: 'REVIEW', ALL: 'ALL' }` | フェーズ（`ALL` 含む） |
-| `DISPLAY_MODE`（新規追記） | `src/features/todo/lib/treeConstants.js` | `{ LOGIC: 'logic', FOLDER: 'folder' }` | ListView の表示モード |
-| `VIEW_MODE`（新規ファイル） | `src/constants/views.js` | `{ LIST: 'list', TREE: 'tree', PREVIEW: 'preview' }` | App の view 状態 |
+| 定数                         | 配置先                                                    | 値                                                             | 対象                   |
+| ---------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- | ---------------------- |
+| `NODE_TYPES` / `NODE_STATUS` | 既存 `src/features/todo/lib/treeConstants.js`（利用のみ） | —                                                              | ノード種別・ステータス |
+| `PHASES`（新規追記）         | `src/features/todo/lib/treeConstants.js`                  | `{ PREP: 'PREP', EXEC: 'EXEC', REVIEW: 'REVIEW', ALL: 'ALL' }` | フェーズ（`ALL` 含む） |
+| `DISPLAY_MODE`（新規追記）   | `src/features/todo/lib/treeConstants.js`                  | `{ LOGIC: 'logic', FOLDER: 'folder' }`                         | ListView の表示モード  |
+| `VIEW_MODE`（新規ファイル）  | `src/constants/views.js`                                  | `{ LIST: 'list', TREE: 'tree', PREVIEW: 'preview' }`           | App の view 状態       |
 
 ### 数値の定数化（命名のみ）
 

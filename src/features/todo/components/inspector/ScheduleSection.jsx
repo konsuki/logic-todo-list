@@ -19,11 +19,7 @@ const ScheduleSection = ({ node, reorderNode, updateNode, t }) => {
       <div className="schedule-controls">
         <div className="control-group">
           <label>{t('inspector.phase')}</label>
-          <select
-            value={node.phase || PHASES.PREP}
-            onChange={handlePhaseChange}
-            className="phase-select"
-          >
+          <select value={node.phase || PHASES.PREP} onChange={handlePhaseChange} className="phase-select">
             <option value={PHASES.PREP}>{t('phases.PREP')}</option>
             <option value={PHASES.EXEC}>{t('phases.EXEC')}</option>
             <option value={PHASES.REVIEW}>{t('phases.REVIEW')}</option>
@@ -31,12 +27,7 @@ const ScheduleSection = ({ node, reorderNode, updateNode, t }) => {
         </div>
         <div className="control-group">
           <label>{t('inspector.due_date')}</label>
-          <input
-            type="date"
-            value={node.dueDate || ''}
-            onChange={handleDueDateChange}
-            className="date-input"
-          />
+          <input type="date" value={node.dueDate || ''} onChange={handleDueDateChange} className="date-input" />
         </div>
       </div>
 
@@ -46,18 +37,10 @@ const ScheduleSection = ({ node, reorderNode, updateNode, t }) => {
           <HelpIcon text={t('inspector.order_section_help')} />
         </div>
         <div className="order-buttons">
-          <button
-            className="order-btn"
-            onClick={() => reorderNode(node.id, 'up')}
-            title={t('inspector.move_up')}
-          >
+          <button className="order-btn" onClick={() => reorderNode(node.id, 'up')} title={t('inspector.move_up')}>
             <ArrowUp size={14} /> {t('inspector.move_up')}
           </button>
-          <button
-            className="order-btn"
-            onClick={() => reorderNode(node.id, 'down')}
-            title={t('inspector.move_down')}
-          >
+          <button className="order-btn" onClick={() => reorderNode(node.id, 'down')} title={t('inspector.move_down')}>
             <ArrowDown size={14} /> {t('inspector.move_down')}
           </button>
         </div>

@@ -23,14 +23,14 @@ export const getFlattenedFlow = (nodes, rootNodes) => {
 
     if (node.children && node.children.length > 0) {
       const sortedChildren = [...node.children]
-        .filter(id => !nodes[id]?.deletedAt && !nodes[id]?.hidden) // Exclude soft-deleted and hidden children
+        .filter((id) => !nodes[id]?.deletedAt && !nodes[id]?.hidden) // Exclude soft-deleted and hidden children
         .sort((a, b) => {
           const nodeA = nodes[a];
           const nodeB = nodes[b];
           return (nodeA?.order || 0) - (nodeB?.order || 0);
         });
 
-      sortedChildren.forEach(childId => traverse(childId, depth + 1));
+      sortedChildren.forEach((childId) => traverse(childId, depth + 1));
     }
 
     // Push node with extra metadata
@@ -39,12 +39,12 @@ export const getFlattenedFlow = (nodes, rootNodes) => {
       ...node,
       depth,
       isMilestone,
-      groupParentId: node.parentId
+      groupParentId: node.parentId,
     });
   };
 
   const sortedRoots = [...rootNodes].sort((a, b) => (a.order || 0) - (b.order || 0));
-  sortedRoots.forEach(root => traverse(root.id, 0));
+  sortedRoots.forEach((root) => traverse(root.id, 0));
 
   return result;
 };
@@ -65,14 +65,14 @@ export const getVisibleNodesList = (nodes, rootNodes, expandedNodeIds) => {
     // Only traverse children if this node is expanded
     if (expandedNodeIds.has(nodeId) && node.children && node.children.length > 0) {
       const sortedChildren = [...node.children]
-        .filter(id => !nodes[id]?.deletedAt && !nodes[id]?.hidden) // Exclude soft-deleted and hidden children
+        .filter((id) => !nodes[id]?.deletedAt && !nodes[id]?.hidden) // Exclude soft-deleted and hidden children
         .sort((a, b) => (nodes[a]?.order || 0) - (nodes[b]?.order || 0));
-      sortedChildren.forEach(childId => traverse(childId));
+      sortedChildren.forEach((childId) => traverse(childId));
     }
   };
 
   const sortedRoots = [...rootNodes].sort((a, b) => (a.order || 0) - (b.order || 0));
-  sortedRoots.forEach(root => traverse(root.id));
+  sortedRoots.forEach((root) => traverse(root.id));
 
   return result;
 };
@@ -88,12 +88,10 @@ export const buildArboristTree = (nodes, rootNodes) => {
 
     // Exclude soft-deleted and hidden children from the tree view
     const activeChildIds = (node.children || [])
-      .filter(id => !nodes[id]?.deletedAt && !nodes[id]?.hidden)
+      .filter((id) => !nodes[id]?.deletedAt && !nodes[id]?.hidden)
       .sort((a, b) => (nodes[a]?.order || 0) - (nodes[b]?.order || 0));
 
-    const children = activeChildIds.length > 0
-      ? activeChildIds.map(buildNode).filter(Boolean)
-      : undefined; // undefined = leaf node in react-arborist
+    const children = activeChildIds.length > 0 ? activeChildIds.map(buildNode).filter(Boolean) : undefined; // undefined = leaf node in react-arborist
 
     return {
       ...node,
@@ -103,7 +101,7 @@ export const buildArboristTree = (nodes, rootNodes) => {
   };
 
   const sortedRoots = [...rootNodes].sort((a, b) => (a.order || 0) - (b.order || 0));
-  return sortedRoots.map(root => buildNode(root.id)).filter(Boolean);
+  return sortedRoots.map((root) => buildNode(root.id)).filter(Boolean);
 };
 
 /**
@@ -124,17 +122,19 @@ export const searchNodes = (nodes, query, { mode = 'logic' } = {}) => {
   const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const matcher = new RegExp(escaped, 'i');
 
-  return Object.values(nodes).filter((node) => {
-    if (!node || node.deletedAt || node.hidden) return false;
-    if (node.id === '__unclassified__') return false;
+  return Object.values(nodes)
+    .filter((node) => {
+      if (!node || node.deletedAt || node.hidden) return false;
+      if (node.id === '__unclassified__') return false;
 
-    const isFolder = node.type === NODE_TYPES.FOLDER;
-    if (mode === 'logic' && isFolder) return false;
+      const isFolder = node.type === NODE_TYPES.FOLDER;
+      if (mode === 'logic' && isFolder) return false;
 
-    return matcher.test(node.title || '');
-  }).map((node) => ({
-    id: node.id,
-    title: node.title,
-    type: node.type
-  }));
+      return matcher.test(node.title || '');
+    })
+    .map((node) => ({
+      id: node.id,
+      title: node.title,
+      type: node.type,
+    }));
 };

@@ -1,5 +1,18 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff, Folder, FolderPlus, Plus } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronRight,
+  CheckCircle,
+  Circle,
+  Trash2,
+  Lock,
+  Clock,
+  AlertTriangle,
+  EyeOff,
+  Folder,
+  FolderPlus,
+  Plus,
+} from 'lucide-react';
 import { useSettings } from '../../../../lib/settings';
 import { NODE_TYPES, NODE_STATUS } from '../../lib/treeConstants';
 import { DUE_SOON_THRESHOLD_MS, DESCRIPTION_PREVIEW_MAX_LENGTH } from '../../lib/treeViewConstants';
@@ -19,7 +32,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
 
   const isDone = data.status === NODE_STATUS.DONE;
   const isFolder = data.type === NODE_TYPES.FOLDER;
-  const isLocked = (data.dependsOn || []).some(depId => {
+  const isLocked = (data.dependsOn || []).some((depId) => {
     const dep = tree.props.allNodes?.[depId];
     return !dep || dep.status !== NODE_STATUS.DONE;
   });
@@ -32,13 +45,13 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
   today.setHours(0, 0, 0, 0);
   const dueDate = data.dueDate ? new Date(data.dueDate) : null;
   const isOverdue = dueDate && dueDate < today && !isDone;
-  const isDueSoon = dueDate && !isOverdue && !isDone && (dueDate.getTime() - today.getTime()) <= DUE_SOON_THRESHOLD_MS;
+  const isDueSoon = dueDate && !isOverdue && !isDone && dueDate.getTime() - today.getTime() <= DUE_SOON_THRESHOLD_MS;
 
   // Step number
   const stepNumber = useMemo(() => {
     const siblings = node.parent ? node.parent.children : tree.root.children;
     if (!siblings) return null;
-    const index = siblings.findIndex(s => s.id === node.id);
+    const index = siblings.findIndex((s) => s.id === node.id);
     return index !== -1 ? index + 1 : null;
   }, [node, tree]);
 
@@ -126,9 +139,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
             </button>
             <Folder size={16} className="folder-icon" />
             <span className="node-title folder-title">{data.name}</span>
-            {isVirtual && (
-              <span className="folder-count-badge">{node.children?.length ?? 0}</span>
-            )}
+            {isVirtual && <span className="folder-count-badge">{node.children?.length ?? 0}</span>}
           </div>
 
           <div className="node-actions">
@@ -179,10 +190,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
         ))}
       </div>
 
-      <div
-        className={`todo-item-row ${isDone ? 'is-done' : ''}`}
-        style={{ marginLeft: paddingLeft }}
-      >
+      <div className={`todo-item-row ${isDone ? 'is-done' : ''}`} style={{ marginLeft: paddingLeft }}>
         <div className="todo-item-content">
           <button
             className={`expand-btn ${node.isLeaf ? 'invisible' : ''}`}
@@ -216,9 +224,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
               <span className={`node-type-tag ${data.type.toLowerCase()}`}>{data.type}</span>
             )}
 
-            {settings.showStepBadges && stepNumber !== null && (
-              <span className="step-badge">Step {stepNumber}</span>
-            )}
+            {settings.showStepBadges && stepNumber !== null && <span className="step-badge">Step {stepNumber}</span>}
 
             {isEditing ? (
               <input
@@ -232,7 +238,14 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
                 onClick={(e) => e.stopPropagation()}
               />
             ) : (
-              <span className="node-title" onClick={() => { setEditTitle(data.title); setIsAutoEdit(false); setIsEditing(true); }}>
+              <span
+                className="node-title"
+                onClick={() => {
+                  setEditTitle(data.title);
+                  setIsAutoEdit(false);
+                  setIsEditing(true);
+                }}
+              >
                 {data.title}
               </span>
             )}
@@ -240,9 +253,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
             {/* Timeline Badges */}
             <div className="timeline-meta">
               {settings.showPhaseBadges && data.phase && (
-                <span className={`phase-badge ${data.phase.toLowerCase()}`}>
-                  {t(`phases.${data.phase}`)}
-                </span>
+                <span className={`phase-badge ${data.phase.toLowerCase()}`}>{t(`phases.${data.phase}`)}</span>
               )}
               {data.dueDate && (
                 <span className={`due-date-badge ${isOverdue ? 'overdue' : isDueSoon ? 'due-soon' : ''}`}>
@@ -264,13 +275,13 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
               </div>
             )}
 
-            {data.progress > 0 && data.progress < 100 && (
-              <span className="progress-badge">{data.progress}%</span>
-            )}
+            {data.progress > 0 && data.progress < 100 && <span className="progress-badge">{data.progress}%</span>}
 
             {data.description && settings.showDescriptionInList && (
               <div className="node-description-preview" title={data.description}>
-                {data.description.length > DESCRIPTION_PREVIEW_MAX_LENGTH ? data.description.substring(0, DESCRIPTION_PREVIEW_MAX_LENGTH) + '...' : data.description}
+                {data.description.length > DESCRIPTION_PREVIEW_MAX_LENGTH
+                  ? data.description.substring(0, DESCRIPTION_PREVIEW_MAX_LENGTH) + '...'
+                  : data.description}
               </div>
             )}
           </div>
@@ -316,7 +327,7 @@ const ArboristNode = ({ node, style, dragHandle, tree }) => {
             className="node-progress-bar"
             style={{
               width: `${data.progress}%`,
-              backgroundColor: data.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)'
+              backgroundColor: data.progress === 100 ? 'var(--success-color)' : 'var(--primary-color)',
             }}
           />
         </div>

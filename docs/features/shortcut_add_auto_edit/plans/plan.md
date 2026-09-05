@@ -14,10 +14,12 @@
 **対象**: [App.jsx](src/App.jsx) の `<ListView>` 呼び出し部分（現行 219〜235 行目付近）。
 
 **変更内容:**
+
 - `<ListView>` の props に `editingNodeId={editingNodeId}` と `setEditingNodeId={setEditingNodeId}` を追加する。
 - これらは既に `useShortcuts` と `<TreeView>` に渡しているものと同一の state / setter を再利用する。
 
 **修正後イメージ:**
+
 ```jsx
 <ListView
   nodes={nodes}
@@ -41,6 +43,7 @@
 ```
 
 **期待される結果:**
+
 - ListView 側で `editingNodeId` / `setEditingNodeId` を受け取れるようになる（この時点ではまだ未使用）。
 
 ### 手順2: ListView.jsx で props を受け取り、`tree.props` 経由で `ArboristNode` へ渡す（詳細）
@@ -48,10 +51,12 @@
 **対象**: [ListView.jsx](src/components/features/list/ListView.jsx) の `ListView` コンポーネント（props 定義と `<Tree>` の props）。
 
 **変更内容:**
+
 1. `ListView` の props 分割代入に `editingNodeId` と `setEditingNodeId` を追加する。
 2. `<Tree>` に `editingNodeId={editingNodeId}` と `setEditingNodeId={setEditingNodeId}` を渡す（既存の `onUpdateNode` / `selectedNodeId` 等と同様、`ArboristNode` は `tree.props.xxx` で参照する）。
 
 **修正後イメージ（props 定義）:**
+
 ```jsx
 const ListView = ({
   nodes,
@@ -75,6 +80,7 @@ const ListView = ({
 ```
 
 **修正後イメージ（`<Tree>` への渡し）:**
+
 ```jsx
 <Tree
   data={arboristData}
@@ -88,6 +94,7 @@ const ListView = ({
 ```
 
 **期待される結果:**
+
 - `ArboristNode` が `tree.props.editingNodeId` / `tree.props.setEditingNodeId` で参照できるようになる。
 
 ### 手順3: `ArboristNode` に `useEffect` を追加（自動編集モード＆確定時クリア）（詳細）
@@ -100,6 +107,7 @@ const ListView = ({
 2. 確定処理 `handleTitleSubmit` の Enter / blur 分岐で、`setIsEditing(false)` する際に `tree.props.setEditingNodeId?.(null)` も呼ぶ。
 
 **修正後イメージ（useEffect 追加）:**
+
 ```jsx
 useEffect(() => {
   if (tree.props.editingNodeId === data.id) {
@@ -110,6 +118,7 @@ useEffect(() => {
 ```
 
 **修正後イメージ（handleTitleSubmit の確定時クリア）:**
+
 ```jsx
 const handleTitleSubmit = (e) => {
   if (e.type === 'keydown') {
@@ -126,11 +135,13 @@ const handleTitleSubmit = (e) => {
 ```
 
 **変更のポイント:**
+
 - `useEffect` の依存配列に `tree.props.editingNodeId` を含めることで、ショートカットで `setEditingNodeId(newId)` が呼ばれた際に自動で編集モードへ遷移する。
 - 編集確定時に `setEditingNodeId(null)` を呼ぶことで、`editingNodeId` が残留し続けて別のタイミングで再発火するのを防ぐ。
 - 前回修正（`inspector_title_edit_overwrite`）で `node-title` の `onClick` に追加した `setEditTitle(data.title)` はそのまま維持する。
 
 **期待される結果:**
+
 - リスト表示で Enter / Tab 追加直後に、新タスクが選択＆編集モードになる。
 - 確定（Enter / blur）で編集モードが閉じ、`editingNodeId` がクリアされる。
 
@@ -139,6 +150,7 @@ const handleTitleSubmit = (e) => {
 **対象**: 修正後のアプリを起動し、リスト表示でショートカット追加の挙動を確認する。
 
 **確認項目:**
+
 1. リスト表示でタスクを選択し、**Enter** を押す → 兄弟タスクが追加され、**そのままタイトル入力状態**になる。
 2. そのままタイトルを入力して **Enter（または blur）** で確定できる。
 3. リスト表示でタスクを選択し、**Tab** を押す → 子タスクが追加され、**そのままタイトル入力状態**になる（親は展開済み）。
@@ -149,5 +161,6 @@ const handleTitleSubmit = (e) => {
 8. TreeView（ツリー表示）でも Enter / Tab 追加→自動編集が従来どおり機能することを確認する。
 
 **確認方法:**
+
 - `npm run dev` で起動し、ブラウザで手動確認する。
 - 必要に応じて既存のテスト（`npm test`）が通ることを確認する。

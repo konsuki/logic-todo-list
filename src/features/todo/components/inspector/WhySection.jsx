@@ -6,7 +6,7 @@ const WhySection = ({ node, pathToRoot, onSelectNode, t }) => {
 
   return (
     <section className="inspector-section">
-      <h3 className="section-title section-title--clickable" onClick={() => setIsWhyOpen(v => !v)}>
+      <h3 className="section-title section-title--clickable" onClick={() => setIsWhyOpen((v) => !v)}>
         {isWhyOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         {t('inspector.why')}
       </h3>
@@ -20,11 +20,7 @@ const WhySection = ({ node, pathToRoot, onSelectNode, t }) => {
               </div>
             ) : (
               pathToRoot.map((n) => (
-                <div
-                  key={n.id}
-                  className="path-item linkable"
-                  onClick={() => onSelectNode(n.id)}
-                >
+                <div key={n.id} className="path-item linkable" onClick={() => onSelectNode(n.id)}>
                   <div className="path-dot" />
                   <span className="path-title">{n.title}</span>
                   <ExternalLink size={12} className="link-icon" />

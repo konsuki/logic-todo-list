@@ -36,10 +36,10 @@ MCP サーバー（`bizyu-mcp-server`）はこの JSON ファイルを読み取�
 
 ## 5. 変更対象ファイル
 
-| ファイル | 変更内容 |
-|---|---|
-| `vite.config.js` | カスタム Vite プラグイン `bizyuExportPlugin` を追加し、`configureServer` フック経由で `POST /__bizyu_export` エンドポイントを生やす |
-| `src/hooks/useTodoTree.js` | 既存 `useEffect` 内に、DEV 時のみ Vite サーバーへの `fetch` を追加 |
+| ファイル                   | 変更内容                                                                                                                            |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `vite.config.js`           | カスタム Vite プラグイン `bizyuExportPlugin` を追加し、`configureServer` フック経由で `POST /__bizyu_export` エンドポイントを生やす |
+| `src/hooks/useTodoTree.js` | 既存 `useEffect` 内に、DEV 時のみ Vite サーバーへの `fetch` を追加                                                                  |
 
 ## 6. 詳細仕様
 
@@ -64,7 +64,7 @@ MCP サーバー（`bizyu-mcp-server`）はこの JSON ファイルを読み取�
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(nodes),
-    }).catch(err => console.error('[bizyu-export] Export failed:', err));
+    }).catch((err) => console.error('[bizyu-export] Export failed:', err));
   }
   ```
 - `fetch` の失敗は `console.error` に出力するのみで、アプリ本体の動作には一切影響しない
@@ -72,15 +72,15 @@ MCP サーバー（`bizyu-mcp-server`）はこの JSON ファイルを読み取�
 
 ## 7. 境界条件・エッジケース
 
-| ケース | 対処 |
-|---|---|
-| `~/.bizyu/` ディレクトリが存在しない | ミドルウェアが初回リクエスト時に `fs.mkdirSync({ recursive: true })` で自動作成 |
-| ビジューが起動していない | エクスポートは行われず、MCP サーバーは最後にエクスポートされたファイルを読む。鮮度は MCP 側でメタデータとして通知（Step 3 で対応） |
-| エクスポート API 呼び出しが失敗（Vite サーバー停止中など） | `fetch().catch()` により `console.error` 出力。ビジュー本体の動作には影響しない |
-| JSON シリアライズエラー | `JSON.stringify` は循環参照がないオブジェクトに対して例外を throw しないが、念のため try-catch で保護（useTodoTree 側） |
-| 大量ノード（1000+） | `JSON.stringify` と `fetch` body は同期的に処理され、書き込みも同期的な `writeFileSync` のため問題なし |
-| 本番ビルド時 | `import.meta.env.DEV` ガードにより実行されない |
-| `os` モジュール未 import | `vite.config.js` の先頭で `import os from 'node:os'` および `import fs from 'node:fs'` を追加 |
+| ケース                                                     | 対処                                                                                                                               |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `~/.bizyu/` ディレクトリが存在しない                       | ミドルウェアが初回リクエスト時に `fs.mkdirSync({ recursive: true })` で自動作成                                                    |
+| ビジューが起動していない                                   | エクスポートは行われず、MCP サーバーは最後にエクスポートされたファイルを読む。鮮度は MCP 側でメタデータとして通知（Step 3 で対応） |
+| エクスポート API 呼び出しが失敗（Vite サーバー停止中など） | `fetch().catch()` により `console.error` 出力。ビジュー本体の動作には影響しない                                                    |
+| JSON シリアライズエラー                                    | `JSON.stringify` は循環参照がないオブジェクトに対して例外を throw しないが、念のため try-catch で保護（useTodoTree 側）            |
+| 大量ノード（1000+）                                        | `JSON.stringify` と `fetch` body は同期的に処理され、書き込みも同期的な `writeFileSync` のため問題なし                             |
+| 本番ビルド時                                               | `import.meta.env.DEV` ガードにより実行されない                                                                                     |
+| `os` モジュール未 import                                   | `vite.config.js` の先頭で `import os from 'node:os'` および `import fs from 'node:fs'` を追加                                      |
 
 ## 8. 非機能要件
 

@@ -29,13 +29,13 @@
 
 ### 移動
 
-| 移動前 | 移動後 |
-|---|---|
-| `src/hooks/useTodoTree.js` | `src/features/todo/hooks/useTodoTree.js` |
+| 移動前                          | 移動後                                        |
+| ------------------------------- | --------------------------------------------- |
+| `src/hooks/useTodoTree.js`      | `src/features/todo/hooks/useTodoTree.js`      |
 | `src/hooks/useTodoTree.test.js` | `src/features/todo/hooks/useTodoTree.test.js` |
-| `src/hooks/useShortcuts.js` | `src/features/todo/hooks/useShortcuts.js` |
-| `src/hooks/useAI.js` | `src/features/todo/hooks/useAI.js` |
-| `src/hooks/useI18n.js` | 移動しない（共有 hooks/ に残す） |
+| `src/hooks/useShortcuts.js`     | `src/features/todo/hooks/useShortcuts.js`     |
+| `src/hooks/useAI.js`            | `src/features/todo/hooks/useAI.js`            |
+| `src/hooks/useI18n.js`          | 移動しない（共有 hooks/ に残す）              |
 
 ### import パス修正
 

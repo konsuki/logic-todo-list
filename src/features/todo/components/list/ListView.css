@@ -8,8 +8,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .list-view-header {
@@ -62,7 +68,7 @@
 .display-mode-btn.active {
   background-color: var(--surface-color);
   color: var(--primary-color);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* フォルダ行はプログレスバーを持たないため、タイトル行とアクション群を
@@ -127,7 +133,7 @@
 .phase-filter-btn.active {
   background-color: var(--surface-color);
   color: var(--primary-color);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .add-goal-btn {
@@ -189,16 +195,16 @@
 }
 
 /* react-arborist overrides */
-[role="treeitem"] {
+[role='treeitem'] {
   outline: none;
 }
 
-[role="treeitem"]:focus {
+[role='treeitem']:focus {
   outline: none;
 }
 
 /* Drag preview styling */
-[data-react-arborist-dragging="true"] .todo-item-row {
+[data-react-arborist-dragging='true'] .todo-item-row {
   opacity: 0.5;
   border: 1px dashed var(--primary-color);
 }

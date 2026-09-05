@@ -22,7 +22,20 @@
 4. import を以下に設定する:
    ```js
    import { useState, useMemo, useRef, useEffect } from 'react';
-   import { ChevronDown, ChevronRight, CheckCircle, Circle, Trash2, Lock, Clock, AlertTriangle, EyeOff, Folder, FolderPlus, Plus } from 'lucide-react';
+   import {
+     ChevronDown,
+     ChevronRight,
+     CheckCircle,
+     Circle,
+     Trash2,
+     Lock,
+     Clock,
+     AlertTriangle,
+     EyeOff,
+     Folder,
+     FolderPlus,
+     Plus,
+   } from 'lucide-react';
    import { useSettings } from '../../../../lib/settings';
    import './TodoItem.css';
    ```

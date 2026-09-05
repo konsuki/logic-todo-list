@@ -22,9 +22,9 @@
      ```js
      let siblings = [];
      if (parent) {
-       siblings = parent.children.map(id => allNodes[id]).filter(Boolean);
+       siblings = parent.children.map((id) => allNodes[id]).filter(Boolean);
      } else {
-       siblings = Object.values(allNodes).filter(n => !n.parentId);
+       siblings = Object.values(allNodes).filter((n) => !n.parentId);
      }
      ```
    - 修正: `let siblings = [];` → `let siblings;`（初期化子 `= []` を削除）。

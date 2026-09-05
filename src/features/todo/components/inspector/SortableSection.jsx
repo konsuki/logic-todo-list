@@ -3,14 +3,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
 
 const SortableSection = ({ id, isReorderMode, children }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -19,11 +12,7 @@ const SortableSection = ({ id, isReorderMode, children }) => {
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`sortable-section${isDragging ? ' is-dragging' : ''}`}
-    >
+    <div ref={setNodeRef} style={style} className={`sortable-section${isDragging ? ' is-dragging' : ''}`}>
       {isReorderMode && (
         <div className="drag-handle" {...attributes} {...listeners}>
           <GripVertical size={16} />

@@ -22,8 +22,9 @@ const modalVariants = {
 const itemVariants = {
   hidden: { opacity: 0, y: 12 },
   visible: (i) => ({
-    opacity: 1, y: 0,
-    transition: { delay: i * 0.06, duration: 0.25 }
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.06, duration: 0.25 },
   }),
 };
 
@@ -60,9 +61,7 @@ const HiddenTasksModal = ({ isOpen, onClose, hiddenRootNodes, nodes, onUnhide, t
               <div className="header-title">
                 <EyeOff size={18} className="header-icon" />
                 <h2>{t('list.hidden_tasks')}</h2>
-                {hiddenRootNodes.length > 0 && (
-                  <span className="hidden-count-badge">{hiddenRootNodes.length}</span>
-                )}
+                {hiddenRootNodes.length > 0 && <span className="hidden-count-badge">{hiddenRootNodes.length}</span>}
               </div>
               <button className="close-btn" onClick={onClose}>
                 <X size={24} />
@@ -95,9 +94,7 @@ const HiddenTasksModal = ({ isOpen, onClose, hiddenRootNodes, nodes, onUnhide, t
                           </div>
                           <div className="hidden-item-title">{node.title}</div>
                           <div className="hidden-item-meta">
-                            {childCount > 0 && (
-                              <span className="hidden-item-children">子タスク {childCount} 件</span>
-                            )}
+                            {childCount > 0 && <span className="hidden-item-children">子タスク {childCount} 件</span>}
                           </div>
                         </div>
                         <div className="hidden-item-actions">

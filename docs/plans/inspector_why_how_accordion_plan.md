@@ -12,6 +12,7 @@
 ## 詳細手順
 
 ### 手順1：state の追加
+
 **対象：** `src/components/features/inspector/Inspector.jsx`
 
 既存の `useState` 宣言群の末尾に追加する。
@@ -28,22 +29,19 @@ const [isHowOpen, setIsHowOpen] = useState(true);
 ---
 
 ### 手順2：Why? セクションの開閉実装
+
 **対象：** `src/components/features/inspector/Inspector.jsx`（Why? セクション）
 
 ```jsx
 <section className="inspector-section">
-  <h3 className="section-title section-title--clickable" onClick={() => setIsWhyOpen(v => !v)}>
+  <h3 className="section-title section-title--clickable" onClick={() => setIsWhyOpen((v) => !v)}>
     {isWhyOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
     {t('inspector.why')}
   </h3>
   {isWhyOpen && (
     <>
-      <div className="why-path">
-        ...（既存の中身をそのまま）
-      </div>
-      <p className="logic-guide">
-        ...（既存の中身をそのまま）
-      </p>
+      <div className="why-path">...（既存の中身をそのまま）</div>
+      <p className="logic-guide">...（既存の中身をそのまま）</p>
     </>
   )}
 </section>
@@ -55,19 +53,16 @@ const [isHowOpen, setIsHowOpen] = useState(true);
 ---
 
 ### 手順3：How? セクションの開閉実装
+
 **対象：** `src/components/features/inspector/Inspector.jsx`（How? セクション）
 
 ```jsx
 <section className="inspector-section">
-  <h3 className="section-title section-title--clickable" onClick={() => setIsHowOpen(v => !v)}>
+  <h3 className="section-title section-title--clickable" onClick={() => setIsHowOpen((v) => !v)}>
     {isHowOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
     {t('inspector.how')}
   </h3>
-  {isHowOpen && (
-    <div className="how-list">
-      ...（既存の中身をそのまま）
-    </div>
-  )}
+  {isHowOpen && <div className="how-list">...（既存の中身をそのまま）</div>}
 </section>
 ```
 
@@ -77,6 +72,7 @@ const [isHowOpen, setIsHowOpen] = useState(true);
 ---
 
 ### 手順4：CSS の追加
+
 **対象：** `src/components/features/inspector/Inspector.css`（`.section-title` の直後）
 
 ```css

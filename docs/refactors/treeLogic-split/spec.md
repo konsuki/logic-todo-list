@@ -15,15 +15,15 @@
 
 新規に `src/features/todo/lib/` 配下へ **6 モジュール＋1 定数ファイル＝7 ファイル**を作り、`treeLogic.js` を削除する。
 
-| 新ファイル | 責務 | 収容する関数 |
-|---|---|---|
-| `treeConstants.js` | 定数 | `NODE_TYPES`, `NODE_STATUS`, `GROUP_COLOR_PALETTE` |
-| `treeNodes.js` | CRUD・構造 | `addNode`, `addNodes`, `addTreeUnderNode`, `importTreeToNodes`, `reorderNode`, `outdentNode` |
-| `treeProgress.js` | 進捗・状態・依存 | `calculateNodeProgress`, `updateProgressRecursively`, `isNodeLocked`, `checkCircularDependency`, `toggleNodeStatus` |
-| `treeGroups.js` | OR グループ | `normalizeGroups`, `normalizeOrGroups`, `calculateGroupProgress`, `addGroup`, `removeGroup`, `assignChildToGroup`, `updateGroup` |
-| `treeLifecycle.js` | 削除・非表示 | `softDeleteNode`, `hideNode`, `unhideNode`, `restoreNode`, `permanentDeleteNode` |
-| `treeFolders.js` | フォルダ | `isFolderNode`, `addFolder`, `assignTaskToFolder`, `deleteFolder`, `buildFolderTree` |
-| `treeDisplay.js` | 検索・表示 | `searchNodes`, `getFlattenedFlow`, `getVisibleNodesList`, `buildArboristTree` |
+| 新ファイル         | 責務             | 収容する関数                                                                                                                     |
+| ------------------ | ---------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `treeConstants.js` | 定数             | `NODE_TYPES`, `NODE_STATUS`, `GROUP_COLOR_PALETTE`                                                                               |
+| `treeNodes.js`     | CRUD・構造       | `addNode`, `addNodes`, `addTreeUnderNode`, `importTreeToNodes`, `reorderNode`, `outdentNode`                                     |
+| `treeProgress.js`  | 進捗・状態・依存 | `calculateNodeProgress`, `updateProgressRecursively`, `isNodeLocked`, `checkCircularDependency`, `toggleNodeStatus`              |
+| `treeGroups.js`    | OR グループ      | `normalizeGroups`, `normalizeOrGroups`, `calculateGroupProgress`, `addGroup`, `removeGroup`, `assignChildToGroup`, `updateGroup` |
+| `treeLifecycle.js` | 削除・非表示     | `softDeleteNode`, `hideNode`, `unhideNode`, `restoreNode`, `permanentDeleteNode`                                                 |
+| `treeFolders.js`   | フォルダ         | `isFolderNode`, `addFolder`, `assignTaskToFolder`, `deleteFolder`, `buildFolderTree`                                             |
+| `treeDisplay.js`   | 検索・表示       | `searchNodes`, `getFlattenedFlow`, `getVisibleNodesList`, `buildArboristTree`                                                    |
 
 ## 4. 普通ではないケース・境界条件
 

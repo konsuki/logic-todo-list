@@ -23,7 +23,7 @@ export const sendChatMessage = async (message, timeout = 120000, newChat = false
     }
 
     const data = await response.json();
-    
+
     if (data.status === 'error') {
       throw new Error(data.error || data.message || 'Unknown API error');
     }

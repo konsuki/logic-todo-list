@@ -8,21 +8,19 @@ export const NODE_TYPES = {
   GOAL: 'GOAL',
   STRATEGY: 'STRATEGY',
   ACTION: 'ACTION',
-  FOLDER: 'FOLDER'
+  FOLDER: 'FOLDER',
 };
 
 export const NODE_STATUS = {
   TODO: 'TODO',
   IN_PROGRESS: 'IN_PROGRESS',
-  DONE: 'DONE'
+  DONE: 'DONE',
 };
 
 /**
  * Color palette for auto-assigning group colors.
  */
-export const GROUP_COLOR_PALETTE = [
-  '#4F8CFF', '#34C759', '#FF9500', '#AF52DE', '#FF3B30', '#5AC8FA'
-];
+export const GROUP_COLOR_PALETTE = ['#4F8CFF', '#34C759', '#FF9500', '#AF52DE', '#FF3B30', '#5AC8FA'];
 
 /**
  * 実行フェーズ（Phase）。
