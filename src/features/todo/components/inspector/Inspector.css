@@ -862,3 +862,69 @@
   align-items: center;
   gap: 4px;
 }
+
+/* --- タスク消化時間計測エリア --- */
+.time-tracking-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.time-tracking-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-main);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.time-tracking-btn.start {
+  border-color: var(--success-color, #34C759);
+  color: var(--success-color, #34C759);
+}
+
+.time-tracking-btn.pause {
+  border-color: var(--warning-color, #FF9500);
+  color: var(--warning-color, #FF9500);
+}
+
+.time-tracking-btn.resume {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.time-tracking-btn:hover {
+  background-color: var(--surface-color);
+}
+
+.time-tracking-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.time-tracking-elapsed {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-main);
+}
+
+.time-tracking-completed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-tracking-total {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--success-color, #34C759);
+}

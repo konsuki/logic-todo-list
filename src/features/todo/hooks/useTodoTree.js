@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { NODE_TYPES } from '../lib/treeConstants';
+import { NODE_TYPES, NODE_STATUS } from '../lib/treeConstants';
 import { addNode, addNodes, addTreeUnderNode, importTreeToNodes, reorderNode, outdentNode } from '../lib/treeNodes';
 import {
   toggleNodeStatus,
@@ -10,6 +10,7 @@ import {
 import { addGroup, removeGroup, assignChildToGroup, updateGroup } from '../lib/treeGroups';
 import { softDeleteNode, restoreNode, permanentDeleteNode, hideNode, unhideNode } from '../lib/treeLifecycle';
 import { addFolder, deleteFolder, assignTaskToFolder } from '../lib/treeFolders';
+import { startTimeTracking, pauseTimeTracking, resumeTimeTracking, completeTimeTracking } from '../lib/timeTracking';
 
 const STORAGE_KEY = 'logido_tree_data';
 
@@ -155,7 +156,44 @@ export const useTodoTree = () => {
   }, []);
 
   const handleToggleStatus = useCallback((nodeId) => {
-    setNodes((prev) => toggleNodeStatus(prev, nodeId));
+    setNodes((prev) => {
+      const node = prev[nodeId];
+      if (!node) return prev;
+      const wasDone = node.status === NODE_STATUS.DONE;
+      const next = toggleNodeStatus(prev, nodeId);
+      // DONE に遷移した時のみ完了時刻を打刻する（TODO に戻す時は打刻しない）
+      if (!wasDone && next[nodeId]?.status === NODE_STATUS.DONE) {
+        next[nodeId] = completeTimeTracking(next[nodeId], Date.now());
+      }
+      return next;
+    });
+  }, []);
+
+  const handleStartTimeTracking = useCallback((nodeId) => {
+    setNodes((prev) => {
+      const node = prev[nodeId];
+      if (!node) return prev;
+      const updated = startTimeTracking(node, Date.now());
+      return { ...prev, [nodeId]: { ...updated, updatedAt: Date.now() } };
+    });
+  }, []);
+
+  const handlePauseTimeTracking = useCallback((nodeId) => {
+    setNodes((prev) => {
+      const node = prev[nodeId];
+      if (!node) return prev;
+      const updated = pauseTimeTracking(node, Date.now());
+      return { ...prev, [nodeId]: { ...updated, updatedAt: Date.now() } };
+    });
+  }, []);
+
+  const handleResumeTimeTracking = useCallback((nodeId) => {
+    setNodes((prev) => {
+      const node = prev[nodeId];
+      if (!node) return prev;
+      const updated = resumeTimeTracking(node, Date.now());
+      return { ...prev, [nodeId]: { ...updated, updatedAt: Date.now() } };
+    });
   }, []);
 
   const handleUpdateNode = useCallback((nodeId, updates) => {
@@ -392,6 +430,9 @@ export const useTodoTree = () => {
     hideNode: handleHideNode,
     unhideNode: handleUnhideNode,
     toggleStatus: handleToggleStatus,
+    startTimeTracking: handleStartTimeTracking,
+    pauseTimeTracking: handlePauseTimeTracking,
+    resumeTimeTracking: handleResumeTimeTracking,
     updateNode: handleUpdateNode,
     setRelation: handleSetRelation,
     addGroup: handleAddGroup,

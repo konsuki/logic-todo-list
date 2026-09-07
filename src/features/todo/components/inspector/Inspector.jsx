@@ -11,6 +11,7 @@ import SortableSection from './SortableSection';
 import HowSection from './HowSection';
 import DependencySection from './DependencySection';
 import ScheduleSection from './ScheduleSection';
+import TimeTrackingSection from './TimeTrackingSection';
 import WhySection from './WhySection';
 import FolderSection from './FolderSection';
 import TextareaSection from './TextareaSection';
@@ -23,6 +24,7 @@ const DEFAULT_SECTION_ORDER = [
   'folder',
   'ai',
   'schedule',
+  'timeTracking',
   'dependency',
   'why',
   'how',
@@ -35,6 +37,9 @@ const Inspector = ({
   addTreeUnderNode,
   onSelectNode,
   updateNode,
+  startTimeTracking,
+  pauseTimeTracking,
+  resumeTimeTracking,
   onDeleteNode,
   addDependency,
   removeDependency,
@@ -135,6 +140,16 @@ const Inspector = ({
     ai: <AIInsights node={node} nodes={nodes} addTreeUnderNode={addTreeUnderNode} t={t} />,
 
     schedule: <ScheduleSection node={node} reorderNode={reorderNode} updateNode={updateNode} t={t} />,
+
+    timeTracking: (
+      <TimeTrackingSection
+        node={node}
+        startTimeTracking={startTimeTracking}
+        pauseTimeTracking={pauseTimeTracking}
+        resumeTimeTracking={resumeTimeTracking}
+        t={t}
+      />
+    ),
 
     dependency: (
       <DependencySection
