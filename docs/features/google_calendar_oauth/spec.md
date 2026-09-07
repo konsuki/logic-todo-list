@@ -12,7 +12,7 @@
 
 - 連携 API: **Google Calendar API v3（Events）** … 帯表示（時間帯）を実現するため。
 - 認証方式: **OAuth 2.0 Authorization Code flow + PKCE**（Google Identity Services）。
-- スコープ: `https://www.googleapis.com/auth/calendar.events`（最小権限）。
+- スコープ: `https://www.googleapis.com/auth/calendar.app.created`（専用カレンダー自動作成とそのイベント操作のための最小権限。後続タスクで `calendar.events` から変更）。
 
 ### データの流れ（トークン交換はバックエンド経由）
 
