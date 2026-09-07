@@ -11,6 +11,7 @@
 
 ## ✅ 完了済み (Completed)
 
+- [110] 09-07: [カレンダー書き込みのメモ内容（見出し付き＋実行手順）](features/calendar_description_headings/spec.md)
 - [109] 09-07: [タスク完了時の Google カレンダー自動書き込み（同期処理）](features/calendar_sync/spec.md)
 - [108] 09-07: [タスク消化時間計測機能の実装](features/task_time_tracking/spec.md)
 - [107] 09-07: [Google カレンダー連携（OAuth 認証）の実装](features/google_calendar_oauth/spec.md)
