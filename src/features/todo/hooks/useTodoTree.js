@@ -170,7 +170,16 @@ export const useTodoTree = () => {
         const completedNode = next[nodeId];
         const tt = completedNode.timeTracking;
         if (tt?.startAt != null && tt?.completedAt != null) {
-          const description = [completedNode.intent, completedNode.description].filter(Boolean).join('\n');
+          const description = [
+            '## 説明とメモ',
+            completedNode.description || '',
+            '',
+            '## 詳細意図',
+            completedNode.intent || '',
+            '',
+            '## 実行手順',
+            completedNode.procedure || '',
+          ].join('\n');
           syncCalendarEvent({
             title: completedNode.title,
             description,
