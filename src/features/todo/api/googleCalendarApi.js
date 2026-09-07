@@ -10,7 +10,7 @@ const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 // （client_secret は絶対にフロントに置かない）
 export const GOOGLE_CLIENT_ID = '923750260675-88o2ggt5i767g1uhcuolis83nb5h7vjl.apps.googleusercontent.com';
 export const GOOGLE_REDIRECT_URI = 'http://localhost:5173';
-const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/calendar.events';
+const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/calendar.app.created';
 
 /**
  * PKCE の code_verifier を生成する（RFC 7636）。
@@ -107,4 +107,27 @@ export async function getGoogleAuthStatus() {
     throw new Error(`連携状態の取得に失敗しました (HTTP ${response.status})`);
   }
   return response.json();
+}
+
+/**
+ * タスクの実行実績をカレンダーへ同期する（作成 or 更新）。
+ * バックエンドが専用カレンダーを自動作成し、events.insert/update する。
+ *
+ * @param {Object} payload - { title, description, startAt, completedAt, eventId }
+ * @returns {Promise<string>} 作成/更新された eventId
+ */
+export async function syncCalendarEvent({ title, description, startAt, completedAt, eventId }) {
+  const response = await fetch(`${API_BASE_URL}/calendar/sync`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, description, startAt, completedAt, eventId }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.detail || `カレンダー同期に失敗しました (HTTP ${response.status})`);
+  }
+
+  const data = await response.json();
+  return data.eventId;
 }

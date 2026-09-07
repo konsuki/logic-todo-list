@@ -11,6 +11,7 @@ import { addGroup, removeGroup, assignChildToGroup, updateGroup } from '../lib/t
 import { softDeleteNode, restoreNode, permanentDeleteNode, hideNode, unhideNode } from '../lib/treeLifecycle';
 import { addFolder, deleteFolder, assignTaskToFolder } from '../lib/treeFolders';
 import { startTimeTracking, pauseTimeTracking, resumeTimeTracking, completeTimeTracking } from '../lib/timeTracking';
+import { syncCalendarEvent } from '../api/googleCalendarApi';
 
 const STORAGE_KEY = 'logido_tree_data';
 
@@ -164,6 +165,30 @@ export const useTodoTree = () => {
       // DONE に遷移した時のみ完了時刻を打刻する（TODO に戻す時は打刻しない）
       if (!wasDone && next[nodeId]?.status === NODE_STATUS.DONE) {
         next[nodeId] = completeTimeTracking(next[nodeId], Date.now());
+
+        // 完了後、計測データがあればカレンダーへ同期する（非同期・失敗は無視）
+        const completedNode = next[nodeId];
+        const tt = completedNode.timeTracking;
+        if (tt?.startAt != null && tt?.completedAt != null) {
+          const description = [completedNode.intent, completedNode.description].filter(Boolean).join('\n');
+          syncCalendarEvent({
+            title: completedNode.title,
+            description,
+            startAt: tt.startAt,
+            completedAt: tt.completedAt,
+            eventId: completedNode.calendarEventId,
+          })
+            .then((eventId) => {
+              setNodes((cur) => {
+                const n = cur[nodeId];
+                if (!n) return cur;
+                return { ...cur, [nodeId]: { ...n, calendarEventId: eventId, updatedAt: Date.now() } };
+              });
+            })
+            .catch((err) => {
+              console.error('カレンダー同期に失敗しました:', err);
+            });
+        }
       }
       return next;
     });
