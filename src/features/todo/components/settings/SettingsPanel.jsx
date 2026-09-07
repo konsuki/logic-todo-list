@@ -13,6 +13,8 @@ import {
   ListOrdered,
   Trash2,
   Folder,
+  Calendar,
+  Check,
 } from 'lucide-react';
 import { useSettings } from '../../../../lib/settings';
 import './SettingsPanel.css';
@@ -31,6 +33,7 @@ const SettingsPanel = ({
   onOpenImport,
   onOpenTrash,
   trashedCount,
+  googleAuth,
 }) => {
   const { settings, updateSetting } = useSettings();
 
@@ -300,6 +303,40 @@ const SettingsPanel = ({
                       </span>
                     )}
                   </button>
+                </motion.div>
+              </motion.section>
+
+              <motion.section className="settings-section" variants={itemVariants}>
+                <h3>{t('settings.integrations') || 'Integrations'}</h3>
+
+                <motion.div className="setting-item" variants={itemVariants}>
+                  <div className="setting-info">
+                    <div className="setting-label">
+                      <Calendar size={18} />
+                      <span>Google カレンダー連携</span>
+                    </div>
+                    <p className="setting-desc">
+                      {googleAuth?.connected
+                        ? '連携済みです。タスクの実行時間を自動でカレンダーに反映できます。'
+                        : 'Google アカウントを連携して、タスクの実行時間をカレンダーに自動同期します。'}
+                    </p>
+                    {googleAuth?.error && (
+                      <p className="setting-desc" style={{ color: 'var(--accent-danger, #f38ba8)' }}>
+                        {googleAuth.error}
+                      </p>
+                    )}
+                  </div>
+
+                  {googleAuth?.connected ? (
+                    <span className="import-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <Check size={16} />
+                      連携済み
+                    </span>
+                  ) : (
+                    <button className="import-btn" onClick={googleAuth?.connect} disabled={googleAuth?.loading}>
+                      {googleAuth?.loading ? '連携中…' : '連携する'}
+                    </button>
+                  )}
                 </motion.div>
               </motion.section>
             </div>
