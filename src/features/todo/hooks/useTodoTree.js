@@ -38,6 +38,7 @@ export const useTodoTree = () => {
 
   // 起動時優先読み込みの完了フラグ（MCP 書き込みを反映する前にユーザー操作で上書きされるのを防ぐ）
   const initialLoadDone = useRef(false);
+  const syncingRef = useRef(new Set()); // カレンダー同期中の nodeId を追跡（二重実行防止）
 
   // DEV 時のみ: 起動時に tree_data.json（MCP 書き込みの結果）と localStorage を比較し、
   // ファイルの方が新しければファイルを優先して初期 state に反映する。
@@ -124,6 +125,56 @@ export const useTodoTree = () => {
     }
   }, [nodes]);
 
+  // タスクが DONE になった時、計測データがあればカレンダーへ同期する。
+  // 副作用は updater 関数の外（useEffect）で行う（React StrictMode による二重実行を防ぐ）。
+  useEffect(() => {
+    for (const node of Object.values(nodes)) {
+      const tt = node.timeTracking;
+      const shouldSync =
+        node.status === NODE_STATUS.DONE &&
+        tt?.startAt != null &&
+        tt?.completedAt != null &&
+        !node.calendarEventId &&
+        !syncingRef.current.has(node.id);
+
+      if (!shouldSync) continue;
+
+      syncingRef.current.add(node.id);
+
+      const description = [
+        '## 説明とメモ',
+        node.description || '',
+        '',
+        '## 詳細意図',
+        node.intent || '',
+        '',
+        '## 実行手順',
+        node.procedure || '',
+      ].join('\n');
+
+      syncCalendarEvent({
+        title: node.title,
+        description,
+        startAt: tt.startAt,
+        completedAt: tt.completedAt,
+        eventId: node.calendarEventId,
+      })
+        .then((eventId) => {
+          setNodes((cur) => {
+            const n = cur[node.id];
+            if (!n) return cur;
+            return { ...cur, [node.id]: { ...n, calendarEventId: eventId, updatedAt: Date.now() } };
+          });
+        })
+        .catch((err) => {
+          console.error('カレンダー同期に失敗しました:', err);
+        })
+        .finally(() => {
+          syncingRef.current.delete(node.id);
+        });
+    }
+  }, [nodes]);
+
   const handleAddNode = useCallback((parentId, type, title, predefinedId) => {
     setNodes((prev) => addNode(prev, parentId, type, title, predefinedId));
   }, []);
@@ -165,39 +216,6 @@ export const useTodoTree = () => {
       // DONE に遷移した時のみ完了時刻を打刻する（TODO に戻す時は打刻しない）
       if (!wasDone && next[nodeId]?.status === NODE_STATUS.DONE) {
         next[nodeId] = completeTimeTracking(next[nodeId], Date.now());
-
-        // 完了後、計測データがあればカレンダーへ同期する（非同期・失敗は無視）
-        const completedNode = next[nodeId];
-        const tt = completedNode.timeTracking;
-        if (tt?.startAt != null && tt?.completedAt != null) {
-          const description = [
-            '## 説明とメモ',
-            completedNode.description || '',
-            '',
-            '## 詳細意図',
-            completedNode.intent || '',
-            '',
-            '## 実行手順',
-            completedNode.procedure || '',
-          ].join('\n');
-          syncCalendarEvent({
-            title: completedNode.title,
-            description,
-            startAt: tt.startAt,
-            completedAt: tt.completedAt,
-            eventId: completedNode.calendarEventId,
-          })
-            .then((eventId) => {
-              setNodes((cur) => {
-                const n = cur[nodeId];
-                if (!n) return cur;
-                return { ...cur, [nodeId]: { ...n, calendarEventId: eventId, updatedAt: Date.now() } };
-              });
-            })
-            .catch((err) => {
-              console.error('カレンダー同期に失敗しました:', err);
-            });
-        }
       }
       return next;
     });
