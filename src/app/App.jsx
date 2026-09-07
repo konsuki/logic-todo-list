@@ -39,6 +39,9 @@ function App() {
     hideNode,
     unhideNode,
     toggleStatus,
+    startTimeTracking,
+    pauseTimeTracking,
+    resumeTimeTracking,
     updateNode,
     addDependency,
     removeDependency,
@@ -270,6 +273,9 @@ function App() {
           addTreeUnderNode={addTreeUnderNode}
           onSelectNode={handleSelectNode}
           updateNode={updateNode}
+          startTimeTracking={startTimeTracking}
+          pauseTimeTracking={pauseTimeTracking}
+          resumeTimeTracking={resumeTimeTracking}
           onDeleteNode={deleteNode}
           addDependency={addDependency}
           removeDependency={removeDependency}
