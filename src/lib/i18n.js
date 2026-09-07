@@ -143,6 +143,7 @@ export const translations = {
       open_trash: '開く',
       use_folder_view: 'フォルダ機能を使う',
       use_folder_view_desc: '因果とは独立したフォルダでタスクを整理できるようにします。',
+      integrations: '連携',
     },
   },
   en: {
@@ -289,6 +290,7 @@ export const translations = {
       open_trash: 'Open',
       use_folder_view: 'Use Folder View',
       use_folder_view_desc: 'Organize tasks into folders independent of causality.',
+      integrations: 'Integrations',
     },
   },
 };

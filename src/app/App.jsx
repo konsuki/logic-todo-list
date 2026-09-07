@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { LayoutGrid, List, Info, Zap, Globe, Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTodoTree } from '../features/todo/hooks/useTodoTree';
+import { useGoogleAuth } from '../features/todo/hooks/useGoogleAuth';
 import { useI18n } from '../hooks/useI18n';
 import { useTheme } from '../hooks/useTheme';
 import { useShortcuts } from '../features/todo/hooks/useShortcuts';
@@ -55,6 +56,7 @@ function App() {
     assignTaskToFolder,
   } = useTodoTree();
   const { t, lang, setLang } = useI18n();
+  const googleAuth = useGoogleAuth();
   const [view, setView] = useState(VIEW_MODE.LIST);
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -297,6 +299,7 @@ function App() {
         onOpenImport={() => setIsImportModalOpen(true)}
         onOpenTrash={() => setIsTrashOpen(true)}
         trashedCount={trashedRootNodes.length}
+        googleAuth={googleAuth}
       />
 
       <ImportModal

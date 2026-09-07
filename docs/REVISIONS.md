@@ -11,6 +11,7 @@
 
 ## ✅ 完了済み (Completed)
 
+- [107] 09-07: [Google カレンダー連携（OAuth 認証）の実装](features/google_calendar_oauth/spec.md)
 - [106] 09-06: [Node のバージョンを v20+ に固定する（.nvmrc + engines）](refactors/node-version-pin/spec.md)
 - [105] 09-06: [重複コードを排除して DRY 原則を適用する](refactors/dry-deduplication/spec.md)
 - [104] 09-06: [テストファイルの配置・命名を bulletproof-react 準拠に統一する](refactors/test-layout-unification/spec.md)
